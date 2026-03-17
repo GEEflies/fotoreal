@@ -162,22 +162,6 @@ export function PricingPackagesA() {
             </div>
           </div>
 
-          {/* Quick-select chips */}
-          <div className="mt-6 flex items-center justify-center gap-2 sm:gap-4 flex-wrap text-xs text-muted-foreground">
-            {PACKAGES.map((p, i) => (
-              <button
-                key={p.photos}
-                onClick={() => setSelected(i)}
-                className={`px-3 py-1.5 rounded-full border transition-all ${
-                  i === selected
-                    ? "border-primary bg-primary/10 text-primary font-semibold"
-                    : "border-border hover:border-primary/30"
-                }`}
-              >
-                {p.photos} ks = {p.ppp.toFixed(2)} €
-              </button>
-            ))}
-          </div>
         </div>
       </div>
     </section>
