@@ -1,12 +1,27 @@
 import { useEffect, useState } from "react";
-import { CheckCircle2, ArrowRight } from "lucide-react";
+import { CheckCircle2, ArrowRight, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useNavigate, useSearchParams } from "react-router-dom";
+import { useUserAuth } from "@/hooks/use-user-auth";
+import { useClaimPurchases } from "@/hooks/use-claim-purchases";
 
 export default function PaymentSuccess() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get("session_id");
+  const { user, isLoading: authLoading } = useUserAuth();
+  const { claimPurchases } = useClaimPurchases();
+  const [hasClaimed, setHasClaimed] = useState(false);
+
+  // Auto-claim purchases when user is authenticated
+  useEffect(() => {
+    if (user && !hasClaimed) {
+      setHasClaimed(true);
+      claimPurchases();
+    }
+  }, [user, hasClaimed, claimPurchases]);
+
+  const isLoggedIn = !!user;
 
   return (
     <div
@@ -25,19 +40,37 @@ export default function PaymentSuccess() {
           Platba úspešná!
         </h1>
 
-        <p className="text-muted-foreground text-sm sm:text-base mb-8">
-          Ďakujeme za nákup. Vaše kredity boli pripísané na váš účet.
-          Na email vám príde potvrdenie objednávky.
-        </p>
-
-        <Button
-          size="lg"
-          onClick={() => navigate("/pre-fotografov")}
-          className="w-full font-bold"
-        >
-          Pokračovať
-          <ArrowRight className="ml-2 h-4 w-4" />
-        </Button>
+        {isLoggedIn ? (
+          <>
+            <p className="text-muted-foreground text-sm sm:text-base mb-8">
+              Ďakujeme za nákup. Vaše kredity boli pripísané na váš účet.
+              Na email vám príde potvrdenie objednávky.
+            </p>
+            <Button
+              size="lg"
+              onClick={() => navigate("/dashboard/credits")}
+              className="w-full font-bold"
+            >
+              Pokračovať do aplikácie
+              <ArrowRight className="ml-2 h-4 w-4" />
+            </Button>
+          </>
+        ) : (
+          <>
+            <p className="text-muted-foreground text-sm sm:text-base mb-8">
+              Ďakujeme za nákup! Prihláste sa alebo sa zaregistrujte
+              pre pripísanie kreditov na váš účet.
+            </p>
+            <Button
+              size="lg"
+              onClick={() => navigate(`/login?redirect=/platba-uspesna${sessionId ? `&session_id=${sessionId}` : ""}`)}
+              className="w-full font-bold"
+            >
+              <LogIn className="mr-2 h-4 w-4" />
+              Prihlásiť sa
+            </Button>
+          </>
+        )}
       </div>
     </div>
   );
