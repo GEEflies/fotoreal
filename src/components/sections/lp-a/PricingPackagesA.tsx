@@ -86,7 +86,7 @@ export function PricingPackagesA() {
                           -{pkg.discount}%
                         </span>
                       )}
-                      <span className="text-xs text-muted-foreground ml-1">
+                      <span className="text-muted-foreground text-sm ml-1">
                         ~{pkg.properties} {pkg.properties === 1 ? "nehnuteľnosť" : pkg.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"}
                       </span>
                     </div>
@@ -130,7 +130,7 @@ export function PricingPackagesA() {
                                 -{p.discount}%
                               </span>
                             )}
-                            <span className="text-xs text-muted-foreground ml-1">
+                            <span className="text-muted-foreground text-sm ml-1">
                               ~{p.properties} {p.properties === 1 ? "nehnuteľnosť" : p.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"}
                             </span>
                           </div>
