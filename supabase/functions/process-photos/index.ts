@@ -306,24 +306,21 @@ Deno.serve(async (req) => {
         }
       } catch (photoError: unknown) {
         console.error(`Error processing photo ${photo.id}:`, photoError);
-        const isRateLimit = photoError instanceof Error &&
-          (photoError.message.includes("[429]") || photoError.message.includes("[402]"));
-        const errorLabel = isRateLimit
-          ? "Chyba: Rate limit"
-          : "Chyba pri spracovaní";
-        await updatePhotoStatus(supabase, photo.id, "error", errorLabel);
+        const message = photoError instanceof Error ? photoError.message : String(photoError);
+        const isRateLimit = message.includes("[429]") || message.includes("[402]");
+        await updatePhotoStatus(supabase, photo.id, "error", getFriendlyPhotoError(photoError));
         if (isRateLimit) break;
       }
     }
 
-    const { data: remainingPhotos } = await supabase
+    const { data: finalPhotos } = await supabase
       .from("property_photos")
-      .select("id")
-      .eq("property_id", property_id)
-      .neq("ai_status", "done")
-      .neq("ai_status", "error");
+      .select("ai_status")
+      .eq("property_id", property_id);
 
-    const finalStatus = (!remainingPhotos || remainingPhotos.length === 0) ? "done" : "error";
+    const hasPending = finalPhotos?.some((photo) => photo.ai_status !== "done" && photo.ai_status !== "error") ?? false;
+    const hasErrors = finalPhotos?.some((photo) => photo.ai_status === "error") ?? false;
+    const finalStatus = hasPending ? "processing" : hasErrors ? "error" : "done";
     await supabase.from("properties").update({ status: finalStatus }).eq("id", property_id);
 
     return new Response(
