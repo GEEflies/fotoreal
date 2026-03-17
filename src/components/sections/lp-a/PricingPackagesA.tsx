@@ -87,6 +87,9 @@ export function PricingPackagesA() {
                         </span>
                       )}
                     </div>
+                    <span className="text-xs text-muted-foreground">
+                      ~{pkg.properties} {pkg.properties === 1 ? "nehnuteľnosť" : pkg.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"}
+                    </span>
                     <div className="text-right">
                       <div className="flex items-center gap-1">
                         <span className="font-heading text-xl font-bold text-foreground">
@@ -101,9 +104,6 @@ export function PricingPackagesA() {
                       <span className="text-sm font-semibold text-primary">({pkg.ppp.toFixed(2)} € / ks)</span>
                     </div>
                   </div>
-                  <p className="text-xs text-muted-foreground text-center mt-1">
-                    ~{pkg.properties} {pkg.properties === 1 ? "nehnuteľnosť" : pkg.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"}
-                  </p>
                 </button>
 
                 {open && (
