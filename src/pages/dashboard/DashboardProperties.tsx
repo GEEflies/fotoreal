@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { UserLayout } from '@/components/dashboard/UserLayout';
 import { PropertyCard } from '@/components/dashboard/PropertyCard';
+import { CreditsBanner } from '@/components/dashboard/CreditsBanner';
+import { useCredits } from '@/hooks/use-credits';
 import { Button } from '@/components/ui/button';
 import { Plus, Building2 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -19,6 +21,7 @@ interface Property {
 export default function DashboardProperties() {
   const [properties, setProperties] = useState<Property[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { credits, isLoading: creditsLoading } = useCredits();
 
   useEffect(() => {
     loadProperties();
@@ -36,30 +39,19 @@ export default function DashboardProperties() {
       return;
     }
 
-    // Get photo counts and thumbnails
     const enriched: Property[] = [];
     for (const p of props || []) {
-      const { data: photos } = await supabase
-        .from('property_photos')
-        .select('id, original_url')
-        .eq('property_id', p.id)
-        .limit(1);
+      const [{ data: photos }, { count }] = await Promise.all([
+        supabase.from('property_photos').select('original_url').eq('property_id', p.id).limit(1),
+        supabase.from('property_photos').select('id', { count: 'exact', head: true }).eq('property_id', p.id),
+      ]);
 
       enriched.push({
         ...p,
         status: p.status as string,
-        photo_count: 0, // We'll get count separately
+        photo_count: count || 0,
         thumbnail_url: photos?.[0]?.original_url,
       });
-    }
-
-    // Get actual counts
-    for (const p of enriched) {
-      const { count } = await supabase
-        .from('property_photos')
-        .select('id', { count: 'exact', head: true })
-        .eq('property_id', p.id);
-      p.photo_count = count || 0;
     }
 
     setProperties(enriched);
@@ -69,6 +61,11 @@ export default function DashboardProperties() {
   return (
     <UserLayout>
       <div className="space-y-6">
+        {/* Credits banner - prominent */}
+        {!creditsLoading && credits && (
+          <CreditsBanner available={credits.available} />
+        )}
+
         <div className="flex items-center justify-between">
           <div>
             <h1 className="text-2xl font-heading font-bold text-foreground">Nehnuteľnosti</h1>
