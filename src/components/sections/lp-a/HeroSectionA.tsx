@@ -18,7 +18,7 @@ export function HeroSectionA() {
               Pre maklérov s fotografom
             </div>
 
-            <h1 className="font-heading text-3xl sm:text-4xl lg:text-[3.25rem] xl:text-[3.75rem] font-extrabold leading-[1.1] text-foreground tracking-tight">
+            <h1 className="font-heading text-3xl sm:text-4xl lg:text-[3.25rem] xl:text-[3.75rem] font-extrabold leading-[1.15] lg:leading-[1.2] text-foreground tracking-tight">
               Rovnaká kvalita.
               <br />
               <span className="text-primary">Až 95% úspora.</span>
