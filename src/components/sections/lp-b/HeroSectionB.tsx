@@ -2,11 +2,13 @@ import { ArrowRight, Star, TrendingUp, Eye, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BeforeAfterSlider } from "@/components/ui/BeforeAfterSlider";
 import { HERO_BEFORE, HERO_AFTER } from "@/lib/images";
+import { useNavigate } from "react-router-dom";
 import tomasAvatar from "@/assets/avatars/tomas-lukac.png";
 import andreaAvatar from "@/assets/avatars/andrea-kmetova.png";
 import marekAvatar from "@/assets/avatars/marek-balaz.png";
 
 export function HeroSectionB() {
+  const navigate = useNavigate();
   return (
     <section id="domov" className="relative min-h-[85vh] flex items-center pt-20 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-accent/40 via-background to-background" />
