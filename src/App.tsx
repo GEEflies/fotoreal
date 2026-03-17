@@ -57,6 +57,11 @@ const App = () => (
           <Route path="/admin/clients" element={<AdminClients />} />
           <Route path="/admin/clients/:userId" element={<AdminClientDetail />} />
           <Route path="/admin/analytics" element={<AdminAnalytics />} />
+          <Route path="/admin/outreach/leads" element={<OutreachLeads />} />
+          <Route path="/admin/outreach/inboxes" element={<OutreachInboxes />} />
+          <Route path="/admin/outreach/campaigns" element={<OutreachCampaigns />} />
+          <Route path="/admin/outreach/replies" element={<OutreachReplies />} />
+          <Route path="/admin/outreach/stats" element={<OutreachStats />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
