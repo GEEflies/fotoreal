@@ -207,7 +207,7 @@ export function PricingPackagesA() {
           </div>
 
           {/* Quick-select chips */}
-          <div className="mt-6 flex items-center justify-center gap-4 flex-wrap text-xs text-muted-foreground">
+          <div className="mt-6 flex items-center justify-center gap-2 sm:gap-4 flex-wrap text-xs text-muted-foreground">
             {PACKAGES.map((p, i) => (
               <button
                 key={p.photos}
