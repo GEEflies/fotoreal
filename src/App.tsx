@@ -18,6 +18,8 @@ import {
   AdminLogin,
   AdminSubmissions,
   AdminSubmissionDetail,
+  AdminClients,
+  AdminClientDetail,
   AdminAnalytics,
   AdminSettings,
 } from "./pages/admin";
@@ -46,6 +48,8 @@ const App = () => (
           <Route path="/admin" element={<Navigate to="/admin/submissions" replace />} />
           <Route path="/admin/submissions" element={<AdminSubmissions />} />
           <Route path="/admin/submissions/:id" element={<AdminSubmissionDetail />} />
+          <Route path="/admin/clients" element={<AdminClients />} />
+          <Route path="/admin/clients/:userId" element={<AdminClientDetail />} />
           <Route path="/admin/analytics" element={<AdminAnalytics />} />
           <Route path="/admin/settings" element={<AdminSettings />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}

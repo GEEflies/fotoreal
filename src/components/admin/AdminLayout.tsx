@@ -2,7 +2,8 @@ import { ReactNode, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAdminAuth } from '@/hooks/use-admin-auth';
 import { 
-  Users, 
+  Users,
+  UserCheck,
   BarChart3, 
   Settings, 
   LogOut,
@@ -19,6 +20,7 @@ interface AdminLayoutProps {
 
 const navItems = [
   { href: '/admin/submissions', label: 'Leady', icon: Users },
+  { href: '/admin/clients', label: 'Klienti', icon: UserCheck },
   { href: '/admin/analytics', label: 'Analytika', icon: BarChart3 },
   { href: '/admin/settings', label: 'Nastavenia', icon: Settings },
 ];
