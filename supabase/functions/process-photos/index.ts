@@ -339,8 +339,20 @@ Deno.serve(async (req) => {
         const editedImageUrl = await enhancePhoto(photo.original_url, prompt, LOVABLE_API_KEY);
 
         if (editedImageUrl) {
-          const base64Data = editedImageUrl.replace(/^data:image\/\w+;base64,/, "");
-          const imageBytes = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0));
+          let base64Data = editedImageUrl.replace(/^data:image\/\w+;base64,/, "");
+          let imageBytes = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0));
+
+          // Phase 3: Watermark (non-AI)
+          if (logoUrl) {
+            try {
+              await updatePhotoStatus(supabase, photo.id, "enhancing", "Pridávam vodoznak...");
+              imageBytes = await applyWatermark(imageBytes, logoUrl, watermarkPosition);
+            } catch (wmError) {
+              console.error(`Watermark error for photo ${photo.id}:`, wmError);
+              // Continue without watermark - don't fail the whole photo
+            }
+          }
+
           const filePath = `processed/${property_id}/${photo.id}.png`;
 
           const { error: uploadError } = await supabase.storage
@@ -358,13 +370,8 @@ Deno.serve(async (req) => {
           }
 
           // Deduct credit after success
-          const { data: propData } = await supabase
-            .from("properties")
-            .select("user_id")
-            .eq("id", property_id)
-            .single();
-          if (propData?.user_id) {
-            await supabase.rpc("increment_total_used", { _user_id: propData.user_id });
+          if (propOwner?.user_id) {
+            await supabase.rpc("increment_total_used", { _user_id: propOwner.user_id });
           }
         } else {
           await updatePhotoStatus(supabase, photo.id, "done", "Hotovo");
