@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { Camera, Smartphone, ArrowRight } from "lucide-react";
 
 export type AvatarType = "photographer" | "no-photographer" | null;
 
@@ -32,43 +31,35 @@ export function AvatarSelector({ onSelect }: AvatarSelectorProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center animate-fade-in px-4" style={{ background: "radial-gradient(circle at center, hsl(244 95% 10%) 0%, hsl(244 95% 5%) 60%)" }}>
-      <div className="w-full max-w-md lg:max-w-xl rounded-2xl bg-card shadow-2xl p-6 sm:p-8 lg:p-10 animate-scale-in">
-        <div className="text-center mb-6">
-          <h2 className="font-heading text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
-            Používate fotografa?
-          </h2>
-          <p className="text-sm text-muted-foreground mt-1.5">
-            Prispôsobíme obsah vašim potrebám.
-          </p>
-        </div>
+    <div
+      className="fixed inset-0 z-[100] flex items-center justify-center animate-fade-in px-4"
+      style={{
+        background:
+          "radial-gradient(circle at center, hsl(244 95% 10%) 0%, hsl(244 95% 5%) 60%)",
+      }}
+    >
+      <div className="w-full max-w-sm sm:max-w-md rounded-3xl bg-card/95 backdrop-blur-xl shadow-2xl border border-white/10 p-8 sm:p-10 animate-scale-in text-center">
+        <h2 className="font-heading text-xl sm:text-2xl font-extrabold text-foreground tracking-tight leading-snug mb-8">
+          Používate realitného fotografa?
+        </h2>
 
-        <div className="grid grid-cols-2 gap-3">
+        <div className="flex gap-4">
           {[
-            { key: "photographer" as AvatarType, icon: Camera, iconBg: "bg-primary/10", iconColor: "text-primary", label: "ÁNO" },
-            { key: "no-photographer" as AvatarType, icon: Smartphone, iconBg: "bg-[hsl(270,80%,96%)]", iconColor: "text-[hsl(270,60%,55%)]", label: "NIE" },
+            { key: "photographer" as AvatarType, label: "ÁNO" },
+            { key: "no-photographer" as AvatarType, label: "NIE" },
           ].map((opt) => (
             <button
               key={opt.key}
               onClick={() => handleSelect(opt.key)}
               onMouseEnter={() => setHoveredOption(opt.key)}
               onMouseLeave={() => setHoveredOption(null)}
-              className={`group flex flex-col items-start text-left p-4 sm:p-5 rounded-xl border-2 transition-all duration-200 h-full ${
+              className={`flex-1 py-4 sm:py-5 rounded-xl font-heading font-extrabold text-xl sm:text-2xl tracking-wide transition-all duration-200 ${
                 hoveredOption === opt.key
-                  ? "border-primary bg-primary/5 shadow-md"
-                  : "border-border hover:border-primary/30"
+                  ? "bg-primary text-primary-foreground shadow-lg shadow-primary/25 scale-[1.03]"
+                  : "bg-primary/10 text-primary hover:bg-primary/20"
               }`}
             >
-              <div className={`h-10 w-10 rounded-lg ${opt.iconBg} flex items-center justify-center mb-3`}>
-                <opt.icon className={`h-5 w-5 ${opt.iconColor}`} />
-              </div>
-              <h3 className="font-heading font-bold text-foreground text-2xl sm:text-3xl mb-3 flex-1">
-                {opt.label}
-              </h3>
-              <span className="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-primary group-hover:gap-1.5 transition-all">
-                Pokračovať
-                <ArrowRight className="h-3.5 w-3.5" />
-              </span>
+              {opt.label}
             </button>
           ))}
         </div>
