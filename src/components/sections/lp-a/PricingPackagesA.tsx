@@ -146,7 +146,7 @@ export function PricingPackagesA() {
                 </div>
 
                 {/* Mobile: horizontal compact layout */}
-                <div className="sm:hidden flex items-center gap-3">
+                <div className="sm:hidden flex items-center gap-3 p-3">
                   <div className="flex items-baseline gap-0.5 shrink-0">
                     <span className="font-heading text-4xl font-extrabold text-primary">
                       {pkg.price}
