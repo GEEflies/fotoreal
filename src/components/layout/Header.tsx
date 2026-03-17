@@ -1,18 +1,16 @@
 import { useState, useEffect } from "react";
-import { Menu, ArrowRight } from "lucide-react";
+import { Menu, ArrowRight, Wand2, Eraser, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
-import logo from "@/assets/logo.svg";
 
 const navLinks = [
-  { href: "#co-dostanete", label: "Čo dostanete" },
-  { href: "#ako-to-funguje", label: "Ako to funguje" },
-  { href: "#faq", label: "FAQ" },
-  { href: "#kontakt", label: "Kontakt" },
+  { href: "#domov", label: "Domov" },
+  { href: "#vylepsit", label: "Vylepšiť", icon: Wand2 },
+  { href: "#odstranit", label: "Odstrániť", icon: Eraser },
 ];
 
 interface HeaderProps {
-  onOpenForm: () => void;
+  onOpenForm?: () => void;
 }
 
 export function Header({ onOpenForm }: HeaderProps) {
@@ -20,19 +18,15 @@ export function Header({ onOpenForm }: HeaderProps) {
   const [isOpen, setIsOpen] = useState(false);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
+    const handleScroll = () => setIsScrolled(window.scrollY > 20);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
   const handleNavClick = (href: string) => {
     setIsOpen(false);
-    const element = document.querySelector(href);
-    if (element) {
-      element.scrollIntoView({ behavior: "smooth" });
-    }
+    const el = document.querySelector(href);
+    if (el) el.scrollIntoView({ behavior: "smooth" });
   };
 
   return (
@@ -44,7 +38,7 @@ export function Header({ onOpenForm }: HeaderProps) {
       }`}
     >
       <div className="section-container">
-        <div className="flex h-[72px] sm:h-20 lg:h-20 items-center justify-between">
+        <div className="flex h-16 sm:h-20 items-center justify-between">
           {/* Logo */}
           <a
             href="#domov"
@@ -52,25 +46,17 @@ export function Header({ onOpenForm }: HeaderProps) {
               e.preventDefault();
               handleNavClick("#domov");
             }}
-            className="flex items-center gap-3 group"
+            className="flex items-center gap-2 group"
           >
-            <img
-              src={logo}
-              alt="NehnuteľnostiBratislava"
-              className="h-11 w-11 sm:h-12 sm:w-12"
-            />
-
-            <span className="font-heading font-bold leading-[1.05] text-foreground group-hover:text-primary transition-colors">
-              <span className="sm:hidden text-sm">Nehnuteľnosti</span>
-              <span className="sm:hidden text-sm text-primary">Bratislava</span>
-
-              <span className="hidden sm:inline text-base">
-                Nehnuteľnosti<span className="text-primary">Bratislava</span>
-              </span>
+            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
+              <Wand2 className="h-4 w-4 text-primary-foreground" />
+            </div>
+            <span className="font-heading font-bold text-lg text-foreground group-hover:text-primary transition-colors">
+              Foto<span className="text-primary">Real</span>
             </span>
           </a>
 
-          {/* Desktop Navigation */}
+          {/* Desktop Nav */}
           <nav className="hidden lg:flex items-center gap-1">
             {navLinks.map((link) => (
               <a
@@ -80,34 +66,35 @@ export function Header({ onOpenForm }: HeaderProps) {
                   e.preventDefault();
                   handleNavClick(link.href);
                 }}
-                className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-muted"
+                className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-muted flex items-center gap-1.5"
               >
+                {link.icon && <link.icon className="h-4 w-4" />}
                 {link.label}
               </a>
             ))}
           </nav>
 
-          {/* CTA Button */}
+          {/* Right side */}
           <div className="flex items-center gap-3">
             <Button
+              variant="outline"
               onClick={onOpenForm}
-              className="hidden lg:flex group font-bold shadow-glow hover:shadow-lg transition-all px-4"
+              className="hidden lg:flex items-center gap-2 font-medium"
             >
-              <span className="hidden xl:inline">Získať ocenenie + PDF návod ZDARMA</span>
-              <span className="xl:hidden">Získať ocenenie ZDARMA</span>
-              <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
+              <LogIn className="h-4 w-4" />
+              Prihlásiť sa
             </Button>
 
             {/* Mobile Menu */}
             <Sheet open={isOpen} onOpenChange={setIsOpen}>
               <SheetTrigger asChild className="lg:hidden">
-                <Button variant="ghost" size="icon" className="h-16 w-16">
-                  <Menu className="h-10 w-10" />
+                <Button variant="ghost" size="icon">
+                  <Menu className="h-6 w-6" />
                   <span className="sr-only">Otvoriť menu</span>
                 </Button>
               </SheetTrigger>
-              <SheetContent side="right" className="w-[320px] sm:w-[360px]">
-                <nav className="flex flex-col gap-3 mt-10">
+              <SheetContent side="right" className="w-[300px]">
+                <nav className="flex flex-col gap-2 mt-10">
                   {navLinks.map((link) => (
                     <a
                       key={link.href}
@@ -116,21 +103,22 @@ export function Header({ onOpenForm }: HeaderProps) {
                         e.preventDefault();
                         handleNavClick(link.href);
                       }}
-                      className="px-4 py-4 text-lg font-semibold text-foreground hover:text-primary hover:bg-muted rounded-xl transition-colors"
+                      className="px-4 py-3 text-base font-semibold text-foreground hover:text-primary hover:bg-muted rounded-xl transition-colors flex items-center gap-2"
                     >
+                      {link.icon && <link.icon className="h-5 w-5" />}
                       {link.label}
                     </a>
                   ))}
                   <Button
-                    size="lg"
+                    variant="outline"
                     onClick={() => {
                       setIsOpen(false);
-                      onOpenForm();
+                      onOpenForm?.();
                     }}
-                    className="mt-6 w-full group font-bold shadow-glow hover:shadow-lg transition-all px-4"
+                    className="mt-4 w-full font-medium"
                   >
-                    Získať ocenenie ZDARMA
-                    <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
+                    <LogIn className="h-4 w-4 mr-2" />
+                    Prihlásiť sa
                   </Button>
                 </nav>
               </SheetContent>
