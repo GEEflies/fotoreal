@@ -2,12 +2,14 @@ import { ArrowRight, Star, Clock, ShieldCheck, TrendingDown } from "lucide-react
 import { Button } from "@/components/ui/button";
 import { BeforeAfterSlider } from "@/components/ui/BeforeAfterSlider";
 import { HERO_BEFORE, HERO_AFTER } from "@/lib/images";
+import { useNavigate } from "react-router-dom";
 
 interface HeroSectionProps {
   onOpenForm?: () => void;
 }
 
 export function HeroSection({ onOpenForm }: HeroSectionProps) {
+  const navigate = useNavigate();
   return (
     <section id="domov" className="relative min-h-[85vh] flex items-center pt-20 overflow-hidden">
       {/* Subtle background gradient */}
@@ -41,10 +43,10 @@ export function HeroSection({ onOpenForm }: HeroSectionProps) {
             <div className="flex flex-col sm:flex-row gap-3 pt-1">
               <Button
                 size="lg"
-                onClick={onOpenForm}
+                onClick={() => navigate('/login')}
                 className="group font-bold shadow-glow hover:shadow-lg transition-all text-base px-7"
               >
-                Vyskúšať ZADARMO
+                Vyskúšať 5 fotiek ZADARMO
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
               <Button
