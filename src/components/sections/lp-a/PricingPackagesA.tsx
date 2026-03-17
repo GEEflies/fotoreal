@@ -55,41 +55,41 @@ export function PricingPackagesA() {
               <div className="relative">
                 <button
                   onClick={() => setOpen(!open)}
-                  className="w-full flex items-center justify-between p-3 sm:p-4 rounded-xl border border-border bg-background hover:border-primary/40 transition-colors text-left"
+                  className="w-full p-3 sm:p-4 rounded-xl border border-border bg-background hover:border-primary/40 transition-colors text-left"
                 >
-                  <div className="flex items-center gap-2">
-                    <span className="font-heading text-2xl font-extrabold text-foreground">
-                      {pkg.photos}
-                    </span>
-                    <span className="text-muted-foreground text-sm">fotiek</span>
-                    {pkg.discount > 0 && (
-                      <span className="text-xs font-bold text-success bg-success/10 px-2 py-0.5 rounded-full">
-                        -{pkg.discount}%
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="font-heading text-2xl font-extrabold text-foreground">
+                        {pkg.photos}
                       </span>
-                    )}
+                      <span className="text-muted-foreground text-sm">fotiek</span>
+                      {pkg.discount > 0 && (
+                        <span className="text-xs font-bold text-success bg-success/10 px-2 py-0.5 rounded-full">
+                          -{pkg.discount}%
+                        </span>
+                      )}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="font-heading text-xl font-bold text-foreground">
+                        {pkg.price} €
+                      </span>
+                      <ChevronDown
+                        className={`h-5 w-5 text-muted-foreground transition-transform ${
+                          open ? "rotate-180" : ""
+                        }`}
+                      />
+                    </div>
                   </div>
-                  <div className="flex items-center gap-2">
-                    <span className="font-heading text-xl font-bold text-foreground">
-                      {pkg.price} €
+                  <div className="flex items-center justify-between mt-1 text-xs text-muted-foreground">
+                    <span>
+                      ~{pkg.properties} {pkg.properties === 1 ? "nehnuteľnosť" : pkg.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"}
                     </span>
-                    <ChevronDown
-                      className={`h-5 w-5 text-muted-foreground transition-transform ${
-                        open ? "rotate-180" : ""
-                      }`}
-                    />
+                    <span className="mr-7">({pkg.ppp.toFixed(2)} € / ks)</span>
                   </div>
                 </button>
 
-                {/* Second row: properties + price per piece */}
-                <div className="flex items-center justify-between px-3 sm:px-4 pt-1.5 pb-1 text-xs text-muted-foreground">
-                  <span>
-                    ~{pkg.properties} {pkg.properties === 1 ? "nehnuteľnosť" : pkg.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"}
-                  </span>
-                  <span>({pkg.ppp.toFixed(2)} € / ks)</span>
-                </div>
-
                 {open && (
-                  <div className="absolute top-[calc(100%-1.5rem)] left-0 right-0 z-30 mt-1 rounded-xl border border-border bg-card shadow-xl overflow-hidden">
+                  <div className="absolute top-full left-0 right-0 z-30 mt-1 rounded-xl border border-border bg-card shadow-xl overflow-hidden">
                     {PACKAGES.map((p, i) => (
                       <button
                         key={p.photos}
