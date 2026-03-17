@@ -20,6 +20,7 @@ import {
   AdminSubmissionDetail,
   AdminClients,
   AdminClientDetail,
+  AdminAnalytics,
 } from "./pages/admin";
 import { Navigate } from "react-router-dom";
 
@@ -48,6 +49,7 @@ const App = () => (
           <Route path="/admin/submissions/:id" element={<AdminSubmissionDetail />} />
           <Route path="/admin/clients" element={<AdminClients />} />
           <Route path="/admin/clients/:userId" element={<AdminClientDetail />} />
+          <Route path="/admin/analytics" element={<AdminAnalytics />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
