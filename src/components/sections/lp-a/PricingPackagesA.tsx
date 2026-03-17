@@ -173,7 +173,7 @@ export function PricingPackagesA() {
               </div>
 
               {/* Savings strip */}
-              <div className="relative rounded-lg sm:rounded-xl bg-success/5 border border-success/20 px-3 py-2 sm:px-4 sm:py-3 flex items-center">
+              <div className="relative rounded-lg sm:rounded-xl bg-success/5 border border-success/20 px-3 py-3.5 sm:px-4 sm:py-3 flex items-center">
                 <div className="text-xs sm:text-sm text-left whitespace-nowrap">
                   <span className="text-muted-foreground">Fotograf: </span>
                   <span className="text-destructive font-semibold line-through">
