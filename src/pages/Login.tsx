@@ -190,7 +190,7 @@ export default function Login() {
     }
   };
 
-  const GoogleButton = () => (
+  const googleButton = (
     <Button
       onClick={handleGoogleLogin}
       disabled={isGoogleLoading}
@@ -212,7 +212,7 @@ export default function Login() {
     </Button>
   );
 
-  const Divider = ({ text }: { text: string }) => (
+  const divider = (text: string) => (
     <div className="relative">
       <div className="absolute inset-0 flex items-center">
         <span className="w-full border-t border-border" />
@@ -223,13 +223,7 @@ export default function Login() {
     </div>
   );
 
-  const PasswordInput = ({ id, value, onChange, label, placeholder = '••••••••' }: {
-    id: string;
-    value: string;
-    onChange: (v: string) => void;
-    label: string;
-    placeholder?: string;
-  }) => (
+  const passwordField = (id: string, value: string, onChange: (v: string) => void, label: string) => (
     <div className="space-y-2">
       <Label htmlFor={id}>{label}</Label>
       <div className="relative">
@@ -238,7 +232,7 @@ export default function Login() {
           type={showPassword ? 'text' : 'password'}
           value={value}
           onChange={(e) => onChange(e.target.value)}
-          placeholder={placeholder}
+          placeholder="••••••••"
           required
         />
         <button
@@ -279,8 +273,8 @@ export default function Login() {
             {/* LOGIN STEP */}
             {step === 'login' && (
               <>
-                <GoogleButton />
-                <Divider text="alebo" />
+                {googleButton}
+                {divider('alebo')}
 
                 <form onSubmit={handleLogin} className="space-y-4">
                   {formError && (
@@ -301,12 +295,7 @@ export default function Login() {
                     />
                   </div>
 
-                  <PasswordInput
-                    id="password"
-                    value={password}
-                    onChange={setPassword}
-                    label="Heslo"
-                  />
+                  {passwordField('password', password, setPassword, 'Heslo')}
 
                   <div className="flex justify-end">
                     <button
@@ -338,7 +327,7 @@ export default function Login() {
                   </button>
                 </p>
 
-                <Divider text="demo" />
+                {divider('demo')}
 
                 <Button
                   onClick={handleDemoLogin}
@@ -359,8 +348,8 @@ export default function Login() {
             {/* SIGNUP STEP */}
             {step === 'signup' && (
               <>
-                <GoogleButton />
-                <Divider text="alebo" />
+                {googleButton}
+                {divider('alebo')}
 
                 <form onSubmit={handleSignUp} className="space-y-4">
                   {formError && (
@@ -381,19 +370,9 @@ export default function Login() {
                     />
                   </div>
 
-                  <PasswordInput
-                    id="signup-password"
-                    value={password}
-                    onChange={setPassword}
-                    label="Heslo"
-                  />
+                  {passwordField('signup-password', password, setPassword, 'Heslo')}
 
-                  <PasswordInput
-                    id="signup-confirm"
-                    value={confirmPassword}
-                    onChange={setConfirmPassword}
-                    label="Potvrďte heslo"
-                  />
+                  {passwordField('signup-confirm', confirmPassword, setConfirmPassword, 'Potvrďte heslo')}
 
                   <Button type="submit" className="w-full" size="lg" disabled={isLoading}>
                     {isLoading ? (
