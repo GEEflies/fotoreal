@@ -350,11 +350,9 @@ export default function DashboardProfile() {
                   </button>
                 ))}
               </div>
-              {watermarkPosition === 'center-center' && (
-                <p className="text-xs text-warning flex items-center gap-1.5">
-                  ⚠️ Stredový vodoznak neodporúčame — nepôsobí profesionálne na realitných fotkách.
-                </p>
-              )}
+              <p className={cn("text-xs flex items-center gap-1.5 min-h-[1.25rem]", watermarkPosition === 'center-center' ? "text-destructive" : "text-transparent pointer-events-none")}>
+                ⚠️ Stredový vodoznak neodporúčame — nepôsobí profesionálne na realitných fotkách.
+              </p>
             </div>
 
             {/* Preview */}
