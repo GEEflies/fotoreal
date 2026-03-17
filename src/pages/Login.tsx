@@ -236,6 +236,10 @@ export default function Login() {
                 </InputOTP>
               </div>
 
+              <p className="text-xs text-muted-foreground text-center bg-muted/50 rounded-lg px-3 py-2">
+                Nevidíte email? Skontrolujte priečinok <span className="font-medium text-foreground">Spam</span> alebo <span className="font-medium text-foreground">Reklamy</span>.
+              </p>
+
               <Button
                 onClick={handleOtpVerify}
                 disabled={isLoading || otpCode.length < 6}
