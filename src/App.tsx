@@ -12,7 +12,6 @@ import Login from "./pages/Login";
 import DashboardProperties from "./pages/dashboard/DashboardProperties";
 import DashboardNewProperty from "./pages/dashboard/DashboardNewProperty";
 import DashboardPropertyDetail from "./pages/dashboard/DashboardPropertyDetail";
-import DashboardCredits from "./pages/dashboard/DashboardCredits";
 import {
   AdminLogin,
   AdminSubmissions,
@@ -39,7 +38,6 @@ const App = () => (
           <Route path="/dashboard" element={<DashboardProperties />} />
           <Route path="/dashboard/new" element={<DashboardNewProperty />} />
           <Route path="/dashboard/properties/:id" element={<DashboardPropertyDetail />} />
-          <Route path="/dashboard/credits" element={<DashboardCredits />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<Navigate to="/admin/submissions" replace />} />
           <Route path="/admin/submissions" element={<AdminSubmissions />} />
