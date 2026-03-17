@@ -8,24 +8,32 @@ import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 
 const faqs = [
   {
-    question: "Je to skutočne zdarma?",
-    answer:
-      "Áno, odhad hodnoty nehnuteľnosti aj PDF návod sú úplne zdarma a bez akýchkoľvek záväzkov. Nemusíte nič platiť ani sa k ničomu zaväzovať. Chceme vám pomôcť urobiť informované rozhodnutie.",
+    q: "Aké formáty obrázkov podporujete?",
+    a: "Podporujeme JPG, PNG, WebP a RAW formáty (CR2, NEF, ARW). Maximálna veľkosť súboru je 50 MB.",
   },
   {
-    question: "Ako presný je odhad?",
-    answer:
-      "Náš odhad vychádza z aktuálnych trhových dát, porovnateľných predajov v okolí a skúseností z trhu. Poskytuje vám realistický rozsah hodnoty vašej nehnuteľnosti. Pre presnejšie ocenenie odporúčame osobnú obhliadku, ktorú vám môžeme sprostredkovať.",
+    q: "Ako dlho trvá spracovanie jednej fotky?",
+    a: "Priemerný čas spracovania je 15–30 sekúnd v závislosti od veľkosti súboru a typu úprav.",
   },
   {
-    question: "Môžem dostať PDF návod aj keď ešte nepredávam?",
-    answer:
-      "Samozrejme! PDF návod je užitočný aj pre tých, ktorí predaj len zvažujú. Dozviete sa, ako pripraviť nehnuteľnosť na predaj, čo zvyšuje jej hodnotu a na čo si dať pozor. Tieto informácie môžete využiť kedykoľvek v budúcnosti.",
+    q: "Je kvalita porovnateľná s manuálnou úpravou?",
+    a: "Áno. Naše AI bolo trénované na tisíckach profesionálne upravených realitných fotiek. Výsledky sú konzistentne na úrovni skúsených editorov.",
   },
   {
-    question: "Koľko môže návod pridať k cene?",
-    answer:
-      "Podľa našich skúseností môžu správne uplatnené rady z návodu zvýšiť predajnú cenu o 5 – 20 000 € v závislosti od typu nehnuteľnosti a jej stavu. Kľúčové sú profesionálne fotografie, správna prezentácia a načasovanie predaja.",
+    q: "Musím platiť za skúšobné obdobie?",
+    a: "Nie. Prvých 5 fotiek je úplne zadarmo, bez nutnosti zadávať kreditnú kartu.",
+  },
+  {
+    q: "Ako funguje GDPR ochrana súkromia?",
+    a: "Funkcia Auto Súkromie automaticky detekuje a rozmazáva tváre, ŠPZ a ďalšie citlivé informácie. Fotky sa spracúvajú na serveroch v EÚ.",
+  },
+  {
+    q: "Môžem spracovať viacero fotiek naraz?",
+    a: "Áno. Dávkové spracovanie umožňuje nahrať až 50 fotiek naraz. Všetky sa spracujú paralelne.",
+  },
+  {
+    q: "Akú cenu zaplatím za fotku?",
+    a: "Základná cena je 0,70 € za fotku. Pri väčších objemoch ponúkame zľavy.",
   },
 ];
 
@@ -35,7 +43,7 @@ export function FaqSection() {
   return (
     <section
       id="faq"
-      className="section-padding bg-secondary/30"
+      className="section-padding"
       ref={ref as React.RefObject<HTMLElement>}
     >
       <div
@@ -43,30 +51,28 @@ export function FaqSection() {
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
         }`}
       >
-        {/* Header */}
-        <div className="text-center max-w-3xl mx-auto mb-8 lg:mb-16">
-          <h2 className="font-heading text-2xl sm:text-3xl lg:text-5xl font-bold text-foreground mb-3 sm:mb-4">
+        <div className="text-center mb-10 sm:mb-14 max-w-2xl mx-auto">
+          <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-2">
+            FAQ
+          </p>
+          <h2 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-3">
             Často kladené <span className="text-primary">otázky</span>
           </h2>
-          <p className="text-sm sm:text-lg text-muted-foreground">
-            Odpovede na najčastejšie otázky
-          </p>
         </div>
 
-        {/* FAQ Accordion */}
         <div className="max-w-3xl mx-auto">
-          <Accordion type="single" collapsible className="space-y-2 sm:space-y-4">
-            {faqs.map((faq, index) => (
+          <Accordion type="single" collapsible className="space-y-3">
+            {faqs.map((faq, i) => (
               <AccordionItem
-                key={index}
-                value={`item-${index}`}
-                className="bg-card border border-border rounded-lg sm:rounded-xl px-3 sm:px-6 overflow-hidden"
+                key={i}
+                value={`faq-${i}`}
+                className="border border-border rounded-xl px-5 data-[state=open]:border-primary/30 transition-colors"
               >
-                <AccordionTrigger className="text-left font-heading font-semibold text-foreground hover:text-primary py-3 sm:py-5 hover:no-underline text-sm sm:text-base">
-                  {faq.question}
+                <AccordionTrigger className="text-sm sm:text-base font-semibold text-foreground hover:no-underline py-4">
+                  {faq.q}
                 </AccordionTrigger>
-                <AccordionContent className="text-muted-foreground leading-relaxed pb-3 sm:pb-5 text-xs sm:text-base">
-                  {faq.answer}
+                <AccordionContent className="text-sm text-muted-foreground leading-relaxed pb-4">
+                  {faq.a}
                 </AccordionContent>
               </AccordionItem>
             ))}
