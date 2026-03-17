@@ -150,18 +150,10 @@ export function PricingPackagesA() {
             <div className="p-3 sm:p-5 space-y-3 sm:space-y-4">
 
               {/* Savings strip */}
-              <div className="relative rounded-lg sm:rounded-xl bg-success/5 border border-success/20 px-3 py-3.5 sm:px-4 sm:py-3 flex items-center">
-                <div className="text-xs sm:text-sm text-left whitespace-nowrap">
-                  <span className="text-muted-foreground">Fotograf: </span>
-                  <span className="text-destructive font-semibold line-through">
-                    {photographerLow}–{photographerHigh} €
-                  </span>
-                  <span className="text-muted-foreground">
-                    {" "}~{pkg.properties} {pkg.properties === 1 ? "nehnuteľnosť" : pkg.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"}
-                  </span>
-                </div>
-                <span className="absolute -top-2.5 right-2 sm:static sm:ml-auto text-[10px] sm:text-sm font-bold text-success-foreground bg-success px-2 py-0.5 rounded-full whitespace-nowrap">
-                  Ušetríte {savingsPercent}%
+              <div className="rounded-lg sm:rounded-xl bg-success/5 border border-success/20 px-3 py-3 sm:px-4 sm:py-3 text-center">
+                <span className="text-xs sm:text-sm text-muted-foreground">Fotograf ~{pkg.properties} {pkg.properties === 1 ? "nehnuteľnosť" : pkg.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"}: </span>
+                <span className="text-xs sm:text-sm text-destructive font-semibold line-through">
+                  {photographerLow}–{photographerHigh} €
                 </span>
               </div>
 
