@@ -8,6 +8,10 @@ import LandingA from "./pages/LandingA";
 import LandingB from "./pages/LandingB";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import NotFound from "./pages/NotFound";
+import Login from "./pages/Login";
+import DashboardProperties from "./pages/dashboard/DashboardProperties";
+import DashboardNewProperty from "./pages/dashboard/DashboardNewProperty";
+import DashboardPropertyDetail from "./pages/dashboard/DashboardPropertyDetail";
 import {
   AdminLogin,
   AdminSubmissions,
