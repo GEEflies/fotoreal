@@ -164,6 +164,18 @@ function Sidebar({ currentPath, userEmail }: { currentPath: string; userEmail?: 
           <p className="px-3 pb-2 text-xs text-muted-foreground truncate">{userEmail}</p>
         )}
         <Link
+          to="/dashboard/profile"
+          className={cn(
+            "flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
+            currentPath === '/dashboard/profile'
+              ? "bg-primary/10 text-primary font-semibold border-l-2 border-primary rounded-l-none"
+              : "text-muted-foreground hover:bg-muted hover:text-foreground"
+          )}
+        >
+          <User className="h-4 w-4" />
+          Profil
+        </Link>
+        <Link
           to="/"
           className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
         >
