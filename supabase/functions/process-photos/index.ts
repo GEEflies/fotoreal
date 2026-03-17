@@ -5,51 +5,6 @@ const corsHeaders = {
   "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
 };
 
-const ANALYSIS_TOOL = {
-  type: "function" as const,
-  function: {
-    name: "photo_analysis",
-    description: "Analyze a real estate photo and determine what enhancements are needed.",
-    parameters: {
-      type: "object",
-      properties: {
-        scene_type: {
-          type: "string",
-          enum: ["interior", "exterior", "mixed"],
-          description: "Whether the photo shows interior, exterior, or a mix",
-        },
-        base: {
-          type: "object",
-          properties: {
-            hdr: { type: "boolean", description: "Does the photo need HDR / dynamic range enhancement?" },
-            lighting: { type: "string", description: "Description of lighting issues to fix, or 'ok' if fine" },
-            white_balance: { type: "string", description: "White balance correction needed (e.g. 'shift to 5500K') or 'ok'" },
-            perspective_correction: { type: "boolean", description: "Are vertical/horizontal lines noticeably crooked?" },
-          },
-          required: ["hdr", "lighting", "white_balance", "perspective_correction"],
-        },
-        interior: {
-          type: "object",
-          properties: {
-            homestaging: { type: "boolean", description: "Should clutter/mess be cleaned up virtually?" },
-            homestaging_notes: { type: "string", description: "What to clean/remove/tidy if homestaging is true" },
-            window_pulling: { type: "boolean", description: "Are windows blown out / need exposure balancing?" },
-          },
-          required: ["homestaging", "window_pulling"],
-        },
-        exterior: {
-          type: "object",
-          properties: {
-            sky_replacement: { type: "boolean", description: "Is the sky overcast/ugly and should be replaced with a clear blue sky?" },
-          },
-          required: ["sky_replacement"],
-        },
-      },
-      required: ["scene_type", "base", "interior", "exterior"],
-    },
-  },
-};
-
 const ANALYZER_SYSTEM_PROMPT = `You are a real estate photography quality inspector. Analyze the provided photo and evaluate it against this checklist:
 
 BASE (applies to every photo):
@@ -65,7 +20,26 @@ INTERIOR features (only if scene is interior or mixed):
 EXTERIOR features (only if scene is exterior or mixed):
 - Sky replacement: Is the sky overcast, gray, or unappealing? Should it be replaced with clear blue sky?
 
-Be precise and honest. If something looks fine, mark it as ok/false. Only flag what truly needs improvement.`;
+Be precise and honest. If something looks fine, mark it as ok/false. Only flag what truly needs improvement.
+
+IMPORTANT: You MUST respond with a valid JSON object in this exact format:
+{
+  "scene_type": "interior" | "exterior" | "mixed",
+  "base": {
+    "hdr": boolean,
+    "lighting": "description or ok",
+    "white_balance": "description or ok",
+    "perspective_correction": boolean
+  },
+  "interior": {
+    "homestaging": boolean,
+    "homestaging_notes": "string or empty",
+    "window_pulling": boolean
+  },
+  "exterior": {
+    "sky_replacement": boolean
+  }
+}`;
 
 interface AnalysisResult {
   scene_type: string;
@@ -98,28 +72,33 @@ async function updatePhotoStatus(
 }
 
 async function analyzePhoto(imageUrl: string, apiKey: string): Promise<AnalysisResult> {
-  const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: "google/gemini-3-flash-preview",
-      messages: [
-        { role: "system", content: ANALYZER_SYSTEM_PROMPT },
-        {
-          role: "user",
-          content: [
-            { type: "text", text: "Analyze this real estate photo against the quality checklist." },
-            { type: "image_url", image_url: { url: imageUrl } },
-          ],
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        system_instruction: { parts: [{ text: ANALYZER_SYSTEM_PROMPT }] },
+        contents: [
+          {
+            role: "user",
+            parts: [
+              { text: "Analyze this real estate photo against the quality checklist. Return JSON only." },
+              {
+                inline_data: {
+                  mime_type: "image/jpeg",
+                  data: await fetchImageAsBase64(imageUrl),
+                },
+              },
+            ],
+          },
+        ],
+        generationConfig: {
+          response_mime_type: "application/json",
         },
-      ],
-      tools: [ANALYSIS_TOOL],
-      tool_choice: { type: "function", function: { name: "photo_analysis" } },
-    }),
-  });
+      }),
+    }
+  );
 
   if (!response.ok) {
     const errText = await response.text();
@@ -127,20 +106,28 @@ async function analyzePhoto(imageUrl: string, apiKey: string): Promise<AnalysisR
   }
 
   const data = await response.json();
-  const toolCall = data.choices?.[0]?.message?.tool_calls?.[0];
-  if (!toolCall?.function?.arguments) {
-    throw new Error("Analyzer returned no tool call");
-  }
+  const text = data.candidates?.[0]?.content?.parts?.[0]?.text;
+  if (!text) throw new Error("Analyzer returned no content");
 
-  return JSON.parse(toolCall.function.arguments) as AnalysisResult;
+  return JSON.parse(text) as AnalysisResult;
+}
+
+async function fetchImageAsBase64(url: string): Promise<string> {
+  const resp = await fetch(url);
+  if (!resp.ok) throw new Error(`Failed to fetch image: ${resp.status}`);
+  const buffer = await resp.arrayBuffer();
+  const bytes = new Uint8Array(buffer);
+  let binary = "";
+  for (let i = 0; i < bytes.length; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+  return btoa(binary);
 }
 
 function buildEnhancementPrompt(analysis: AnalysisResult): string {
   const parts: string[] = [];
-
   parts.push(`Enhance this ${analysis.scene_type} real estate photo professionally.`);
 
-  // Base enhancements
   if (analysis.base.hdr) {
     parts.push("Apply HDR to increase dynamic range — brighten shadows and recover highlights.");
   }
@@ -154,18 +141,16 @@ function buildEnhancementPrompt(analysis: AnalysisResult): string {
     parts.push("Correct perspective — straighten vertical and horizontal lines.");
   }
 
-  // Interior
   if (analysis.scene_type === "interior" || analysis.scene_type === "mixed") {
     if (analysis.interior.homestaging) {
       const notes = analysis.interior.homestaging_notes || "remove clutter and tidy the space";
       parts.push(`Virtual homestaging: ${notes}.`);
     }
     if (analysis.interior.window_pulling) {
-      parts.push("Pull window details — balance interior exposure with the view through windows so both look natural.");
+      parts.push("Pull window details — balance interior exposure with the view through windows.");
     }
   }
 
-  // Exterior
   if (analysis.scene_type === "exterior" || analysis.scene_type === "mixed") {
     if (analysis.exterior.sky_replacement) {
       parts.push("Replace the sky with a beautiful clear blue sky with soft white clouds.");
@@ -173,31 +158,38 @@ function buildEnhancementPrompt(analysis: AnalysisResult): string {
   }
 
   parts.push("Keep the result photorealistic. Do not add or remove furniture unless specified. Maintain the original composition.");
-
   return parts.join(" ");
 }
 
 async function enhancePhoto(imageUrl: string, prompt: string, apiKey: string): Promise<string | null> {
-  const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: "google/gemini-3.1-flash-image-preview",
-      messages: [
-        {
-          role: "user",
-          content: [
-            { type: "text", text: prompt },
-            { type: "image_url", image_url: { url: imageUrl } },
-          ],
+  const imageBase64 = await fetchImageAsBase64(imageUrl);
+
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp-image-generation:generateContent?key=${apiKey}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [
+          {
+            role: "user",
+            parts: [
+              { text: prompt },
+              {
+                inline_data: {
+                  mime_type: "image/jpeg",
+                  data: imageBase64,
+                },
+              },
+            ],
+          },
+        ],
+        generationConfig: {
+          responseModalities: ["IMAGE", "TEXT"],
         },
-      ],
-      modalities: ["image", "text"],
-    }),
-  });
+      }),
+    }
+  );
 
   if (!response.ok) {
     const errText = await response.text();
@@ -205,7 +197,15 @@ async function enhancePhoto(imageUrl: string, prompt: string, apiKey: string): P
   }
 
   const data = await response.json();
-  return data.choices?.[0]?.message?.images?.[0]?.image_url?.url ?? null;
+  const parts = data.candidates?.[0]?.content?.parts;
+  if (!parts) return null;
+
+  for (const part of parts) {
+    if (part.inline_data?.data) {
+      return `data:${part.inline_data.mime_type};base64,${part.inline_data.data}`;
+    }
+  }
+  return null;
 }
 
 Deno.serve(async (req) => {
@@ -217,18 +217,16 @@ Deno.serve(async (req) => {
     const { property_id } = await req.json();
     if (!property_id) throw new Error("property_id is required");
 
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
+    const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
+    if (!GEMINI_API_KEY) throw new Error("GEMINI_API_KEY not configured");
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
       Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!
     );
 
-    // Set property to processing
     await supabase.from("properties").update({ status: "processing" }).eq("id", property_id);
 
-    // Get all pending photos
     const { data: photos, error: photosError } = await supabase
       .from("property_photos")
       .select("*")
@@ -243,23 +241,19 @@ Deno.serve(async (req) => {
       });
     }
 
-    // Process each photo: analyze → enhance
     for (const photo of photos) {
       try {
         // Phase 1: Analyze
         await updatePhotoStatus(supabase, photo.id, "analyzing", "Analyzujem fotku...");
-
-        const analysis = await analyzePhoto(photo.original_url, LOVABLE_API_KEY);
+        const analysis = await analyzePhoto(photo.original_url, GEMINI_API_KEY);
         console.log(`Photo ${photo.id} analysis:`, JSON.stringify(analysis));
 
         // Phase 2: Enhance
         const prompt = buildEnhancementPrompt(analysis);
         await updatePhotoStatus(supabase, photo.id, "enhancing", "Vylepšujem fotku...");
-
-        const editedImageUrl = await enhancePhoto(photo.original_url, prompt, LOVABLE_API_KEY);
+        const editedImageUrl = await enhancePhoto(photo.original_url, prompt, GEMINI_API_KEY);
 
         if (editedImageUrl) {
-          // Upload processed image to storage
           const base64Data = editedImageUrl.replace(/^data:image\/\w+;base64,/, "");
           const imageBytes = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0));
           const filePath = `processed/${property_id}/${photo.id}.png`;
@@ -278,7 +272,7 @@ Deno.serve(async (req) => {
             await updatePhotoStatus(supabase, photo.id, "done", "Hotovo", editedImageUrl);
           }
 
-          // Deduct 1 credit ONLY after successful processing
+          // Deduct credit after success
           const { data: propData } = await supabase
             .from("properties")
             .select("user_id")
@@ -288,7 +282,6 @@ Deno.serve(async (req) => {
             await supabase.rpc("increment_total_used", { _user_id: propData.user_id });
           }
         } else {
-          // Generator returned no image — mark done with original (no credit charge)
           await updatePhotoStatus(supabase, photo.id, "done", "Hotovo");
         }
       } catch (photoError: unknown) {
@@ -296,15 +289,13 @@ Deno.serve(async (req) => {
         const isRateLimit = photoError instanceof Error &&
           (photoError.message.includes("[429]") || photoError.message.includes("[402]"));
         const errorLabel = isRateLimit
-          ? "Chyba: Rate limit / nedostatok kreditov"
+          ? "Chyba: Rate limit"
           : "Chyba pri spracovaní";
         await updatePhotoStatus(supabase, photo.id, "error", errorLabel);
-
-        if (isRateLimit) break; // Stop processing remaining photos
+        if (isRateLimit) break;
       }
     }
 
-    // Check final status
     const { data: remainingPhotos } = await supabase
       .from("property_photos")
       .select("id")
