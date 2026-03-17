@@ -121,6 +121,45 @@ export type Database = {
           },
         ]
       }
+      purchases: {
+        Row: {
+          amount_cents: number
+          created_at: string
+          credits_granted: boolean
+          email: string | null
+          id: string
+          name: string | null
+          photos: number
+          status: string
+          stripe_session_id: string
+          user_id: string | null
+        }
+        Insert: {
+          amount_cents: number
+          created_at?: string
+          credits_granted?: boolean
+          email?: string | null
+          id?: string
+          name?: string | null
+          photos: number
+          status?: string
+          stripe_session_id: string
+          user_id?: string | null
+        }
+        Update: {
+          amount_cents?: number
+          created_at?: string
+          credits_granted?: boolean
+          email?: string | null
+          id?: string
+          name?: string | null
+          photos?: number
+          status?: string
+          stripe_session_id?: string
+          user_id?: string | null
+        }
+        Relationships: []
+      }
       settings: {
         Row: {
           created_at: string
@@ -285,6 +324,14 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      claim_purchases_by_email: {
+        Args: { _email: string; _user_id: string }
+        Returns: number
+      }
+      grant_purchase_credits: {
+        Args: { _purchase_id: string; _user_id: string }
+        Returns: boolean
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
