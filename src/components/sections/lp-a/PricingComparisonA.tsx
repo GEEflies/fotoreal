@@ -1,7 +1,5 @@
 import { Check, X } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
-import { BeforeAfterSlider } from "@/components/ui/BeforeAfterSlider";
-import { FEATURE_IMAGES } from "@/lib/images";
 
 const comparisonRows = [
   { pro: "30 sekúnd", con: "24–48 hodín" },
