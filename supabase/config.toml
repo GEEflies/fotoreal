@@ -1,1 +1,10 @@
 project_id = "umhqycsphvtvkfjwmpii"
+
+[functions.setup-demo]
+verify_jwt = false
+
+[functions.process-photos]
+verify_jwt = false
+
+[functions.setup-admin]
+verify_jwt = false
