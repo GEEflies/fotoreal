@@ -289,6 +289,29 @@ Deno.serve(async (req) => {
 
     await supabase.from("properties").update({ status: "processing" }).eq("id", property_id);
 
+    // Get user's profile for watermark settings
+    const { data: propOwner } = await supabase
+      .from("properties")
+      .select("user_id")
+      .eq("id", property_id)
+      .single();
+
+    let logoUrl: string | null = null;
+    let watermarkPosition = "bottom-right";
+
+    if (propOwner?.user_id) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("logo_url, watermark_position")
+        .eq("user_id", propOwner.user_id)
+        .maybeSingle();
+
+      if (profile) {
+        logoUrl = (profile as Record<string, unknown>).logo_url as string | null;
+        watermarkPosition = ((profile as Record<string, unknown>).watermark_position as string) || "bottom-right";
+      }
+    }
+
     const { data: photos, error: photosError } = await supabase
       .from("property_photos")
       .select("*")
