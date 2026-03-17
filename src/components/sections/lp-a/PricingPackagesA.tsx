@@ -165,19 +165,17 @@ export function PricingPackagesA() {
               </div>
 
               {/* Savings strip */}
-              <div className="relative rounded-lg sm:rounded-xl bg-success/5 border border-success/20 px-3 py-2 sm:px-4 sm:py-3 flex items-center min-h-[3rem] sm:min-h-0">
-                <div className="text-xs sm:text-sm text-left">
+              <div className="relative rounded-lg sm:rounded-xl bg-success/5 border border-success/20 px-3 py-2 sm:px-4 sm:py-3 flex items-center">
+                <div className="text-xs sm:text-sm text-left whitespace-nowrap">
                   <span className="text-muted-foreground">Fotograf: </span>
                   <span className="text-destructive font-semibold line-through">
                     {photographerLow}–{photographerHigh} €
                   </span>
-                  <br className="sm:hidden" />
-                  <span className="hidden sm:inline"> </span>
                   <span className="text-muted-foreground">
-                    ~{pkg.properties} {pkg.properties === 1 ? "nehnuteľnosť" : pkg.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"}
+                    {" "}~{pkg.properties} {pkg.properties === 1 ? "nehnuteľnosť" : pkg.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"}
                   </span>
                 </div>
-                <span className="absolute top-2 right-2 sm:static sm:ml-auto text-[10px] sm:text-sm font-bold text-success-foreground bg-success px-2 py-0.5 rounded-full whitespace-nowrap">
+                <span className="absolute -top-2.5 right-2 sm:static sm:ml-auto text-[10px] sm:text-sm font-bold text-success-foreground bg-success px-2 py-0.5 rounded-full whitespace-nowrap">
                   Ušetríte {savingsPercent}%
                 </span>
               </div>
