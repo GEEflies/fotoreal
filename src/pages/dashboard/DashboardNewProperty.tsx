@@ -153,7 +153,7 @@ export default function DashboardNewProperty() {
         body: { property_id: property.id },
       });
 
-      toast({ title: 'Úspech!', description: 'Fotky sa spracovávajú AI-čkom.' });
+      toast({ title: 'Úspech!', description: 'Fotky sa spracovávajú automaticky.' });
       navigate(`/dashboard/properties/${property.id}`);
     } catch (error) {
       console.error('Error:', error);
