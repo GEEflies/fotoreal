@@ -2,6 +2,7 @@ import { ReactNode, useEffect, useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useUserAuth } from '@/hooks/use-user-auth';
 import { useCredits } from '@/hooks/use-credits';
+import { useClaimPurchases } from '@/hooks/use-claim-purchases';
 import { supabase } from '@/integrations/supabase/client';
 import { Building2, Plus, LogOut, Home, Menu, Sparkles, ShoppingCart, ChevronDown, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -190,12 +191,20 @@ export function UserLayout({ children }: UserLayoutProps) {
   const { user, isLoading } = useUserAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { claimPurchases } = useClaimPurchases();
 
   useEffect(() => {
     if (!isLoading && !user) {
       navigate('/login');
     }
   }, [user, isLoading, navigate]);
+
+  // Auto-claim any unclaimed guest purchases when user enters the dashboard
+  useEffect(() => {
+    if (user) {
+      claimPurchases();
+    }
+  }, [user]);
 
   if (isLoading) {
     return (
