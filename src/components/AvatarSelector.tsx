@@ -32,39 +32,36 @@ export function AvatarSelector({ onSelect }: AvatarSelectorProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-gradient-to-br from-[hsl(244,95%,9%)] via-[hsl(217,97%,20%)] to-[hsl(244,95%,9%)] animate-fade-in px-4">
-      <div className="w-full max-w-lg rounded-2xl bg-card border border-border shadow-xl p-5 sm:p-8 animate-scale-in">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-foreground/95 animate-fade-in px-4">
+      <div className="w-full max-w-md rounded-2xl bg-card shadow-2xl p-6 sm:p-8 animate-scale-in">
         {/* Header */}
-        <div className="text-center mb-5 sm:mb-7">
-          <h2 className="font-heading text-lg sm:text-2xl font-bold text-foreground mb-1">
+        <div className="text-center mb-6">
+          <h2 className="font-heading text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
             Používate fotografa?
           </h2>
-          <p className="text-xs sm:text-sm text-muted-foreground">
+          <p className="text-sm text-muted-foreground mt-1.5">
             Prispôsobíme obsah vašim potrebám.
           </p>
         </div>
 
-        {/* Options — always side by side */}
+        {/* Options */}
         <div className="grid grid-cols-2 gap-3">
           <button
             onClick={() => handleSelect("photographer")}
             onMouseEnter={() => setHoveredOption("photographer")}
             onMouseLeave={() => setHoveredOption(null)}
-            className={`group relative p-4 sm:p-5 rounded-xl border-2 text-left transition-all duration-200 ${
+            className={`group p-4 sm:p-5 rounded-xl border-2 text-left transition-all duration-200 ${
               hoveredOption === "photographer"
-                ? "border-primary bg-primary/5 shadow-lg"
-                : "border-border bg-card hover:border-primary/40"
+                ? "border-primary bg-primary/5 shadow-md"
+                : "border-border hover:border-primary/30"
             }`}
           >
-            <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center mb-3 group-hover:bg-primary/20 transition-colors">
+            <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center mb-3">
               <Camera className="h-5 w-5 text-primary" />
             </div>
-            <h3 className="font-heading font-bold text-foreground text-sm sm:text-base mb-1">
+            <h3 className="font-heading font-bold text-foreground text-sm sm:text-base mb-2.5">
               Áno, mám fotografa
             </h3>
-            <p className="text-xs text-muted-foreground leading-snug mb-3 hidden sm:block">
-              Chcem znížiť náklady.
-            </p>
             <span className="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-primary group-hover:gap-1.5 transition-all">
               Pokračovať
               <ArrowRight className="h-3.5 w-3.5" />
@@ -75,21 +72,18 @@ export function AvatarSelector({ onSelect }: AvatarSelectorProps) {
             onClick={() => handleSelect("no-photographer")}
             onMouseEnter={() => setHoveredOption("no-photographer")}
             onMouseLeave={() => setHoveredOption(null)}
-            className={`group relative p-4 sm:p-5 rounded-xl border-2 text-left transition-all duration-200 ${
+            className={`group p-4 sm:p-5 rounded-xl border-2 text-left transition-all duration-200 ${
               hoveredOption === "no-photographer"
-                ? "border-primary bg-primary/5 shadow-lg"
-                : "border-border bg-card hover:border-primary/40"
+                ? "border-primary bg-primary/5 shadow-md"
+                : "border-border hover:border-primary/30"
             }`}
           >
-            <div className="h-10 w-10 rounded-lg bg-warning/10 flex items-center justify-center mb-3 group-hover:bg-warning/20 transition-colors">
+            <div className="h-10 w-10 rounded-lg bg-warning/10 flex items-center justify-center mb-3">
               <Smartphone className="h-5 w-5 text-warning" />
             </div>
-            <h3 className="font-heading font-bold text-foreground text-sm sm:text-base mb-1">
+            <h3 className="font-heading font-bold text-foreground text-sm sm:text-base mb-2.5">
               Nie, fotím sám
             </h3>
-            <p className="text-xs text-muted-foreground leading-snug mb-3 hidden sm:block">
-              Chcem lepšie fotky z mobilu.
-            </p>
             <span className="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-primary group-hover:gap-1.5 transition-all">
               Pokračovať
               <ArrowRight className="h-3.5 w-3.5" />
