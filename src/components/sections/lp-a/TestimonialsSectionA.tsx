@@ -1,25 +1,28 @@
 import { Star, Quote } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import martinAvatar from "@/assets/avatars/martin-kovac.png";
+import luciaAvatar from "@/assets/avatars/lucia-szaboova.png";
+import peterAvatar from "@/assets/avatars/peter-horvath.png";
 
 const testimonials = [
   {
     name: "Martin Kováč",
     role: "Realitný maklér, RE/MAX Bratislava",
-    avatar: "https://realfoto-adames.vercel.app/_next/image?url=%2Ftestimonials%2FGemini_Generated_Image_339lzr339lzr339l.png&w=96&q=80",
+    avatar: martinAvatar,
     text: "Platil som fotografovi 150 € mesačne za editáciu. S FotoReal platím 30 €. Kvalita je rovnaká, niekedy aj lepšia. Za rok som ušetril vyše 1 400 €.",
     stars: 5,
   },
   {
     name: "Lucia Szabóová",
     role: "Maklérka, Century 21",
-    avatar: "https://realfoto-adames.vercel.app/_next/image?url=%2Ftestimonials%2FGemini_Generated_Image_job9rjob9rjob9rj.png&w=96&q=80",
+    avatar: luciaAvatar,
     text: "Najlepšie na tom je, že nemusím čakať. Odfotím ráno, do obeda mám hotový inzerát. Predtým som čakala 2 dni na fotografa.",
     stars: 5,
   },
   {
     name: "Peter Horváth",
     role: "Majiteľ realitnej kancelárie",
-    avatar: "https://realfoto-adames.vercel.app/_next/image?url=%2Ftestimonials%2FGemini_Generated_Image_l0v0vll0v0vll0v0.png&w=96&q=80",
+    avatar: peterAvatar,
     text: "Máme 8 maklérov. S FotoReal sme znížili náklady na fotografie o 85%. Reinvestujeme peniaze do online reklamy a vidíme výsledky.",
     stars: 5,
   },

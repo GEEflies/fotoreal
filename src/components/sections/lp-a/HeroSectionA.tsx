@@ -65,16 +65,8 @@ export function HeroSectionA() {
 
             <div className="flex items-center gap-3 pt-1">
               <div className="flex -space-x-2.5">
-                {[
-                  { initials: "MK", className: "bg-primary/15 text-primary" },
-                  { initials: "RP", className: "bg-secondary text-secondary-foreground" },
-                  { initials: "DN", className: "bg-accent text-accent-foreground" },
-                ].map((person, i) => (
-                  <Avatar key={i} className="h-9 w-9 border-2 border-background">
-                    <AvatarFallback className={`text-xs font-semibold ${person.className}`}>
-                      {person.initials}
-                    </AvatarFallback>
-                  </Avatar>
+                {[social1, social2, social3].map((src, i) => (
+                  <img key={i} src={src} alt="Používateľ" className="h-9 w-9 rounded-full border-2 border-background object-cover" />
                 ))}
               </div>
               <div className="flex flex-col">
