@@ -56,11 +56,11 @@ export function PricingComparisonA() {
           <div className="rounded-xl border border-border bg-card p-6">
             <h3 className="font-heading font-bold text-foreground text-xl mb-1">Profesionálny fotograf</h3>
             <div className="flex items-baseline gap-1 mb-4">
-              <span className="font-heading text-3xl font-extrabold text-destructive">3–5 €</span>
+              <span className="font-heading text-3xl font-extrabold text-destructive">7,50–15 €</span>
               <span className="text-muted-foreground text-sm">/ fotka</span>
             </div>
-            <div className="aspect-[16/10] rounded-lg mb-5 bg-muted flex items-center justify-center">
-              <p className="text-muted-foreground text-sm">Rovnaký výsledok, vyššia cena</p>
+            <div className="aspect-[16/10] rounded-lg mb-5 bg-muted flex items-center justify-center text-center px-4">
+              <p className="text-muted-foreground text-sm">150–300 € za 20 fotiek</p>
             </div>
             <ul className="space-y-2.5">
               {[
@@ -84,9 +84,9 @@ export function PricingComparisonA() {
         <div className="mt-10 text-center p-6 rounded-xl bg-primary/5 border border-primary/20 max-w-2xl mx-auto">
           <p className="text-sm text-muted-foreground mb-1">Pri 10 nehnuteľnostiach × 20 fotiek mesačne</p>
           <p className="font-heading text-lg sm:text-xl font-bold text-foreground">
-            Fotograf: <span className="text-destructive">600–1 000 €</span> → FotoReal: <span className="text-primary">140 €</span>
+            Fotograf: <span className="text-destructive">1 500–3 000 €</span> → FotoReal: <span className="text-primary">140 €</span>
           </p>
-          <p className="text-primary font-bold text-sm mt-1">Ušetríte až 860 € mesačne</p>
+          <p className="text-primary font-bold text-sm mt-1">Ušetríte až 2 860 € mesačne</p>
         </div>
       </div>
     </section>

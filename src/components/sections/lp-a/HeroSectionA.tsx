@@ -22,10 +22,10 @@ export function HeroSectionA() {
             </h1>
 
             <p className="text-muted-foreground text-base sm:text-lg max-w-xl leading-relaxed">
-              Prečo platiť fotografovi <span className="font-bold text-foreground">5 € za fotku</span>,
+              Prečo platiť fotografovi <span className="font-bold text-foreground">150–300 € za 20 fotiek</span>,
               keď AI dosiahne rovnaký výsledok za{" "}
-              <span className="font-bold text-primary">0,70 €</span>?
-              Ušetrite stovky eur mesačne bez kompromisov na kvalite.
+              <span className="font-bold text-primary">14 €</span>?
+              Ušetrite tisíce eur mesačne bez kompromisov na kvalite.
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 pt-1">
