@@ -72,7 +72,27 @@ async function updatePhotoStatus(
   await supabase.from("property_photos").update(update).eq("id", photoId);
 }
 
+async function fetchImageData(url: string): Promise<{ data: string; mimeType: string }> {
+  const resp = await fetch(url);
+  if (!resp.ok) throw new Error(`Failed to fetch image: ${resp.status}`);
+
+  const mimeType = resp.headers.get("content-type") || "image/jpeg";
+  const buffer = await resp.arrayBuffer();
+  const bytes = new Uint8Array(buffer);
+  let binary = "";
+
+  for (let i = 0; i < bytes.length; i++) {
+    binary += String.fromCharCode(bytes[i]);
+  }
+
+  return {
+    data: btoa(binary),
+    mimeType,
+  };
+}
+
 async function analyzePhoto(imageUrl: string, apiKey: string): Promise<AnalysisResult> {
+  const image = await fetchImageData(imageUrl);
   const response = await fetch(
     `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${apiKey}`,
     {
@@ -87,8 +107,8 @@ async function analyzePhoto(imageUrl: string, apiKey: string): Promise<AnalysisR
               { text: "Analyze this real estate photo against the quality checklist. Return JSON only." },
               {
                 inline_data: {
-                  mime_type: "image/jpeg",
-                  data: await fetchImageAsBase64(imageUrl),
+                  mime_type: image.mimeType,
+                  data: image.data,
                 },
               },
             ],
@@ -111,18 +131,6 @@ async function analyzePhoto(imageUrl: string, apiKey: string): Promise<AnalysisR
   if (!text) throw new Error("Analyzer returned no content");
 
   return JSON.parse(text) as AnalysisResult;
-}
-
-async function fetchImageAsBase64(url: string): Promise<string> {
-  const resp = await fetch(url);
-  if (!resp.ok) throw new Error(`Failed to fetch image: ${resp.status}`);
-  const buffer = await resp.arrayBuffer();
-  const bytes = new Uint8Array(buffer);
-  let binary = "";
-  for (let i = 0; i < bytes.length; i++) {
-    binary += String.fromCharCode(bytes[i]);
-  }
-  return btoa(binary);
 }
 
 function buildEnhancementPrompt(analysis: AnalysisResult): string {
@@ -213,31 +221,33 @@ async function applyWatermark(
 }
 
 async function enhancePhoto(imageUrl: string, prompt: string, apiKey: string): Promise<string | null> {
-  const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${apiKey}`,
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify({
-      model: "google/gemini-3-pro-image-preview",
-      messages: [
-        {
-          role: "user",
-          content: [
-            { type: "text", text: prompt },
-            {
-              type: "image_url",
-              image_url: {
-                url: imageUrl,
+  const image = await fetchImageData(imageUrl);
+  const response = await fetch(
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-image-preview:generateContent?key=${apiKey}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        contents: [
+          {
+            role: "user",
+            parts: [
+              { text: prompt },
+              {
+                inline_data: {
+                  mime_type: image.mimeType,
+                  data: image.data,
+                },
               },
-            },
-          ],
+            ],
+          },
+        ],
+        generationConfig: {
+          responseModalities: ["TEXT", "IMAGE"],
         },
-      ],
-      modalities: ["image", "text"],
-    }),
-  });
+      }),
+    }
+  );
 
   if (!response.ok) {
     const errText = await response.text();
@@ -245,19 +255,31 @@ async function enhancePhoto(imageUrl: string, prompt: string, apiKey: string): P
   }
 
   const data = await response.json();
-  return data.choices?.[0]?.message?.images?.[0]?.image_url?.url ?? null;
+  const part = data.candidates?.[0]?.content?.parts?.find((entry: Record<string, unknown>) => {
+    const inlineData = (entry.inlineData ?? entry.inline_data) as Record<string, unknown> | undefined;
+    return typeof inlineData?.data === "string";
+  });
+
+  const inlineData = (part?.inlineData ?? part?.inline_data) as Record<string, unknown> | undefined;
+  const base64 = typeof inlineData?.data === "string" ? inlineData.data : null;
+  const mimeType = typeof (inlineData?.mimeType ?? inlineData?.mime_type) === "string"
+    ? String(inlineData?.mimeType ?? inlineData?.mime_type)
+    : "image/png";
+
+  return base64 ? `data:${mimeType};base64,${base64}` : null;
 }
 
 function getFriendlyPhotoError(error: unknown): string {
   const message = error instanceof Error ? error.message : String(error);
 
-  if (message.includes("[429]")) return "Chyba: Príliš veľa požiadaviek, skúste to znova o chvíľu";
-  if (message.includes("[402]")) return "Chyba: Nedostatok kreditu pre AI spracovanie";
+  if (message.includes("[429]")) return "Chyba: Limit Gemini API bol prekročený, skúste to znova o chvíľu";
+  if (message.includes("[403]")) return "Chyba: Gemini API kľúč nemá prístup k image editácii alebo je neplatný";
+  if (message.includes("[400]")) return "Chyba: Gemini API odmietlo požiadavku na spracovanie fotky";
   if (message.includes("NOT_FOUND") || message.includes("[404]")) {
-    return "Chyba: AI model pre generovanie obrázkov nie je dostupný";
+    return "Chyba: Gemini image model nie je dostupný";
   }
   if (message.toLowerCase().includes("safety")) {
-    return "Chyba: Fotka bola zablokovaná bezpečnostným filtrom AI";
+    return "Chyba: Fotka bola zablokovaná bezpečnostným filtrom";
   }
 
   const compactMessage = message
@@ -279,9 +301,6 @@ Deno.serve(async (req) => {
 
     const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
     if (!GEMINI_API_KEY) throw new Error("GEMINI_API_KEY not configured");
-
-    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
-    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
@@ -336,8 +355,8 @@ Deno.serve(async (req) => {
 
         // Phase 2: Enhance
         const prompt = buildEnhancementPrompt(analysis);
-        await updatePhotoStatus(supabase, photo.id, "enhancing", "Vylepšujem fotku...");
-        const editedImageUrl = await enhancePhoto(photo.original_url, prompt, LOVABLE_API_KEY);
+        await updatePhotoStatus(supabase, photo.id, "enhancing", "Upravujem fotku...");
+        const editedImageUrl = await enhancePhoto(photo.original_url, prompt, GEMINI_API_KEY);
 
         if (editedImageUrl) {
           let base64Data = editedImageUrl.replace(/^data:image\/\w+;base64,/, "");
