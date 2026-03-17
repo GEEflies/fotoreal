@@ -2,7 +2,8 @@ import { ReactNode, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAdminAuth } from '@/hooks/use-admin-auth';
 import { 
-  Users, 
+  Users,
+  UserCheck,
   BarChart3, 
   Settings, 
   LogOut,
