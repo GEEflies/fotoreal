@@ -65,11 +65,7 @@ export function HeroSectionB() {
 
             <div className="flex items-center gap-3 pt-1 justify-center sm:justify-start">
               <div className="flex -space-x-2.5">
-                {[
-                  "https://realfoto-adames.vercel.app/_next/image?url=%2Ftestimonials%2FGemini_Generated_Image_339lzr339lzr339l.png&w=96&q=80",
-                  "https://realfoto-adames.vercel.app/_next/image?url=%2Ftestimonials%2FGemini_Generated_Image_job9rjob9rjob9rj.png&w=96&q=80",
-                  "https://realfoto-adames.vercel.app/_next/image?url=%2Ftestimonials%2FGemini_Generated_Image_l0v0vll0v0vll0v0.png&w=96&q=80",
-                ].map((src, i) => (
+                {[tomasAvatar, andreaAvatar, marekAvatar].map((src, i) => (
                   <img key={i} src={src} alt="Používateľ" className="h-8 w-8 sm:h-9 sm:w-9 rounded-full border-2 border-background object-cover" />
                 ))}
               </div>
