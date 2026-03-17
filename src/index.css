@@ -1,0 +1,242 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* 
+  Design System for Nehnuteľnosti Bratislava
+  Brand Colors: Primary Blue #0358e7, Dark Blue #0a012e, White background
+  All colors in HSL format
+*/
+
+@layer base {
+  :root {
+    /* Brand Colors */
+    --brand-blue: 217 97% 46%;
+    --brand-dark: 244 95% 9%;
+    
+    /* Core semantic tokens */
+    --background: 0 0% 100%;
+    --foreground: 244 95% 9%;
+
+    --card: 0 0% 100%;
+    --card-foreground: 244 95% 9%;
+
+    --popover: 0 0% 100%;
+    --popover-foreground: 244 95% 9%;
+
+    /* Primary - Brand Blue */
+    --primary: 217 97% 46%;
+    --primary-foreground: 0 0% 100%;
+
+    /* Secondary - Light gray blue */
+    --secondary: 217 30% 96%;
+    --secondary-foreground: 244 95% 9%;
+
+    /* Muted */
+    --muted: 217 20% 95%;
+    --muted-foreground: 217 15% 45%;
+
+    /* Accent - Lighter brand blue */
+    --accent: 217 90% 95%;
+    --accent-foreground: 217 97% 40%;
+
+    /* Success */
+    --success: 142 71% 45%;
+    --success-foreground: 0 0% 100%;
+
+    /* Warning */
+    --warning: 38 92% 50%;
+    --warning-foreground: 0 0% 100%;
+
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 217 20% 88%;
+    --input: 217 20% 88%;
+    --ring: 217 97% 46%;
+
+    --radius: 0.625rem;
+
+    /* Gradients */
+    --gradient-hero: linear-gradient(135deg, hsl(217 97% 46%) 0%, hsl(244 95% 9%) 100%);
+    --gradient-card: linear-gradient(180deg, hsl(0 0% 100%) 0%, hsl(217 30% 98%) 100%);
+    
+    /* Shadows */
+    --shadow-sm: 0 1px 2px 0 hsl(217 20% 20% / 0.05);
+    --shadow-md: 0 4px 6px -1px hsl(217 20% 20% / 0.1), 0 2px 4px -2px hsl(217 20% 20% / 0.1);
+    --shadow-lg: 0 10px 15px -3px hsl(217 20% 20% / 0.1), 0 4px 6px -4px hsl(217 20% 20% / 0.1);
+    --shadow-xl: 0 20px 25px -5px hsl(217 20% 20% / 0.1), 0 8px 10px -6px hsl(217 20% 20% / 0.1);
+    --shadow-glow: 0 0 20px hsl(217 97% 46% / 0.3);
+
+    /* Typography */
+    --font-sans: 'Inter', system-ui, sans-serif;
+    --font-heading: 'Poppins', system-ui, sans-serif;
+
+    /* Sidebar (keeping defaults) */
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 240 5.3% 26.1%;
+    --sidebar-primary: 240 5.9% 10%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 240 4.8% 95.9%;
+    --sidebar-accent-foreground: 240 5.9% 10%;
+    --sidebar-border: 220 13% 91%;
+    --sidebar-ring: 217 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 244 95% 9%;
+    --foreground: 0 0% 98%;
+
+    --card: 244 80% 12%;
+    --card-foreground: 0 0% 98%;
+
+    --popover: 244 80% 12%;
+    --popover-foreground: 0 0% 98%;
+
+    --primary: 217 97% 55%;
+    --primary-foreground: 0 0% 100%;
+
+    --secondary: 244 50% 18%;
+    --secondary-foreground: 0 0% 98%;
+
+    --muted: 244 40% 20%;
+    --muted-foreground: 217 15% 65%;
+
+    --accent: 217 50% 20%;
+    --accent-foreground: 217 97% 70%;
+
+    --destructive: 0 62.8% 50%;
+    --destructive-foreground: 0 0% 100%;
+
+    --border: 244 30% 22%;
+    --input: 244 30% 22%;
+    --ring: 217 97% 55%;
+
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    overflow-x: hidden;
+    scroll-padding-top: 80px;
+  }
+
+  /* Offset anchor targets for sticky header */
+  [id] {
+    scroll-margin-top: 80px;
+  }
+
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+    font-family: var(--font-sans);
+    overflow-x: hidden;
+  }
+
+  #root {
+    overflow-x: clip;
+  }
+
+  img, svg, video {
+    max-width: 100%;
+    height: auto;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+    @apply font-bold tracking-tight;
+  }
+}
+
+@layer components {
+  .section-container {
+    @apply mx-auto max-w-7xl px-3 sm:px-4 lg:px-8;
+  }
+
+  .section-padding {
+    @apply py-10 sm:py-16 lg:py-24;
+  }
+
+  .gradient-hero {
+    background: var(--gradient-hero);
+  }
+
+  .gradient-card {
+    background: var(--gradient-card);
+  }
+
+  .shadow-card {
+    box-shadow: var(--shadow-md);
+  }
+
+  .shadow-card-hover {
+    box-shadow: var(--shadow-lg);
+  }
+
+  .shadow-glow {
+    box-shadow: var(--shadow-glow);
+  }
+
+  .text-gradient {
+    @apply bg-gradient-to-r from-primary to-accent-foreground bg-clip-text text-transparent;
+  }
+}
+
+@layer utilities {
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out forwards;
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.5s ease-out forwards;
+  }
+
+  .animate-scale-in {
+    animation: scaleIn 0.3s ease-out forwards;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes scaleIn {
+    from {
+      opacity: 0;
+      transform: scale(0.95);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1);
+    }
+  }
+}
