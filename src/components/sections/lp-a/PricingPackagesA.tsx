@@ -145,46 +145,39 @@ export function PricingPackagesA() {
                   </div>
                 </div>
 
-                {/* Mobile: horizontal compact layout */}
-                <div className="sm:hidden flex items-center gap-2.5">
-                  <div className="flex items-baseline gap-0.5 shrink-0">
-                    <span className="font-heading text-3xl font-extrabold text-primary">
-                      {pkg.price}
-                    </span>
-                    <span className="font-heading text-lg font-bold text-primary/70">€</span>
+                {/* Mobile: centered metadata grid, no large price */}
+                <div className="sm:hidden grid grid-cols-3 gap-2 text-center text-[11px]">
+                  <div>
+                    <span className="text-muted-foreground">Cena/fotka</span>
+                    <p className="font-bold text-foreground text-sm">{pkg.ppp.toFixed(2)} €</p>
                   </div>
-                  <div className="h-8 w-px bg-border shrink-0" />
-                  <div className="grid grid-cols-2 gap-x-2.5 gap-y-0.5 text-[11px] min-w-0">
-                    <div>
-                      <span className="text-muted-foreground">Cena/fotka</span>
-                      <p className="font-bold text-foreground">{pkg.ppp.toFixed(2)} €</p>
-                    </div>
-                    <div>
-                      <span className="text-muted-foreground">Fotiek</span>
-                      <p className="font-bold text-foreground">{pkg.photos} ks</p>
-                    </div>
-                    <div className="col-span-2">
-                      <span className="text-muted-foreground">Cca</span>{" "}
-                      <span className="font-bold text-foreground">
-                        {pkg.properties} {pkg.properties === 1 ? "nehnuteľnosť" : pkg.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"}
-                      </span>
-                    </div>
+                  <div>
+                    <span className="text-muted-foreground">Fotiek</span>
+                    <p className="font-bold text-foreground text-sm">{pkg.photos} ks</p>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Cca</span>
+                    <p className="font-bold text-foreground text-sm">
+                      {pkg.properties} {pkg.properties === 1 ? "nehnuteľnosť" : pkg.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"}
+                    </p>
                   </div>
                 </div>
               </div>
 
               {/* Savings strip */}
-              <div className="rounded-lg sm:rounded-xl bg-success/5 border border-success/20 px-3 py-2 sm:px-4 sm:py-3 flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-0.5 sm:gap-3">
+              <div className="relative rounded-lg sm:rounded-xl bg-success/5 border border-success/20 px-3 py-2 sm:px-4 sm:py-3 text-center sm:text-left pb-5 sm:pb-3">
                 <div className="text-xs sm:text-sm">
                   <span className="text-muted-foreground">Fotograf: </span>
                   <span className="text-destructive font-semibold line-through">
                     {photographerLow}–{photographerHigh} €
-                  </span>{" "}
+                  </span>
+                  <br className="sm:hidden" />
+                  <span className="hidden sm:inline"> </span>
                   <span className="text-muted-foreground">
-                    · ~{pkg.properties} {pkg.properties === 1 ? "nehnuteľnosť" : pkg.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"}
+                    ~{pkg.properties} {pkg.properties === 1 ? "nehnuteľnosť" : pkg.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"}
                   </span>
                 </div>
-                <span className="text-xs sm:text-sm font-bold text-success whitespace-nowrap">
+                <span className="absolute bottom-1.5 right-2 sm:static sm:float-right sm:mt-0 text-[10px] sm:text-sm font-bold text-success-foreground bg-success px-2 py-0.5 rounded-full whitespace-nowrap">
                   Ušetríte {savingsPercent}%
                 </span>
               </div>
