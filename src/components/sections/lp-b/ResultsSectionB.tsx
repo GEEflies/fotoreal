@@ -53,15 +53,31 @@ export function ResultsSectionB() {
         </div>
 
         {/* Results cards */}
-        <div className="grid md:grid-cols-3 gap-5 sm:gap-8">
+        <div className="grid md:grid-cols-3 gap-3 sm:gap-8">
           {results.map((r, i) => (
-            <div key={i} className="p-6 rounded-xl bg-card border border-border text-center">
-              <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
-                <r.icon className="h-6 w-6 text-primary" />
+            <div key={i} className="p-4 sm:p-6 rounded-xl bg-card border border-border sm:text-center">
+              {/* Mobile: horizontal compact */}
+              <div className="flex items-start gap-3 sm:hidden">
+                <div className="h-9 w-9 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 mt-0.5">
+                  <r.icon className="h-4 w-4 text-primary" />
+                </div>
+                <div className="min-w-0">
+                  <div className="flex items-baseline gap-1.5 mb-0.5">
+                    <span className="font-heading text-xl font-extrabold text-primary">{r.stat}</span>
+                    <span className="font-semibold text-foreground text-sm">{r.label}</span>
+                  </div>
+                  <p className="text-xs text-muted-foreground leading-relaxed">{r.desc}</p>
+                </div>
               </div>
-              <p className="font-heading text-3xl font-extrabold text-primary mb-1">{r.stat}</p>
-              <p className="font-semibold text-foreground text-sm mb-2">{r.label}</p>
-              <p className="text-sm text-muted-foreground leading-relaxed">{r.desc}</p>
+              {/* Desktop: centered vertical */}
+              <div className="hidden sm:block">
+                <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center mx-auto mb-4">
+                  <r.icon className="h-6 w-6 text-primary" />
+                </div>
+                <p className="font-heading text-3xl font-extrabold text-primary mb-1">{r.stat}</p>
+                <p className="font-semibold text-foreground text-sm mb-2">{r.label}</p>
+                <p className="text-sm text-muted-foreground leading-relaxed">{r.desc}</p>
+              </div>
             </div>
           ))}
         </div>
