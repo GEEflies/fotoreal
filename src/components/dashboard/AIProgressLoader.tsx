@@ -1,4 +1,4 @@
-import { Loader2, Sparkles, Cloud, Sun, ShieldCheck, Check, AlertCircle } from 'lucide-react';
+import { Loader2, Sparkles, Search, Check, AlertCircle } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
 const statusConfig: Record<string, { icon: typeof Loader2; color: string; animate?: boolean }> = {
