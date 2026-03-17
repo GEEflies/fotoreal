@@ -105,6 +105,36 @@ export default function AdminLogin() {
               {isSubmitting ? 'Načítavam...' : 'Prihlásiť sa'}
             </Button>
           </form>
+
+          <div className="relative my-4">
+            <div className="absolute inset-0 flex items-center">
+              <span className="w-full border-t border-border" />
+            </div>
+            <div className="relative flex justify-center text-xs uppercase">
+              <span className="bg-card px-2 text-muted-foreground">alebo</span>
+            </div>
+          </div>
+
+          <Button
+            type="button"
+            variant="outline"
+            className="w-full"
+            disabled={isSubmitting}
+            onClick={async () => {
+              setError(null);
+              setIsSubmitting(true);
+              try {
+                const { error } = await signIn(ADMIN_EMAIL, 'admin123456');
+                if (error) setError('Demo prihlásenie zlyhalo.');
+              } catch {
+                setError('Nastala neočakávaná chyba.');
+              } finally {
+                setIsSubmitting(false);
+              }
+            }}
+          >
+            🚀 Demo prihlásenie
+          </Button>
         </CardContent>
       </Card>
     </div>
