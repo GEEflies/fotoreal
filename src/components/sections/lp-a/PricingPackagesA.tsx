@@ -130,15 +130,15 @@ export function PricingPackagesA() {
                                 -{p.discount}%
                               </span>
                             )}
+                            <span className="text-xs text-muted-foreground ml-1">
+                              ~{p.properties} {p.properties === 1 ? "nehnuteľnosť" : p.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"}
+                            </span>
                           </div>
                           <div className="text-right">
                             <span className="font-bold text-foreground">{p.price} €</span>
                             <p className="text-sm font-semibold text-primary">({p.ppp.toFixed(2)} € / ks)</p>
                           </div>
                         </div>
-                        <p className="text-xs text-muted-foreground text-center mt-0.5">
-                          ~{p.properties} {p.properties === 1 ? "nehnuteľnosť" : p.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"}
-                        </p>
                       </button>
                     ))}
                   </div>
