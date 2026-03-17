@@ -3,11 +3,11 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { ChunkErrorBoundary } from "@/components/ChunkErrorBoundary";
 import Index from "./pages/Index";
 import LandingA from "./pages/LandingA";
 import LandingB from "./pages/LandingB";
-import { Navigate } from "react-router-dom";
 
 // Lazy-load non-landing routes — these are never needed on first visit
 const PaymentSuccess = lazy(() => import("./pages/PaymentSuccess"));
@@ -32,6 +32,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <ChunkErrorBoundary>
         <Suspense fallback={<div className="min-h-screen" />}>
           <Routes>
             <Route path="/" element={<Index />} />
@@ -54,6 +55,7 @@ const App = () => (
             <Route path="*" element={<NotFound />} />
           </Routes>
         </Suspense>
+        </ChunkErrorBoundary>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
