@@ -89,26 +89,28 @@ export function PricingPackagesA() {
                           setSelected(i);
                           setOpen(false);
                         }}
-                        className={`w-full flex items-center justify-between px-4 py-2.5 text-left transition-colors hover:bg-accent/50 ${
+                        className={`w-full px-4 py-3 text-left transition-colors hover:bg-accent/50 ${
                           i === selected ? "bg-primary/5" : ""
                         } ${i < PACKAGES.length - 1 ? "border-b border-border/50" : ""}`}
                       >
-                        <div className="flex items-center gap-3">
-                          <span className="font-heading text-lg font-bold text-foreground">
-                            {p.photos}
-                          </span>
-                          <span className="text-muted-foreground text-sm">fotiek</span>
-                          {p.discount > 0 && (
-                            <span className="text-xs font-bold text-success bg-success/10 px-2 py-0.5 rounded-full">
-                              -{p.discount}%
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <span className="font-heading text-lg font-bold text-foreground">
+                              {p.photos}
                             </span>
-                          )}
+                            <span className="text-muted-foreground text-sm">fotiek</span>
+                            {p.discount > 0 && (
+                              <span className="text-xs font-bold text-success bg-success/10 px-2 py-0.5 rounded-full">
+                                -{p.discount}%
+                              </span>
+                            )}
+                          </div>
+                          <span className="font-bold text-foreground">{p.price} €</span>
+                        </div>
+                        <div className="flex items-center justify-between mt-1">
                           <span className="text-xs text-muted-foreground">
                             ~{p.properties} {p.properties === 1 ? "nehnuteľnosť" : p.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"}
                           </span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-bold text-foreground">{p.price} €</span>
                           <span className="text-xs text-muted-foreground">({p.ppp.toFixed(2)} € / ks)</span>
                         </div>
                       </button>
