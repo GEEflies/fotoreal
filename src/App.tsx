@@ -17,11 +17,11 @@ const DashboardProperties = lazy(() => import("./pages/dashboard/DashboardProper
 const DashboardNewProperty = lazy(() => import("./pages/dashboard/DashboardNewProperty"));
 const DashboardPropertyDetail = lazy(() => import("./pages/dashboard/DashboardPropertyDetail"));
 const DashboardCredits = lazy(() => import("./pages/dashboard/DashboardCredits"));
-const AdminLogin = lazy(() => import("./pages/admin").then(m => ({ default: m.AdminLogin })));
-const AdminSubmissions = lazy(() => import("./pages/admin").then(m => ({ default: m.AdminSubmissions })));
-const AdminSubmissionDetail = lazy(() => import("./pages/admin").then(m => ({ default: m.AdminSubmissionDetail })));
-const AdminAnalytics = lazy(() => import("./pages/admin").then(m => ({ default: m.AdminAnalytics })));
-const AdminSettings = lazy(() => import("./pages/admin").then(m => ({ default: m.AdminSettings })));
+const AdminLogin = lazy(() => import("./pages/admin/AdminLogin"));
+const AdminSubmissions = lazy(() => import("./pages/admin/AdminSubmissions"));
+const AdminSubmissionDetail = lazy(() => import("./pages/admin/AdminSubmissionDetail"));
+const AdminAnalytics = lazy(() => import("./pages/admin/AdminAnalytics"));
+const AdminSettings = lazy(() => import("./pages/admin/AdminSettings"));
 
 const queryClient = new QueryClient();
 

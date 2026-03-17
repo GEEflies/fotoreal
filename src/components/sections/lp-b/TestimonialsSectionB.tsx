@@ -51,7 +51,7 @@ export function TestimonialsSectionB() {
                 ))}
               </div>
               <div className="flex items-center gap-3">
-                <img src={t.avatar} alt={t.name} className="h-10 w-10 rounded-full object-cover" />
+                <img src={t.avatar} alt={t.name} width={40} height={40} loading="lazy" className="h-10 w-10 rounded-full object-cover" />
                 <div>
                   <p className="text-sm font-semibold text-foreground">{t.name}</p>
                   <p className="text-xs text-muted-foreground">{t.role}</p>

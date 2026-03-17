@@ -106,12 +106,14 @@ export function FeaturesGrid() {
         {/* Feature cards */}
         <div className="relative">
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-            {features.map((f, i) => (
+            {features.map((f, i) => {
+              const hiddenOnMobile = !showAll && i >= MOBILE_VISIBLE;
+              return (
               <div
                 key={i}
-                className={`group rounded-xl bg-card border border-border hover:border-primary/30 hover:shadow-lg transition-all overflow-hidden ${
-                  !showAll && i >= MOBILE_VISIBLE ? "hidden sm:block" : ""
-                } ${!showAll && i === MOBILE_VISIBLE ? "sm:block" : ""}`}
+                className={`group rounded-xl bg-card border border-border hover:border-primary/30 hover:shadow-lg transition-colors overflow-hidden ${
+                  hiddenOnMobile ? "hidden sm:block" : ""
+                }`}
               >
                 <BeforeAfterSlider
                   beforeSrc={f.before}
@@ -132,32 +134,20 @@ export function FeaturesGrid() {
                   </p>
                 </div>
               </div>
-            ))}
+              );
+            })}
           </div>
 
-          {/* Mobile: blurred peek + show more */}
+          {/* Mobile: show more button */}
           {!showAll && (
-            <div className="sm:hidden relative -mt-4">
-              {/* Blurred 4th card peek */}
-              <div className="h-32 overflow-hidden rounded-xl pointer-events-none" style={{ filter: "blur(6px)", opacity: 0.5 }}>
-                <div className="rounded-xl bg-card border border-border overflow-hidden">
-                  <BeforeAfterSlider
-                    beforeSrc={features[MOBILE_VISIBLE].before}
-                    afterSrc={features[MOBILE_VISIBLE].after}
-                    className="aspect-[16/10]"
-                  />
-                </div>
-              </div>
-              {/* Gradient overlay + button */}
-              <div className="absolute inset-0 bg-gradient-to-t from-accent/90 via-accent/60 to-transparent flex items-end justify-center pb-3">
-                <button
-                  onClick={() => setShowAll(true)}
-                  className="flex items-center gap-1.5 px-5 py-2 rounded-full bg-primary text-primary-foreground text-sm font-semibold shadow-lg hover:bg-primary/90 transition-colors"
-                >
-                  Zobraziť všetkých {features.length} funkcií
-                  <ChevronDown className="h-4 w-4" />
-                </button>
-              </div>
+            <div className="sm:hidden flex justify-center mt-6">
+              <button
+                onClick={() => setShowAll(true)}
+                className="flex items-center gap-1.5 px-5 py-2 rounded-full bg-primary text-primary-foreground text-sm font-semibold shadow-lg hover:bg-primary/90 transition-colors"
+              >
+                Zobraziť všetkých {features.length} funkcií
+                <ChevronDown className="h-4 w-4" />
+              </button>
             </div>
           )}
         </div>
