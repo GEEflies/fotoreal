@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Menu, ArrowRight, Wand2, Eraser, LogIn } from "lucide-react";
+import logoFotoreal from "@/assets/logo-fotoreal.svg";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 

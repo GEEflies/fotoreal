@@ -1,4 +1,4 @@
-import { Wand2 } from "lucide-react";
+import logoFotoreal from "@/assets/logo-fotoreal.svg";
 
 export function Footer() {
   return (
