@@ -49,7 +49,8 @@ export function Header({ onOpenForm }: HeaderProps) {
             }}
             className="flex items-center gap-2 group"
           >
-            <img src={logoFotoreal} alt="FotoReal" className="h-8 w-auto" />
+            <img src={logoFotoreal} alt="FotoReal" className="h-10 sm:h-12 w-auto" />
+            <span className="text-lg sm:text-xl font-bold text-foreground group-hover:text-primary transition-colors">FotoReal</span>
           </a>
 
           {/* Desktop Nav */}
