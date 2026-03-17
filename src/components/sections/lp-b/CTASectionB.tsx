@@ -15,7 +15,7 @@ export function CTASectionB() {
           Premeňte fotky z mobilu na profesionálne za 30 sekúnd.
           Viac záujemcov, viac obhliadok, vyššia predajná cena.
         </p>
-        <Button size="lg" className="group font-bold shadow-glow hover:shadow-lg transition-all text-base px-8">
+        <Button size="lg" onClick={() => navigate('/login')} className="group font-bold shadow-glow hover:shadow-lg transition-all text-base px-8">
           Vyskúšať 5 fotiek ZADARMO
           <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
         </Button>

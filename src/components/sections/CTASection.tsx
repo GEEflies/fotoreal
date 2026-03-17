@@ -23,10 +23,10 @@ export function CTASection({ onOpenForm }: CTASectionProps) {
         </p>
         <Button
           size="lg"
-          onClick={onOpenForm}
+          onClick={() => navigate('/login')}
           className="group font-bold shadow-glow hover:shadow-lg transition-all text-base px-8"
         >
-          Vyskúšať ZADARMO
+          Vyskúšať 5 fotiek ZADARMO
           <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
         </Button>
         <p className="text-xs text-muted-foreground mt-4">
