@@ -53,7 +53,7 @@ export function AvatarSelector({ onSelect }: AvatarSelectorProps) {
               onClick={() => handleSelect(opt.key)}
               onMouseEnter={() => setHoveredOption(opt.key)}
               onMouseLeave={() => setHoveredOption(null)}
-              className={`group flex flex-col items-center text-center p-4 sm:p-5 rounded-xl border-2 transition-all duration-200 ${
+              className={`group flex flex-col items-start text-left p-4 sm:p-5 rounded-xl border-2 transition-all duration-200 h-full ${
                 hoveredOption === opt.key
                   ? "border-primary bg-primary/5 shadow-md"
                   : "border-border hover:border-primary/30"
