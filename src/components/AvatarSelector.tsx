@@ -36,37 +36,36 @@ export function AvatarSelector({ onSelect }: AvatarSelectorProps) {
       <div className="w-full max-w-md lg:max-w-xl rounded-2xl bg-card shadow-2xl p-6 sm:p-8 lg:p-10 animate-scale-in">
         <div className="text-center mb-6">
           <h2 className="font-heading text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
-            Používate realitného fotografa?
+            Používate fotografa?
           </h2>
-          <p className="text-sm text-muted-foreground mt-1.5 hidden sm:block">
+          <p className="text-sm text-muted-foreground mt-1.5">
             Prispôsobíme obsah vašim potrebám.
           </p>
         </div>
 
         <div className="grid grid-cols-2 gap-3">
           {[
-            { key: "photographer" as AvatarType, icon: Camera, iconBg: "bg-primary/10", iconColor: "text-primary", label: "Áno, používam", mobileLabel: "ÁNO" },
-            { key: "no-photographer" as AvatarType, icon: Smartphone, iconBg: "bg-[hsl(270,80%,96%)]", iconColor: "text-[hsl(270,60%,55%)]", label: "Nie, fotím sám", mobileLabel: "NIE" },
+            { key: "photographer" as AvatarType, icon: Camera, iconBg: "bg-primary/10", iconColor: "text-primary", label: "Áno, používam" },
+            { key: "no-photographer" as AvatarType, icon: Smartphone, iconBg: "bg-[hsl(270,80%,96%)]", iconColor: "text-[hsl(270,60%,55%)]", label: "Nie, fotím sám" },
           ].map((opt) => (
             <button
               key={opt.key}
               onClick={() => handleSelect(opt.key)}
               onMouseEnter={() => setHoveredOption(opt.key)}
               onMouseLeave={() => setHoveredOption(null)}
-              className={`group flex flex-col items-center sm:items-start text-center sm:text-left p-4 sm:p-5 rounded-xl border-2 transition-all duration-200 h-full ${
+              className={`group flex flex-col items-start text-left p-4 sm:p-5 rounded-xl border-2 transition-all duration-200 h-full ${
                 hoveredOption === opt.key
                   ? "border-primary bg-primary/5 shadow-md"
                   : "border-border hover:border-primary/30"
               }`}
             >
-              <div className={`h-10 w-10 rounded-lg ${opt.iconBg} items-center justify-center mb-3 hidden sm:flex`}>
+              <div className={`h-10 w-10 rounded-lg ${opt.iconBg} flex items-center justify-center mb-3`}>
                 <opt.icon className={`h-5 w-5 ${opt.iconColor}`} />
               </div>
-              <h3 className="font-heading font-bold text-foreground text-lg sm:text-base mb-0 sm:mb-3 flex-1 flex items-center">
-                <span className="sm:hidden">{opt.mobileLabel}</span>
-                <span className="hidden sm:inline">{opt.label}</span>
+              <h3 className="font-heading font-bold text-foreground text-sm sm:text-base mb-3 flex-1">
+                {opt.label}
               </h3>
-              <span className="hidden sm:inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-primary group-hover:gap-1.5 transition-all">
+              <span className="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-primary group-hover:gap-1.5 transition-all">
                 Pokračovať
                 <ArrowRight className="h-3.5 w-3.5" />
               </span>
