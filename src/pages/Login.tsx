@@ -102,7 +102,7 @@ export default function Login() {
     const { error } = await demoLogin();
     setIsDemoLoading(false);
     if (error) {
-      toast({ title: 'Chyba', description: error.message, variant: 'destructive' });
+      toast({ title: 'Chyba', description: translateError(error.message), variant: 'destructive' });
     } else {
       navigate(redirectTo);
     }
