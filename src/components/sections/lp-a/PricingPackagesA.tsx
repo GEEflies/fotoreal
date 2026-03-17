@@ -174,7 +174,7 @@ export function PricingPackagesA() {
               </div>
 
               {/* Savings strip */}
-              <div className="rounded-xl bg-success/5 border border-success/20 px-4 py-3 flex items-center justify-between gap-3">
+              <div className="rounded-xl bg-success/5 border border-success/20 px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-1 sm:gap-3">
                 <div className="text-sm">
                   <span className="text-muted-foreground">
                     Fotograf: 
