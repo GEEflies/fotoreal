@@ -48,7 +48,7 @@ export function ResultsSectionB() {
             className="aspect-[16/9] rounded-2xl shadow-xl"
           />
           <p className="text-center text-sm text-muted-foreground mt-3">
-            Rovnaká nehnuteľnosť. Vľavo: fotka z mobilu. Vpravo: po úprave FotoReal.
+            Rovnaká nehnuteľnosť. Vľavo: fotka z mobilu. Vpravo: po úprave RealFoto.
           </p>
         </div>
 

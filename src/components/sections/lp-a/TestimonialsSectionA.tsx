@@ -9,7 +9,7 @@ const testimonials = [
     name: "Martin Kováč",
     role: "Realitný maklér, RE/MAX Bratislava",
     avatar: martinAvatar,
-    text: "Platil som fotografovi 150 € mesačne za editáciu. S FotoReal platím 30 €. Kvalita je rovnaká, niekedy aj lepšia. Za rok som ušetril vyše 1 400 €.",
+    text: "Platil som fotografovi 150 € mesačne za editáciu. S RealFoto platím 30 €. Kvalita je rovnaká, niekedy aj lepšia. Za rok som ušetril vyše 1 400 €.",
     stars: 5,
   },
   {
@@ -23,7 +23,7 @@ const testimonials = [
     name: "Peter Horváth",
     role: "Majiteľ realitnej kancelárie",
     avatar: peterAvatar,
-    text: "Máme 8 maklérov. S FotoReal sme znížili náklady na fotografie o 85%. Reinvestujeme peniaze do online reklamy a vidíme výsledky.",
+    text: "Máme 8 maklérov. S RealFoto sme znížili náklady na fotografie o 85%. Reinvestujeme peniaze do online reklamy a vidíme výsledky.",
     stars: 5,
   },
 ];

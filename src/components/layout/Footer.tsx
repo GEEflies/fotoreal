@@ -1,4 +1,4 @@
-import logoFotoreal from "@/assets/logo-fotoreal.svg";
+import logoRealfoto from "@/assets/logo-realfoto.svg";
 
 export function Footer() {
   return (
@@ -6,11 +6,11 @@ export function Footer() {
       <div className="section-container">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <img src={logoFotoreal} alt="FotoReal" className="h-8 w-auto" />
-            <span className="text-base font-bold text-background">FotoReal</span>
+            <img src={logoRealfoto} alt="RealFoto" className="h-8 w-auto" />
+            <span className="text-base font-bold text-background">RealFoto</span>
           </div>
           <div className="flex items-center gap-4 text-xs text-background/60">
-            <span>© {new Date().getFullYear()} FotoReal</span>
+            <span>© {new Date().getFullYear()} RealFoto</span>
             <a href="#" className="hover:text-background transition-colors">Ochrana súkromia</a>
             <a href="#" className="hover:text-background transition-colors">Podmienky</a>
           </div>

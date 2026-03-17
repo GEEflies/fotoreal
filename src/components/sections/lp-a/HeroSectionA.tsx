@@ -66,7 +66,7 @@ export function HeroSectionA() {
                   {[1,2,3,4,5].map(s => <Star key={s} className="h-3.5 w-3.5 fill-warning text-warning" />)}
                 </div>
                 <span className="text-xs text-muted-foreground leading-tight">
-                  500+ maklérov už ušetrilo s FotoReal
+                  500+ maklérov už ušetrilo s RealFoto
                 </span>
               </div>
             </div>

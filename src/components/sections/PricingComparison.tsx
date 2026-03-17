@@ -5,7 +5,7 @@ import { BeforeAfterSlider } from "@/components/ui/BeforeAfterSlider";
 const IMG = (path: string) =>
   `https://realfoto-adames.vercel.app/_next/image?url=%2Flanding%2F${encodeURIComponent(path)}&w=1200&q=85`;
 
-const fotoRealPros = [
+const realFotoPros = [
   "Hotovo do 30 sekúnd",
   "Konzistentné výsledky vždy",
   "HDR, obloha, perspektíva, farby",
@@ -48,7 +48,7 @@ export function PricingComparison() {
         </div>
 
         <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
-          {/* FotoReal Card */}
+          {/* RealFoto Card */}
           <div className="rounded-2xl border-2 border-primary bg-card overflow-hidden relative">
             <div className="absolute top-4 right-4 bg-primary text-primary-foreground text-xs font-bold px-3 py-1 rounded-full z-10">
               Odporúčame
@@ -58,11 +58,11 @@ export function PricingComparison() {
               afterSrc={IMG("aurix edit/aurix-edit.jpg")}
               className="aspect-[16/10]"
               beforeLabel="Originál"
-              afterLabel="FotoReal"
+              afterLabel="RealFoto"
             />
             <div className="p-6">
               <h3 className="font-heading text-lg font-bold text-foreground mb-1">
-                FotoReal
+                RealFoto
               </h3>
               <div className="flex items-baseline gap-1 mb-5">
                 <span className="text-3xl sm:text-4xl font-extrabold text-primary">
@@ -71,7 +71,7 @@ export function PricingComparison() {
                 <span className="text-muted-foreground text-sm">/ fotka</span>
               </div>
               <ul className="space-y-2.5">
-                {fotoRealPros.map((item) => (
+                {realFotoPros.map((item) => (
                   <li
                     key={item}
                     className="flex items-center gap-2.5 text-sm text-foreground"

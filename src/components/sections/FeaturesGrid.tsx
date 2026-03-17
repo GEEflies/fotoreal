@@ -98,7 +98,7 @@ export function FeaturesGrid() {
             Čo dokážete s naším <span className="text-primary">AI</span>
           </h2>
           <p className="text-muted-foreground text-sm sm:text-lg">
-            FotoReal upraví vaše realitné fotografie do najmenšieho detailu.
+            RealFoto upraví vaše realitné fotografie do najmenšieho detailu.
             Plne optimalizované pre realitný priemysel.
           </p>
         </div>

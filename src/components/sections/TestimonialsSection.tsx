@@ -7,7 +7,7 @@ const testimonials = [
     role: "Realitný maklér, Bratislava",
     avatar:
       "https://realfoto-adames.vercel.app/_next/image?url=%2Ftestimonials%2FGemini_Generated_Image_339lzr339lzr339l.png&w=96&q=80",
-    text: "FotoReal mi ušetrí hodiny týždenne. Fotky vyzerajú profesionálne a klienti si všímajú rozdiel. Inzeráty dostávajú o 40% viac zobrazení.",
+    text: "RealFoto mi ušetrí hodiny týždenne. Fotky vyzerajú profesionálne a klienti si všímajú rozdiel. Inzeráty dostávajú o 40% viac zobrazení.",
     stars: 5,
   },
   {
@@ -23,7 +23,7 @@ const testimonials = [
     role: "Majiteľ realitnej kancelárie",
     avatar:
       "https://realfoto-adames.vercel.app/_next/image?url=%2Ftestimonials%2FGemini_Generated_Image_l0v0vll0v0vll0v0.png&w=96&q=80",
-    text: "Naša kancelária spracováva 200+ fotiek mesačne. FotoReal znížil naše náklady na editáciu o 85% a kvalita sa dokonca zlepšila.",
+    text: "Naša kancelária spracováva 200+ fotiek mesačne. RealFoto znížil naše náklady na editáciu o 85% a kvalita sa dokonca zlepšila.",
     stars: 5,
   },
 ];

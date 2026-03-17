@@ -3,7 +3,7 @@ import { Camera, Smartphone, ArrowRight } from "lucide-react";
 
 export type AvatarType = "photographer" | "no-photographer" | null;
 
-const STORAGE_KEY = "fotoreal_avatar";
+const STORAGE_KEY = "realfoto_avatar";
 
 export function getStoredAvatar(): AvatarType {
   try {

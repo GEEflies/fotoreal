@@ -9,14 +9,14 @@ const testimonials = [
     name: "Tomáš Lukáč",
     role: "Realitný maklér, Žilina",
     avatar: tomasAvatar,
-    text: "Vždy som fotil na mobil a myslel som, že to stačí. Od kedy používam FotoReal, mám o 50% viac telefonátov. Klienti si všímajú kvalitné fotky.",
+    text: "Vždy som fotil na mobil a myslel som, že to stačí. Od kedy používam RealFoto, mám o 50% viac telefonátov. Klienti si všímajú kvalitné fotky.",
     stars: 5,
   },
   {
     name: "Andrea Kmeťová",
     role: "Maklérka, Košice",
     avatar: andreaAvatar,
-    text: "Posledný byt som predala za 8 000 € nad pôvodnú cenu. Jediné, čo som zmenila, boli fotky — FotoReal im dal úplne iný level.",
+    text: "Posledný byt som predala za 8 000 € nad pôvodnú cenu. Jediné, čo som zmenila, boli fotky — RealFoto im dal úplne iný level.",
     stars: 5,
   },
   {

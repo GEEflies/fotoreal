@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Menu, ArrowRight, Wand2, Eraser, LogIn } from "lucide-react";
-import logoFotoreal from "@/assets/logo-fotoreal.svg";
+import logoRealfoto from "@/assets/logo-realfoto.svg";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
@@ -49,8 +49,8 @@ export function Header({ onOpenForm }: HeaderProps) {
             }}
             className="flex items-center gap-2 group"
           >
-            <img src={logoFotoreal} alt="FotoReal" className="h-10 sm:h-12 w-auto" />
-            <span className="text-lg sm:text-xl font-bold text-foreground group-hover:text-primary transition-colors">FotoReal</span>
+            <img src={logoRealfoto} alt="RealFoto" className="h-10 sm:h-12 w-auto" />
+            <span className="text-lg sm:text-xl font-bold text-foreground group-hover:text-primary transition-colors">RealFoto</span>
           </a>
 
           {/* Desktop Nav */}

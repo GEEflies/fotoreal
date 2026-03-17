@@ -21,7 +21,7 @@ export function PricingComparisonA() {
         <div className="text-center mb-10 sm:mb-14 max-w-2xl mx-auto">
           <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-2">Porovnanie</p>
           <h2 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-3">
-            FotoReal vs. Profesionálny fotograf
+            RealFoto vs. Profesionálny fotograf
           </h2>
           <p className="text-muted-foreground text-sm sm:text-base">
             Rovnaký výsledok. Zlomok ceny a času.
@@ -37,7 +37,7 @@ export function PricingComparisonA() {
                 <span className="absolute -top-0 left-3 px-2 py-0.5 bg-primary text-primary-foreground text-[10px] font-bold rounded-b-md">
                   ODPORÚČANÉ
                 </span>
-                <p className="font-heading font-bold text-foreground text-sm mt-4">FotoReal AI</p>
+                <p className="font-heading font-bold text-foreground text-sm mt-4">RealFoto AI</p>
                 <p className="font-heading text-xl font-extrabold text-primary">0,70 €<span className="text-muted-foreground text-xs font-normal"> /fotka</span></p>
               </div>
               <div className="p-3">
@@ -63,12 +63,12 @@ export function PricingComparisonA() {
 
         {/* Desktop cards */}
         <div className="hidden sm:grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
-          {/* FotoReal */}
+          {/* RealFoto */}
           <div className="rounded-xl border-2 border-primary bg-card p-6 relative">
             <div className="absolute -top-3 left-6 px-3 py-1 bg-primary text-primary-foreground text-xs font-bold rounded-full">
               ODPORÚČANÉ
             </div>
-            <h3 className="font-heading font-bold text-foreground text-xl mb-1">FotoReal AI</h3>
+            <h3 className="font-heading font-bold text-foreground text-xl mb-1">RealFoto AI</h3>
             <div className="flex items-baseline gap-1 mb-4">
               <span className="font-heading text-3xl font-extrabold text-primary">0,70 €</span>
               <span className="text-muted-foreground text-sm">/ fotka</span>
@@ -113,7 +113,7 @@ export function PricingComparisonA() {
         <div className="mt-8 sm:mt-10 text-center px-4 py-3 sm:p-6 rounded-xl bg-success/5 border border-success/20 max-w-2xl mx-auto">
           <p className="text-xs sm:text-sm text-muted-foreground mb-0.5 sm:mb-1">Pri 10 nehnuteľnostiach × 20 fotiek mesačne</p>
           <p className="font-heading text-base sm:text-xl font-bold text-foreground">
-            Fotograf: <span className="text-destructive">1 500–3 000 €</span> → FotoReal: <span className="text-success font-extrabold">140 €</span>
+            Fotograf: <span className="text-destructive">1 500–3 000 €</span> → RealFoto: <span className="text-success font-extrabold">140 €</span>
           </p>
           <p className="text-success font-bold text-xs sm:text-sm mt-0.5 sm:mt-1">Ušetríte až 2 860 € mesačne</p>
         </div>

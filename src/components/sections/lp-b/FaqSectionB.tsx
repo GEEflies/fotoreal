@@ -9,7 +9,7 @@ import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 const faqs = [
   {
     q: "Stačí na to fotka z mobilu?",
-    a: "Áno! FotoReal je optimalizovaný práve pre fotky z mobilov. Podporujeme iPhone aj Android. Stačí dobre osvetlená miestnosť a naše AI spraví zvyšok.",
+    a: "Áno! RealFoto je optimalizovaný práve pre fotky z mobilov. Podporujeme iPhone aj Android. Stačí dobre osvetlená miestnosť a naše AI spraví zvyšok.",
   },
   {
     q: "Naozaj to vyzerá ako od profesionálneho fotografa?",

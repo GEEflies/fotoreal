@@ -74,7 +74,7 @@ export function HeroSectionB() {
                   {[1,2,3,4,5].map(s => <Star key={s} className="h-3.5 w-3.5 fill-warning text-warning" />)}
                 </div>
                 <span className="text-xs text-muted-foreground leading-tight">
-                  Makléri predávajú rýchlejšie s FotoReal
+                  Makléri predávajú rýchlejšie s RealFoto
                 </span>
               </div>
             </div>

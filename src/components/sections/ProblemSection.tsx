@@ -44,7 +44,7 @@ export function ProblemSection() {
           </h2>
           <p className="text-muted-foreground text-sm sm:text-base">
             Väčšina realitných profesionálov rieši tie isté problémy.
-            FotoReal ich odstraňuje jedným kliknutím.
+            RealFoto ich odstraňuje jedným kliknutím.
           </p>
         </div>
 
