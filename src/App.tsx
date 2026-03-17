@@ -34,6 +34,10 @@ const App = () => (
           <Route path="/pre-fotografov" element={<LandingA />} />
           <Route path="/bez-fotografa" element={<LandingB />} />
           <Route path="/platba-uspesna" element={<PaymentSuccess />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/dashboard" element={<DashboardProperties />} />
+          <Route path="/dashboard/new" element={<DashboardNewProperty />} />
+          <Route path="/dashboard/properties/:id" element={<DashboardPropertyDetail />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<Navigate to="/admin/submissions" replace />} />
           <Route path="/admin/submissions" element={<AdminSubmissions />} />
