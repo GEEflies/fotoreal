@@ -3,6 +3,15 @@ import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { BeforeAfterSlider } from "@/components/ui/BeforeAfterSlider";
 import { FEATURE_IMAGES } from "@/lib/images";
 
+const comparisonRows = [
+  { pro: "30 sekúnd", con: "24–48 hodín" },
+  { pro: "24/7 dostupné", con: "Podľa rozvrhu" },
+  { pro: "9 AI úprav", con: "Len základné" },
+  { pro: "Konzistentná kvalita", con: "Rôzna kvalita" },
+  { pro: "GDPR ochrana", con: "Žiadna ochrana" },
+  { pro: "50+ fotiek naraz", con: "Max 10–20" },
+];
+
 export function PricingComparisonA() {
   const { ref, isVisible } = useScrollAnimation({ threshold: 0.1 });
 
@@ -19,7 +28,41 @@ export function PricingComparisonA() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
+        {/* Mobile comparison table */}
+        <div className="sm:hidden max-w-md mx-auto">
+          <div className="rounded-xl border border-border overflow-hidden bg-card">
+            {/* Header */}
+            <div className="grid grid-cols-2">
+              <div className="p-3 bg-primary/10 border-r border-border relative">
+                <span className="absolute -top-0 left-3 px-2 py-0.5 bg-primary text-primary-foreground text-[10px] font-bold rounded-b-md">
+                  ODPORÚČANÉ
+                </span>
+                <p className="font-heading font-bold text-foreground text-sm mt-4">FotoReal AI</p>
+                <p className="font-heading text-xl font-extrabold text-primary">0,70 €<span className="text-muted-foreground text-xs font-normal"> /fotka</span></p>
+              </div>
+              <div className="p-3">
+                <p className="font-heading font-bold text-foreground text-sm mt-4">Fotograf</p>
+                <p className="font-heading text-xl font-extrabold text-destructive">8–15 €<span className="text-muted-foreground text-xs font-normal"> /fotka</span></p>
+              </div>
+            </div>
+            {/* Rows */}
+            {comparisonRows.map((row, i) => (
+              <div key={i} className="grid grid-cols-2 border-t border-border">
+                <div className="p-2.5 bg-primary/5 border-r border-border flex items-center gap-1.5">
+                  <Check className="h-3.5 w-3.5 text-success shrink-0" />
+                  <span className="text-xs text-foreground">{row.pro}</span>
+                </div>
+                <div className="p-2.5 flex items-center gap-1.5">
+                  <X className="h-3.5 w-3.5 text-destructive shrink-0" />
+                  <span className="text-xs text-muted-foreground">{row.con}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Desktop cards */}
+        <div className="hidden sm:grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
           {/* FotoReal */}
           <div className="rounded-xl border-2 border-primary bg-card p-6 relative">
             <div className="absolute -top-3 left-6 px-3 py-1 bg-primary text-primary-foreground text-xs font-bold rounded-full">
@@ -36,17 +79,10 @@ export function PricingComparisonA() {
               className="aspect-[16/10] rounded-lg mb-5"
             />
             <ul className="space-y-2.5">
-              {[
-                "Hotové za 30 sekúnd",
-                "Dostupné 24/7, bez čakania",
-                "9 AI úprav v jednom",
-                "Konzistentná kvalita vždy",
-                "GDPR ochrana súkromia",
-                "Dávkové spracovanie 50+ fotiek",
-              ].map((item, i) => (
+              {comparisonRows.map((row, i) => (
                 <li key={i} className="flex items-center gap-2 text-sm text-foreground">
                   <Check className="h-4 w-4 text-success shrink-0" />
-                  {item}
+                  {row.pro}
                 </li>
               ))}
             </ul>
@@ -63,17 +99,10 @@ export function PricingComparisonA() {
               <p className="text-muted-foreground text-sm">150–300 € za 20 fotiek</p>
             </div>
             <ul className="space-y-2.5">
-              {[
-                { text: "Čakanie 24–48 hodín", bad: true },
-                { text: "Závislé na rozvrhu fotografa", bad: true },
-                { text: "Len základné úpravy", bad: true },
-                { text: "Rôzna kvalita podľa editora", bad: true },
-                { text: "Žiadna automatická ochrana", bad: true },
-                { text: "Max 10–20 fotiek naraz", bad: true },
-              ].map((item, i) => (
+              {comparisonRows.map((row, i) => (
                 <li key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
                   <X className="h-4 w-4 text-destructive shrink-0" />
-                  {item.text}
+                  {row.con}
                 </li>
               ))}
             </ul>
