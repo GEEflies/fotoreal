@@ -1,4 +1,5 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { Image } from "https://deno.land/x/imagescript@1.3.0/mod.ts";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -161,6 +162,56 @@ function buildEnhancementPrompt(analysis: AnalysisResult): string {
   return parts.join(" ");
 }
 
+async function applyWatermark(
+  imageBytes: Uint8Array,
+  logoUrl: string,
+  position: string
+): Promise<Uint8Array> {
+  // Decode the base image
+  const baseImage = await Image.decode(imageBytes);
+
+  // Fetch and decode the logo
+  const logoResp = await fetch(logoUrl);
+  if (!logoResp.ok) throw new Error(`Failed to fetch logo: ${logoResp.status}`);
+  const logoBuffer = new Uint8Array(await logoResp.arrayBuffer());
+  const logoImage = await Image.decode(logoBuffer);
+
+  // Scale logo to ~8% of image width, maintaining aspect ratio
+  const targetWidth = Math.round(baseImage.width * 0.08);
+  const scale = targetWidth / logoImage.width;
+  const targetHeight = Math.round(logoImage.height * scale);
+  const scaledLogo = logoImage.resize(targetWidth, targetHeight);
+
+  // Calculate position with padding (2% of image size)
+  const padX = Math.round(baseImage.width * 0.02);
+  const padY = Math.round(baseImage.height * 0.02);
+  let x: number, y: number;
+
+  switch (position) {
+    case 'top-left':
+      x = padX; y = padY; break;
+    case 'top-right':
+      x = baseImage.width - targetWidth - padX; y = padY; break;
+    case 'bottom-left':
+      x = padX; y = baseImage.height - targetHeight - padY; break;
+    case 'center-center':
+      x = Math.round((baseImage.width - targetWidth) / 2);
+      y = Math.round((baseImage.height - targetHeight) / 2);
+      break;
+    case 'bottom-right':
+    default:
+      x = baseImage.width - targetWidth - padX;
+      y = baseImage.height - targetHeight - padY;
+      break;
+  }
+
+  // Composite the logo onto the image
+  baseImage.composite(scaledLogo, x, y);
+
+  // Encode back to PNG
+  return await baseImage.encode();
+}
+
 async function enhancePhoto(imageUrl: string, prompt: string, apiKey: string): Promise<string | null> {
   const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
     method: "POST",
@@ -239,6 +290,29 @@ Deno.serve(async (req) => {
 
     await supabase.from("properties").update({ status: "processing" }).eq("id", property_id);
 
+    // Get user's profile for watermark settings
+    const { data: propOwner } = await supabase
+      .from("properties")
+      .select("user_id")
+      .eq("id", property_id)
+      .single();
+
+    let logoUrl: string | null = null;
+    let watermarkPosition = "bottom-right";
+
+    if (propOwner?.user_id) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("logo_url, watermark_position")
+        .eq("user_id", propOwner.user_id)
+        .maybeSingle();
+
+      if (profile) {
+        logoUrl = (profile as Record<string, unknown>).logo_url as string | null;
+        watermarkPosition = ((profile as Record<string, unknown>).watermark_position as string) || "bottom-right";
+      }
+    }
+
     const { data: photos, error: photosError } = await supabase
       .from("property_photos")
       .select("*")
@@ -266,8 +340,20 @@ Deno.serve(async (req) => {
         const editedImageUrl = await enhancePhoto(photo.original_url, prompt, LOVABLE_API_KEY);
 
         if (editedImageUrl) {
-          const base64Data = editedImageUrl.replace(/^data:image\/\w+;base64,/, "");
-          const imageBytes = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0));
+          let base64Data = editedImageUrl.replace(/^data:image\/\w+;base64,/, "");
+          let imageBytes = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0));
+
+          // Phase 3: Watermark (non-AI)
+          if (logoUrl) {
+            try {
+              await updatePhotoStatus(supabase, photo.id, "enhancing", "Pridávam vodoznak...");
+              imageBytes = await applyWatermark(imageBytes, logoUrl, watermarkPosition);
+            } catch (wmError) {
+              console.error(`Watermark error for photo ${photo.id}:`, wmError);
+              // Continue without watermark - don't fail the whole photo
+            }
+          }
+
           const filePath = `processed/${property_id}/${photo.id}.png`;
 
           const { error: uploadError } = await supabase.storage
@@ -285,13 +371,8 @@ Deno.serve(async (req) => {
           }
 
           // Deduct credit after success
-          const { data: propData } = await supabase
-            .from("properties")
-            .select("user_id")
-            .eq("id", property_id)
-            .single();
-          if (propData?.user_id) {
-            await supabase.rpc("increment_total_used", { _user_id: propData.user_id });
+          if (propOwner?.user_id) {
+            await supabase.rpc("increment_total_used", { _user_id: propOwner.user_id });
           }
         } else {
           await updatePhotoStatus(supabase, photo.id, "done", "Hotovo");

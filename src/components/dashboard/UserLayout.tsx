@@ -3,7 +3,7 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useUserAuth } from '@/hooks/use-user-auth';
 import { useCredits } from '@/hooks/use-credits';
 import { supabase } from '@/integrations/supabase/client';
-import { Building2, Plus, LogOut, Home, Menu, Sparkles, ShoppingCart, ChevronDown } from 'lucide-react';
+import { Building2, Plus, LogOut, Home, Menu, Sparkles, ShoppingCart, ChevronDown, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Progress } from '@/components/ui/progress';
@@ -163,6 +163,18 @@ function Sidebar({ currentPath, userEmail }: { currentPath: string; userEmail?: 
         {userEmail && (
           <p className="px-3 pb-2 text-xs text-muted-foreground truncate">{userEmail}</p>
         )}
+        <Link
+          to="/dashboard/profile"
+          className={cn(
+            "flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
+            currentPath === '/dashboard/profile'
+              ? "bg-primary/10 text-primary font-semibold border-l-2 border-primary rounded-l-none"
+              : "text-muted-foreground hover:bg-muted hover:text-foreground"
+          )}
+        >
+          <User className="h-4 w-4" />
+          Profil
+        </Link>
         <Link
           to="/"
           className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"

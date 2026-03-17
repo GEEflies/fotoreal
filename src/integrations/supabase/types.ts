@@ -14,6 +14,48 @@ export type Database = {
   }
   public: {
     Tables: {
+      profiles: {
+        Row: {
+          address: string | null
+          company_name: string | null
+          created_at: string | null
+          dic: string | null
+          ic_dph: string | null
+          ico: string | null
+          id: string
+          logo_url: string | null
+          updated_at: string | null
+          user_id: string
+          watermark_position: string | null
+        }
+        Insert: {
+          address?: string | null
+          company_name?: string | null
+          created_at?: string | null
+          dic?: string | null
+          ic_dph?: string | null
+          ico?: string | null
+          id?: string
+          logo_url?: string | null
+          updated_at?: string | null
+          user_id: string
+          watermark_position?: string | null
+        }
+        Update: {
+          address?: string | null
+          company_name?: string | null
+          created_at?: string | null
+          dic?: string | null
+          ic_dph?: string | null
+          ico?: string | null
+          id?: string
+          logo_url?: string | null
+          updated_at?: string | null
+          user_id?: string
+          watermark_position?: string | null
+        }
+        Relationships: []
+      }
       properties: {
         Row: {
           created_at: string
