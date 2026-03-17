@@ -1,35 +1,53 @@
+import { useState } from 'react';
 import { UserLayout } from '@/components/dashboard/UserLayout';
 import { useCredits } from '@/hooks/use-credits';
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
-import { Badge } from '@/components/ui/badge';
-import { Check, Sparkles, Image as ImageIcon } from 'lucide-react';
+import { Sparkles, Loader2, ChevronDown } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
-import { useToast } from '@/hooks/use-toast';
+import { supabase } from '@/integrations/supabase/client';
 
 const PACKAGES = [
-  { photos: 20, price: 14, pricePerPhoto: '0,70 €', popular: false },
-  { photos: 40, price: 26, pricePerPhoto: '0,65 €', popular: false },
-  { photos: 80, price: 48, pricePerPhoto: '0,60 €', popular: true },
-  { photos: 160, price: 87, pricePerPhoto: '0,54 €', popular: false },
-  { photos: 320, price: 165, pricePerPhoto: '0,52 €', popular: false },
-];
+  { photos: 20, price: 14, ppp: 0.70, properties: 1, discount: 0 },
+  { photos: 40, price: 26, ppp: 0.65, properties: 2, discount: 7 },
+  { photos: 80, price: 48, ppp: 0.59, properties: 4, discount: 16 },
+  { photos: 160, price: 87, ppp: 0.54, properties: 8, discount: 23 },
+  { photos: 320, price: 165, ppp: 0.51, properties: 16, discount: 27 },
+] as const;
+
+function propLabel(n: number) {
+  return n === 1 ? "nehnuteľnosť" : n < 5 ? "nehnuteľnosti" : "nehnuteľností";
+}
 
 export default function DashboardCredits() {
   const { credits, isLoading } = useCredits();
-  const { toast } = useToast();
+  const [selected, setSelected] = useState(2);
+  const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
 
-  const handlePurchase = async (photos: number, price: number) => {
-    // TODO: Integrate with Stripe checkout
-    toast({
-      title: 'Čoskoro dostupné',
-      description: `Platba za ${photos} fotiek (${price} €) bude čoskoro k dispozícii.`,
-    });
+  const pkg = PACKAGES[selected];
+  const photographerLow = pkg.properties * 100;
+  const photographerHigh = pkg.properties * 300;
+
+  const handleCheckout = async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { photos: pkg.photos, origin: window.location.origin },
+      });
+      if (error) throw error;
+      if (data?.url) {
+        window.location.href = data.url;
+      }
+    } catch (e: any) {
+      console.error("Checkout error:", e);
+      setLoading(false);
+    }
   };
 
   return (
     <UserLayout>
-      <div className="max-w-4xl mx-auto space-y-8">
+      <div className="max-w-lg mx-auto space-y-8">
         <div>
           <h1 className="text-2xl font-heading font-bold text-foreground">Kredity</h1>
           <p className="text-muted-foreground">1 kredit = 1 AI-spracovaná fotka</p>
@@ -58,53 +76,123 @@ export default function DashboardCredits() {
           </Card>
         )}
 
-        {/* Packages */}
+        {/* LP-style pricing widget */}
         <div>
           <h2 className="text-lg font-heading font-bold text-foreground mb-4">Dokúpiť kredity</h2>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-            {PACKAGES.map((pkg) => (
-              <Card
-                key={pkg.photos}
-                className={pkg.popular ? 'border-primary ring-2 ring-primary/20 relative' : ''}
-              >
-                {pkg.popular && (
-                  <Badge className="absolute -top-2.5 left-1/2 -translate-x-1/2 bg-primary text-primary-foreground">
-                    Najpopulárnejší
-                  </Badge>
-                )}
-                <CardHeader className="pb-3">
-                  <CardTitle className="flex items-center gap-2">
-                    <ImageIcon className="h-5 w-5 text-primary" />
-                    {pkg.photos} fotiek
-                  </CardTitle>
-                  <CardDescription>{pkg.pricePerPhoto} / fotka</CardDescription>
-                </CardHeader>
-                <CardContent className="space-y-4">
-                  <div className="text-3xl font-heading font-bold text-foreground">
-                    {pkg.price} €
+
+          <div className="rounded-2xl border-2 border-primary/20 bg-card shadow-lg overflow-visible">
+            {/* Dropdown selector */}
+            <div className="px-3 sm:px-5 pt-3 sm:pt-5 pb-0">
+              <p className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wide">
+                Vybrať balíček
+              </p>
+              <div className="relative">
+                <button
+                  onClick={() => setOpen(!open)}
+                  className="w-full p-3 sm:p-4 rounded-xl border border-border bg-background hover:border-primary/40 transition-colors text-left"
+                >
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      <span className="font-heading text-2xl font-extrabold text-foreground">
+                        {pkg.photos}
+                      </span>
+                      <span className="text-muted-foreground text-sm">fotiek</span>
+                      {pkg.discount > 0 && (
+                        <span className="text-xs font-bold text-success bg-success/10 px-2 py-0.5 rounded-full">
+                          -{pkg.discount}%
+                        </span>
+                      )}
+                      <span className="text-muted-foreground text-sm ml-1">
+                        ~{pkg.properties} {propLabel(pkg.properties)}
+                      </span>
+                    </div>
+                    <div className="text-right">
+                      <div className="flex items-center gap-1">
+                        <span className="font-heading text-xl font-bold text-foreground">
+                          {pkg.price} €
+                        </span>
+                        <ChevronDown
+                          className={`h-5 w-5 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`}
+                        />
+                      </div>
+                      <span className="text-sm font-semibold text-primary">({pkg.ppp.toFixed(2)} € / ks)</span>
+                    </div>
                   </div>
-                  <ul className="space-y-1.5 text-sm text-muted-foreground">
-                    <li className="flex items-center gap-2"><Check className="h-4 w-4 text-success" />HDR vylepšenie</li>
-                    <li className="flex items-center gap-2"><Check className="h-4 w-4 text-success" />Výmena oblohy</li>
-                    <li className="flex items-center gap-2"><Check className="h-4 w-4 text-success" />GDPR rozmazanie</li>
-                    <li className="flex items-center gap-2"><Check className="h-4 w-4 text-success" />Osvetlenie okien</li>
-                  </ul>
-                  <Button
-                    onClick={() => handlePurchase(pkg.photos, pkg.price)}
-                    className={pkg.popular ? 'w-full bg-success hover:bg-success/90 text-success-foreground font-bold' : 'w-full'}
-                    variant={pkg.popular ? 'default' : 'outline'}
-                  >
-                    Kúpiť za {pkg.price} €
-                  </Button>
-                </CardContent>
-              </Card>
-            ))}
+                </button>
+
+                {open && (
+                  <div className="absolute top-full left-0 right-0 z-50 mt-1 rounded-xl border border-border bg-card shadow-xl overflow-hidden">
+                    {PACKAGES.map((p, i) => (
+                      <button
+                        key={p.photos}
+                        onClick={() => {
+                          setSelected(i);
+                          setOpen(false);
+                        }}
+                        className={`w-full px-4 py-3 text-left transition-colors hover:bg-accent/50 ${
+                          i === selected ? "bg-primary/5" : ""
+                        } ${i < PACKAGES.length - 1 ? "border-b border-border/50" : ""}`}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <span className="font-heading text-lg font-bold text-foreground">
+                              {p.photos}
+                            </span>
+                            <span className="text-muted-foreground text-sm">fotiek</span>
+                            {p.discount > 0 && (
+                              <span className="text-xs font-bold text-success bg-success/10 px-2 py-0.5 rounded-full">
+                                -{p.discount}%
+                              </span>
+                            )}
+                            <span className="text-muted-foreground text-sm ml-1">
+                              ~{p.properties} {propLabel(p.properties)}
+                            </span>
+                          </div>
+                          <div className="text-right">
+                            <span className="font-bold text-foreground">{p.price} €</span>
+                            <p className="text-sm font-semibold text-primary">({p.ppp.toFixed(2)} € / ks)</p>
+                          </div>
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+
+            {/* Savings + CTA */}
+            <div className="p-3 sm:p-5 space-y-3 sm:space-y-4">
+              <div className="rounded-lg sm:rounded-xl bg-success/5 border border-success/20 px-3 py-3 sm:px-4 sm:py-3 text-center">
+                <span className="text-xs sm:text-sm text-muted-foreground">
+                  Fotograf ~{pkg.properties} {propLabel(pkg.properties)}:{" "}
+                </span>
+                <span className="text-xs sm:text-sm text-destructive font-semibold line-through">
+                  {photographerLow}–{photographerHigh} €
+                </span>
+              </div>
+
+              <Button
+                size="lg"
+                onClick={handleCheckout}
+                disabled={loading}
+                className="w-full font-bold text-sm sm:text-base bg-success hover:bg-success/90 text-success-foreground shadow-[0_4px_20px_-4px_hsl(var(--success)/0.4)] group"
+              >
+                {loading ? (
+                  <Loader2 className="mr-2 h-4 w-4 sm:h-5 sm:w-5 animate-spin" />
+                ) : (
+                  <Sparkles className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                )}
+                {loading
+                  ? "Presmerovanie..."
+                  : `Kúpiť fotky pre ${pkg.properties} ${propLabel(pkg.properties)} za ${pkg.price} €`}
+              </Button>
+
+              <p className="text-[10px] sm:text-xs text-muted-foreground text-center">
+                Kredity nevypršia · Bezpečná platba cez Stripe · Faktúra emailom
+              </p>
+            </div>
           </div>
         </div>
-
-        <p className="text-xs text-center text-muted-foreground">
-          Kredity nemajú expiráciu • Bezpečná platba cez Stripe • Faktúra emailom
-        </p>
       </div>
     </UserLayout>
   );
