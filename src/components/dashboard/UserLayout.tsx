@@ -2,10 +2,10 @@ import { ReactNode, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useUserAuth } from '@/hooks/use-user-auth';
 import { useCredits } from '@/hooks/use-credits';
-import { Building2, Plus, LogOut, Home, Menu, ShoppingCart, Sparkles } from 'lucide-react';
+import { Building2, Plus, LogOut, Home, Menu, Sparkles, ShoppingCart } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
-import { CreditsBanner } from '@/components/dashboard/CreditsBanner';
+import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
 
 interface UserLayoutProps {
@@ -15,22 +15,19 @@ interface UserLayoutProps {
 const navItems = [
   { href: '/dashboard', label: 'Nehnuteľnosti', icon: Building2 },
   { href: '/dashboard/new', label: 'Nová nehnuteľnosť', icon: Plus },
-  { href: '/dashboard/credits', label: 'Dokúpiť kredity', icon: ShoppingCart },
 ];
 
-function NavItem({ href, label, icon: Icon, isActive, highlight }: {
-  href: string; label: string; icon: typeof Building2; isActive: boolean; highlight?: boolean;
+function NavItem({ href, label, icon: Icon, isActive }: {
+  href: string; label: string; icon: typeof Building2; isActive: boolean;
 }) {
   return (
     <Link
       to={href}
       className={cn(
-        "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors",
+        "flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
         isActive
-          ? "bg-primary text-primary-foreground"
-          : highlight
-            ? "bg-success/10 text-success hover:bg-success/20 font-bold"
-            : "text-muted-foreground hover:bg-muted hover:text-foreground"
+          ? "bg-primary/10 text-primary font-semibold border-l-2 border-primary rounded-l-none"
+          : "text-muted-foreground hover:bg-muted hover:text-foreground"
       )}
     >
       <Icon className="h-4 w-4" />
@@ -39,9 +36,39 @@ function NavItem({ href, label, icon: Icon, isActive, highlight }: {
   );
 }
 
-function Sidebar({ currentPath }: { currentPath: string }) {
-  const { signOut } = useUserAuth();
+function CreditWidget() {
   const { credits } = useCredits();
+  if (!credits) return null;
+
+  const available = credits.available;
+  const total = credits.free_credits + credits.purchased_credits;
+  const pct = total > 0 ? Math.round((available / total) * 100) : 0;
+  const isLow = available <= 2;
+  const isEmpty = available <= 0;
+
+  return (
+    <div className="mx-4 my-3 rounded-xl border border-border bg-muted/50 p-3 space-y-2.5">
+      <div className="flex items-center gap-2">
+        <Sparkles className={cn("h-4 w-4", isEmpty ? "text-destructive" : isLow ? "text-warning" : "text-primary")} />
+        <span className="font-semibold text-sm text-foreground">{available}</span>
+        <span className="text-xs text-muted-foreground">fotiek</span>
+      </div>
+      <Progress
+        value={pct}
+        className={cn("h-1.5", isEmpty ? "[&>div]:bg-destructive" : isLow ? "[&>div]:bg-warning" : "")}
+      />
+      <Link to="/dashboard/credits" className="block">
+        <Button size="sm" className="w-full bg-success hover:bg-success/90 text-success-foreground text-xs h-8">
+          <ShoppingCart className="h-3.5 w-3.5 mr-1.5" />
+          Dokúpiť kredity
+        </Button>
+      </Link>
+    </div>
+  );
+}
+
+function Sidebar({ currentPath, userEmail }: { currentPath: string; userEmail?: string }) {
+  const { signOut } = useUserAuth();
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -56,18 +83,9 @@ function Sidebar({ currentPath }: { currentPath: string }) {
         <p className="text-xs text-muted-foreground">Spracovanie fotiek</p>
       </div>
 
-      {/* Credits in sidebar */}
-      {credits && (
-        <div className="px-4 py-3 border-b border-border">
-          <div className="flex items-center gap-2 text-sm">
-            <Sparkles className="h-4 w-4 text-primary" />
-            <span className="font-medium">{credits.available}</span>
-            <span className="text-muted-foreground text-xs">fotiek k dispozícii</span>
-          </div>
-        </div>
-      )}
-      
-      <nav className="flex-1 p-4 space-y-1">
+      <CreditWidget />
+
+      <nav className="flex-1 px-4 space-y-1">
         {navItems.map((item) => (
           <NavItem
             key={item.href}
@@ -75,22 +93,24 @@ function Sidebar({ currentPath }: { currentPath: string }) {
             label={item.label}
             icon={item.icon}
             isActive={currentPath === item.href}
-            highlight={item.href === '/dashboard/credits' && currentPath !== '/dashboard/credits'}
           />
         ))}
       </nav>
 
-      <div className="p-4 border-t border-border space-y-2">
+      <div className="p-4 border-t border-border space-y-1">
+        {userEmail && (
+          <p className="px-3 pb-2 text-xs text-muted-foreground truncate">{userEmail}</p>
+        )}
         <Link
           to="/"
-          className="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+          className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
         >
           <Home className="h-4 w-4" />
           Späť na web
         </Link>
         <button
           onClick={handleSignOut}
-          className="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors w-full"
+          className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors w-full"
         >
           <LogOut className="h-4 w-4" />
           Odhlásiť sa
@@ -133,14 +153,14 @@ export function UserLayout({ children }: UserLayoutProps) {
             <Button variant="ghost" size="icon"><Menu className="h-5 w-5" /></Button>
           </SheetTrigger>
           <SheetContent side="left" className="p-0 w-64">
-            <Sidebar currentPath={location.pathname} />
+            <Sidebar currentPath={location.pathname} userEmail={user.email} />
           </SheetContent>
         </Sheet>
       </header>
 
       <div className="flex">
         <aside className="hidden lg:block w-64 bg-card border-r border-border h-screen fixed top-0 left-0">
-          <Sidebar currentPath={location.pathname} />
+          <Sidebar currentPath={location.pathname} userEmail={user.email} />
         </aside>
         <main className="flex-1 p-4 lg:p-8 lg:ml-64 min-h-screen pt-20 lg:pt-8">
           {children}

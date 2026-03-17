@@ -3,8 +3,6 @@ import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { UserLayout } from '@/components/dashboard/UserLayout';
 import { PropertyCard } from '@/components/dashboard/PropertyCard';
-import { CreditsBanner } from '@/components/dashboard/CreditsBanner';
-import { useCredits } from '@/hooks/use-credits';
 import { Button } from '@/components/ui/button';
 import { Plus, Building2 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -21,7 +19,6 @@ interface Property {
 export default function DashboardProperties() {
   const [properties, setProperties] = useState<Property[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { credits, isLoading: creditsLoading } = useCredits();
 
   useEffect(() => {
     loadProperties();
@@ -61,10 +58,6 @@ export default function DashboardProperties() {
   return (
     <UserLayout>
       <div className="space-y-6">
-        {/* Credits banner - prominent */}
-        {!creditsLoading && credits && (
-          <CreditsBanner available={credits.available} />
-        )}
 
         <div className="flex items-center justify-between">
           <div>
