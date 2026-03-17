@@ -4,9 +4,9 @@ import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 const painPoints = [
   {
     icon: DollarSign,
-    title: "Platíte 100–300 € mesačne za editáciu",
+    title: "Platíte 150–300 € za každý fotoshoot",
     description:
-      "Pri 20 fotkách na nehnuteľnosť a cene 3–5 € za fotku vám fotografovia účtujú stovky eur mesačne. To sú peniaze, ktoré môžu ísť do marketingu.",
+      "Pri 20 fotkách na nehnuteľnosť a cene 8–15 € za fotku vám fotografovia účtujú stovky eur za jedno fotenie. To sú peniaze, ktoré môžu ísť do marketingu.",
   },
   {
     icon: Clock,
