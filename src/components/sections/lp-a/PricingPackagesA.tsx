@@ -145,30 +145,21 @@ export function PricingPackagesA() {
                   </div>
                 </div>
 
-                {/* Mobile: horizontal compact layout */}
-                <div className="sm:hidden flex items-center gap-2.5">
-                  <div className="flex items-baseline gap-0.5 shrink-0">
-                    <span className="font-heading text-3xl font-extrabold text-primary">
-                      {pkg.price}
-                    </span>
-                    <span className="font-heading text-lg font-bold text-primary/70">€</span>
+                {/* Mobile: centered metadata grid, no large price */}
+                <div className="sm:hidden grid grid-cols-3 gap-2 text-center text-[11px]">
+                  <div>
+                    <span className="text-muted-foreground">Cena/fotka</span>
+                    <p className="font-bold text-foreground text-sm">{pkg.ppp.toFixed(2)} €</p>
                   </div>
-                  <div className="h-8 w-px bg-border shrink-0" />
-                  <div className="grid grid-cols-2 gap-x-2.5 gap-y-0.5 text-[11px] min-w-0">
-                    <div>
-                      <span className="text-muted-foreground">Cena/fotka</span>
-                      <p className="font-bold text-foreground">{pkg.ppp.toFixed(2)} €</p>
-                    </div>
-                    <div>
-                      <span className="text-muted-foreground">Fotiek</span>
-                      <p className="font-bold text-foreground">{pkg.photos} ks</p>
-                    </div>
-                    <div className="col-span-2">
-                      <span className="text-muted-foreground">Cca</span>{" "}
-                      <span className="font-bold text-foreground">
-                        {pkg.properties} {pkg.properties === 1 ? "nehnuteľnosť" : pkg.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"}
-                      </span>
-                    </div>
+                  <div>
+                    <span className="text-muted-foreground">Fotiek</span>
+                    <p className="font-bold text-foreground text-sm">{pkg.photos} ks</p>
+                  </div>
+                  <div>
+                    <span className="text-muted-foreground">Cca</span>
+                    <p className="font-bold text-foreground text-sm">
+                      {pkg.properties} {pkg.properties === 1 ? "nehnuteľnosť" : pkg.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"}
+                    </p>
                   </div>
                 </div>
               </div>
