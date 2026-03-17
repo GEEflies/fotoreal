@@ -20,8 +20,6 @@ import {
   AdminSubmissionDetail,
   AdminClients,
   AdminClientDetail,
-  AdminAnalytics,
-  AdminSettings,
 } from "./pages/admin";
 import { Navigate } from "react-router-dom";
 
