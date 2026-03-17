@@ -17,6 +17,7 @@ const DashboardProperties = lazy(() => import("./pages/dashboard/DashboardProper
 const DashboardNewProperty = lazy(() => import("./pages/dashboard/DashboardNewProperty"));
 const DashboardPropertyDetail = lazy(() => import("./pages/dashboard/DashboardPropertyDetail"));
 const DashboardCredits = lazy(() => import("./pages/dashboard/DashboardCredits"));
+const DashboardProfile = lazy(() => import("./pages/dashboard/DashboardProfile"));
 const AdminLogin = lazy(() => import("./pages/admin/AdminLogin"));
 const AdminSubmissions = lazy(() => import("./pages/admin/AdminSubmissions"));
 const AdminSubmissionDetail = lazy(() => import("./pages/admin/AdminSubmissionDetail"));
@@ -42,6 +43,7 @@ const App = () => (
             <Route path="/dashboard/new" element={<DashboardNewProperty />} />
             <Route path="/dashboard/properties/:id" element={<DashboardPropertyDetail />} />
             <Route path="/dashboard/credits" element={<DashboardCredits />} />
+            <Route path="/dashboard/profile" element={<DashboardProfile />} />
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin" element={<Navigate to="/admin/submissions" replace />} />
             <Route path="/admin/submissions" element={<AdminSubmissions />} />

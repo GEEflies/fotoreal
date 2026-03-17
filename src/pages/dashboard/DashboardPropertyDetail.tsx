@@ -186,7 +186,7 @@ export default function DashboardPropertyDetail() {
                 <div className="flex items-center justify-between">
                   <AIProgressLoader
                     status={photo.ai_status}
-                    label={photo.ai_status === 'done' ? 'Hotovo' : photo.ai_status === 'error' ? 'Chyba' : (photo.ai_step_label || '')}
+                    label={photo.ai_status === 'done' ? 'Hotovo' : (photo.ai_step_label || '')}
                   />
                   {photo.ai_status === 'done' && photo.processed_url && (
                     <a

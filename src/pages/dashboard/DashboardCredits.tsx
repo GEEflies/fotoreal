@@ -47,35 +47,39 @@ export default function DashboardCredits() {
 
   return (
     <UserLayout>
-      <div className="max-w-2xl mx-auto space-y-6">
-        {/* Top row: heading + balance side by side */}
-        <div className="flex items-start justify-between gap-4">
-          <div>
-            <h1 className="text-2xl font-heading font-bold text-foreground">Dokúpiť kredity</h1>
-            <p className="text-sm text-muted-foreground">1 kredit = 1 AI-spracovaná fotka</p>
-          </div>
-          {isLoading ? (
-            <Skeleton className="h-14 w-40 rounded-lg" />
-          ) : credits && (
-            <div className="flex items-center gap-3 rounded-xl border border-primary/20 bg-primary/5 px-4 py-2.5 shrink-0">
-              <div className="p-2 rounded-full bg-primary/10">
-                <Sparkles className="h-5 w-5 text-primary" />
-              </div>
-              <div className="text-right">
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-2xl font-heading font-bold text-foreground">{credits.available}</span>
-                  <span className="text-sm text-muted-foreground">fotiek</span>
+      <div className="max-w-lg mx-auto space-y-8">
+        <div>
+          <h1 className="text-2xl font-heading font-bold text-foreground">Kredity</h1>
+          <p className="text-muted-foreground">1 kredit = 1 AI-spracovaná fotka</p>
+        </div>
+
+        {/* Current balance */}
+        {isLoading ? (
+          <Skeleton className="h-24 rounded-lg" />
+        ) : credits && (
+          <Card className="border-primary/20 bg-gradient-to-r from-primary/5 to-accent/20">
+            <CardContent className="p-6 flex items-center justify-between">
+              <div>
+                <p className="text-sm text-muted-foreground">Váš zostatok</p>
+                <div className="flex items-baseline gap-2">
+                  <span className="text-4xl font-heading font-bold text-foreground">{credits.available}</span>
+                  <span className="text-muted-foreground">fotiek</span>
                 </div>
-                <p className="text-[10px] text-muted-foreground">
+                <p className="text-xs text-muted-foreground mt-1">
                   {credits.free_credits - Math.min(credits.total_used, credits.free_credits)} voľných + {credits.purchased_credits - Math.max(0, credits.total_used - credits.free_credits)} zakúpených
                 </p>
               </div>
-            </div>
-          )}
-        </div>
+              <div className="p-4 rounded-full bg-primary/10">
+                <Sparkles className="h-8 w-8 text-primary" />
+              </div>
+            </CardContent>
+          </Card>
+        )}
 
         {/* LP-style pricing widget */}
-        <div className="max-w-lg">
+        <div>
+          <h2 className="text-lg font-heading font-bold text-foreground mb-4">Dokúpiť kredity</h2>
+
           <div className="rounded-2xl border-2 border-primary/20 bg-card shadow-lg overflow-visible">
             {/* Dropdown selector */}
             <div className="px-3 sm:px-5 pt-3 sm:pt-5 pb-0">

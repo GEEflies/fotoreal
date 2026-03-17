@@ -114,14 +114,7 @@ export default function DashboardNewProperty() {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
 
-      // Deduct credits
-      const { error: creditError } = await supabase
-        .from('user_credits')
-        .update({ total_used: (credits?.total_used ?? 0) + photos.length })
-        .eq('user_id', user.id);
-
-      if (creditError) throw creditError;
-
+      // Credits are deducted per-photo in the edge function after successful processing
       // Create property
       const { data: property, error: propError } = await supabase
         .from('properties')
@@ -160,7 +153,7 @@ export default function DashboardNewProperty() {
         body: { property_id: property.id },
       });
 
-      toast({ title: 'Úspech!', description: 'Fotky sa spracovávajú AI-čkom.' });
+      toast({ title: 'Úspech!', description: 'Fotky sa spracovávajú automaticky.' });
       navigate(`/dashboard/properties/${property.id}`);
     } catch (error) {
       console.error('Error:', error);
