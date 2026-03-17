@@ -365,15 +365,21 @@ export default function DashboardProfile() {
           </CardContent>
         </Card>
 
-        {/* Save button */}
-        <Button onClick={handleSave} disabled={isSaving} size="lg" className="w-full">
-          {isSaving ? (
-            <Loader2 className="h-4 w-4 animate-spin mr-2" />
-          ) : (
-            <Save className="h-4 w-4 mr-2" />
+        {/* Auto-save indicator */}
+        <div className="flex items-center justify-center gap-2 text-sm text-muted-foreground h-10">
+          {saveStatus === 'saving' && (
+            <>
+              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              <span>Ukladám...</span>
+            </>
           )}
-          {isSaving ? 'Ukladám...' : 'Uložiť profil'}
-        </Button>
+          {saveStatus === 'saved' && (
+            <>
+              <Check className="h-3.5 w-3.5 text-success" />
+              <span className="text-success">Uložené</span>
+            </>
+          )}
+        </div>
       </div>
     </UserLayout>
   );
