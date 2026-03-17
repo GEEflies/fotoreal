@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useUserAuth } from '@/hooks/use-user-auth';
-import { lovable } from '@/integrations/lovable/index';
 import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -51,12 +50,15 @@ export default function Login() {
     if (redirectTo !== '/dashboard') {
       sessionStorage.setItem('auth_redirect', redirectTo);
     }
-    const { error } = await lovable.auth.signInWithOAuth('google', {
-      redirect_uri: window.location.origin,
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: window.location.origin,
+      },
     });
     setIsGoogleLoading(false);
     if (error) {
-      toast({ title: 'Chyba prihlásenia', description: translateError(String(error)), variant: 'destructive' });
+      toast({ title: 'Chyba prihlásenia', description: translateError(error.message), variant: 'destructive' });
     }
   };
 
