@@ -3,11 +3,13 @@ import { useParams, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { UserLayout } from '@/components/dashboard/UserLayout';
 import { AIProgressLoader } from '@/components/dashboard/AIProgressLoader';
+import { PhotoCompareModal } from '@/components/dashboard/PhotoCompareModal';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Skeleton } from '@/components/ui/skeleton';
-import { ArrowLeft, Download, ExternalLink } from 'lucide-react';
+import { ArrowLeft, Download, DownloadCloud } from 'lucide-react';
+import { useToast } from '@/hooks/use-toast';
 
 interface Photo {
   id: string;
@@ -31,52 +33,67 @@ const statusLabels: Record<string, { label: string; variant: 'default' | 'second
   error: { label: 'Chyba', variant: 'destructive' },
 };
 
+async function downloadAllPhotos(photos: Photo[], propertyName: string) {
+  const processedPhotos = photos.filter(p => p.ai_status === 'done' && p.processed_url);
+  if (processedPhotos.length === 0) return;
+
+  for (let i = 0; i < processedPhotos.length; i++) {
+    const photo = processedPhotos[i];
+    try {
+      const resp = await fetch(photo.processed_url!);
+      const blob = await resp.blob();
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement('a');
+      a.href = url;
+      const ext = photo.processed_url!.includes('.png') ? 'png' : 'jpg';
+      a.download = `${propertyName}-${i + 1}.${ext}`;
+      document.body.appendChild(a);
+      a.click();
+      document.body.removeChild(a);
+      URL.revokeObjectURL(url);
+      // Small delay between downloads to avoid browser blocking
+      if (i < processedPhotos.length - 1) {
+        await new Promise(r => setTimeout(r, 300));
+      }
+    } catch (e) {
+      console.error('Download error:', e);
+    }
+  }
+}
+
 export default function DashboardPropertyDetail() {
   const { id } = useParams<{ id: string }>();
   const [property, setProperty] = useState<Property | null>(null);
   const [photos, setPhotos] = useState<Photo[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [compareIndex, setCompareIndex] = useState<number | null>(null);
+  const [isDownloading, setIsDownloading] = useState(false);
+  const { toast } = useToast();
 
   useEffect(() => {
     if (!id) return;
     loadData();
     
-    // Subscribe to realtime updates on property_photos
     const channel = supabase
       .channel(`property-photos-${id}`)
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'property_photos',
-          filter: `property_id=eq.${id}`,
-        },
-        (payload) => {
-          setPhotos(prev => prev.map(p => 
-            p.id === payload.new.id 
-              ? { ...p, ...payload.new as Photo }
-              : p
-          ));
-        }
-      )
+      .on('postgres_changes', {
+        event: 'UPDATE', schema: 'public', table: 'property_photos',
+        filter: `property_id=eq.${id}`,
+      }, (payload) => {
+        setPhotos(prev => prev.map(p => 
+          p.id === payload.new.id ? { ...p, ...payload.new as Photo } : p
+        ));
+      })
       .subscribe();
 
-    // Also subscribe to property status changes
     const propChannel = supabase
       .channel(`property-${id}`)
-      .on(
-        'postgres_changes',
-        {
-          event: 'UPDATE',
-          schema: 'public',
-          table: 'properties',
-          filter: `id=eq.${id}`,
-        },
-        (payload) => {
-          setProperty(prev => prev ? { ...prev, ...payload.new as Property } : null);
-        }
-      )
+      .on('postgres_changes', {
+        event: 'UPDATE', schema: 'public', table: 'properties',
+        filter: `id=eq.${id}`,
+      }, (payload) => {
+        setProperty(prev => prev ? { ...prev, ...payload.new as Property } : null);
+      })
       .subscribe();
 
     return () => {
@@ -87,18 +104,25 @@ export default function DashboardPropertyDetail() {
 
   const loadData = async () => {
     if (!id) return;
-    
     const [{ data: prop }, { data: photoData }] = await Promise.all([
       supabase.from('properties').select('*').eq('id', id).single(),
       supabase.from('property_photos').select('*').eq('property_id', id).order('created_at'),
     ]);
-
     if (prop) setProperty(prop as unknown as Property);
     if (photoData) setPhotos(photoData as unknown as Photo[]);
     setIsLoading(false);
   };
 
-  const doneCount = photos.filter(p => p.ai_status === 'done').length;
+  const handleDownloadAll = async () => {
+    if (!property) return;
+    setIsDownloading(true);
+    toast({ title: 'Sťahujem...', description: `Sťahujem ${donePhotos.length} fotiek.` });
+    await downloadAllPhotos(photos, property.name);
+    setIsDownloading(false);
+  };
+
+  const donePhotos = photos.filter(p => p.ai_status === 'done' && p.processed_url);
+  const doneCount = donePhotos.length;
   const totalCount = photos.length;
   const progressPercent = totalCount > 0 ? Math.round((doneCount / totalCount) * 100) : 0;
 
@@ -133,7 +157,7 @@ export default function DashboardPropertyDetail() {
     <UserLayout>
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex items-start justify-between">
+        <div className="flex items-start justify-between flex-wrap gap-4">
           <div>
             <Link to="/dashboard" className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-2">
               <ArrowLeft className="h-4 w-4" /> Späť na nehnuteľnosti
@@ -146,6 +170,17 @@ export default function DashboardPropertyDetail() {
               </span>
             </div>
           </div>
+
+          {donePhotos.length > 0 && (
+            <Button
+              onClick={handleDownloadAll}
+              disabled={isDownloading}
+              className="gap-2"
+            >
+              <DownloadCloud className="h-4 w-4" />
+              {isDownloading ? 'Sťahujem...' : `Stiahnuť všetky (${donePhotos.length})`}
+            </Button>
+          )}
         </div>
 
         {/* Overall progress */}
@@ -168,17 +203,28 @@ export default function DashboardPropertyDetail() {
 
         {/* Photo grid */}
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-          {photos.map((photo) => (
-            <Card key={photo.id} className="overflow-hidden">
+          {photos.map((photo, index) => (
+            <Card
+              key={photo.id}
+              className="overflow-hidden group cursor-pointer transition-shadow hover:shadow-lg"
+              onClick={() => setCompareIndex(index)}
+            >
               <div className="aspect-video relative overflow-hidden bg-muted">
                 <img
                   src={photo.processed_url || photo.original_url}
                   alt="Foto"
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover transition-transform group-hover:scale-105"
                 />
                 {photo.ai_status !== 'done' && photo.ai_status !== 'error' && (
                   <div className="absolute inset-0 bg-background/60 backdrop-blur-sm flex items-center justify-center">
                     <AIProgressLoader status={photo.ai_status} label={photo.ai_step_label || ''} />
+                  </div>
+                )}
+                {photo.ai_status === 'done' && photo.processed_url && (
+                  <div className="absolute inset-0 bg-foreground/0 group-hover:bg-foreground/10 transition-colors flex items-center justify-center">
+                    <span className="text-sm font-medium text-background opacity-0 group-hover:opacity-100 transition-opacity bg-foreground/60 backdrop-blur-sm px-3 py-1.5 rounded-full">
+                      Porovnať
+                    </span>
                   </div>
                 )}
               </div>
@@ -194,6 +240,7 @@ export default function DashboardPropertyDetail() {
                       target="_blank"
                       rel="noopener noreferrer"
                       className="text-primary hover:text-primary/80"
+                      onClick={(e) => e.stopPropagation()}
                     >
                       <Download className="h-4 w-4" />
                     </a>
@@ -204,6 +251,14 @@ export default function DashboardPropertyDetail() {
           ))}
         </div>
       </div>
+
+      {/* Compare modal */}
+      <PhotoCompareModal
+        photos={photos}
+        initialIndex={compareIndex ?? 0}
+        open={compareIndex !== null}
+        onOpenChange={(open) => { if (!open) setCompareIndex(null); }}
+      />
     </UserLayout>
   );
 }
