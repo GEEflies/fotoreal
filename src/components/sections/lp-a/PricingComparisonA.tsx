@@ -84,9 +84,9 @@ export function PricingComparisonA() {
         <div className="mt-10 text-center p-6 rounded-xl bg-primary/5 border border-primary/20 max-w-2xl mx-auto">
           <p className="text-sm text-muted-foreground mb-1">Pri 10 nehnuteľnostiach × 20 fotiek mesačne</p>
           <p className="font-heading text-lg sm:text-xl font-bold text-foreground">
-            Fotograf: <span className="text-destructive">600–1 000 €</span> → FotoReal: <span className="text-primary">140 €</span>
+            Fotograf: <span className="text-destructive">1 500–3 000 €</span> → FotoReal: <span className="text-primary">140 €</span>
           </p>
-          <p className="text-primary font-bold text-sm mt-1">Ušetríte až 860 € mesačne</p>
+          <p className="text-primary font-bold text-sm mt-1">Ušetríte až 2 860 € mesačne</p>
         </div>
       </div>
     </section>
