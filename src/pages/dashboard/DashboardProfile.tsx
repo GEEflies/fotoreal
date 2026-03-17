@@ -41,11 +41,13 @@ function WatermarkPreview({ position, logoUrl }: { position: WatermarkPosition; 
   };
 
   return (
-    <div className="relative w-full aspect-video rounded-lg bg-muted border border-border overflow-hidden">
-      {/* Fake property image placeholder */}
-      <div className="absolute inset-0 bg-gradient-to-br from-muted to-muted-foreground/10 flex items-center justify-center">
-        <span className="text-xs text-muted-foreground">Náhľad fotky</span>
-      </div>
+    <div className="relative w-full aspect-video rounded-lg border border-border overflow-hidden">
+      {/* Real property photo as background */}
+      <img
+        src="https://raw.githubusercontent.com/SlohGPT/realfoto-adames/main/public/landing/hdr%20merging/hdr-after.jpeg"
+        alt="Ukážka fotky"
+        className="absolute inset-0 w-full h-full object-cover"
+      />
       {/* Watermark */}
       <div className={cn("absolute w-12 h-12 flex items-center justify-center", positionStyles[position])}>
         {logoUrl ? (
