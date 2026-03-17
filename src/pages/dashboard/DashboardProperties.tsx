@@ -3,8 +3,6 @@ import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { UserLayout } from '@/components/dashboard/UserLayout';
 import { PropertyCard } from '@/components/dashboard/PropertyCard';
-import { CreditsBanner } from '@/components/dashboard/CreditsBanner';
-import { useCredits } from '@/hooks/use-credits';
 import { Button } from '@/components/ui/button';
 import { Plus, Building2 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
