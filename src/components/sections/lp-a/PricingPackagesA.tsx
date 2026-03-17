@@ -121,20 +121,53 @@ export function PricingPackagesA() {
             {/* Price hero + savings + CTA */}
             <div className="p-5 space-y-4">
               {/* Price hero */}
-              <div className="text-center py-4 rounded-xl bg-primary/5 border border-primary/10">
-                <div className="flex items-baseline justify-center gap-1">
-                  <span className="font-heading text-5xl font-extrabold text-primary">
-                    {pkg.price}
-                  </span>
-                  <span className="font-heading text-2xl font-bold text-primary/70">€</span>
+              <div className="rounded-xl bg-primary/5 border border-primary/10 p-4">
+                {/* Desktop: centered vertical */}
+                <div className="hidden sm:block text-center py-2">
+                  <div className="flex items-baseline justify-center gap-1">
+                    <span className="font-heading text-5xl font-extrabold text-primary">
+                      {pkg.price}
+                    </span>
+                    <span className="font-heading text-2xl font-bold text-primary/70">€</span>
+                  </div>
+                  <div className="flex items-center justify-center gap-2 mt-2">
+                    <span className="text-xs font-semibold bg-primary/10 text-primary px-2.5 py-0.5 rounded-full">
+                      {pkg.ppp.toFixed(2)} € / fotka
+                    </span>
+                    <span className="text-xs font-semibold bg-muted text-muted-foreground px-2.5 py-0.5 rounded-full">
+                      {pkg.photos} fotiek
+                    </span>
+                    <span className="text-xs font-semibold bg-muted text-muted-foreground px-2.5 py-0.5 rounded-full">
+                      ~{pkg.properties} {pkg.properties === 1 ? "nehnuteľnosť" : pkg.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"}
+                    </span>
+                  </div>
                 </div>
-                <div className="flex items-center justify-center gap-2 mt-2">
-                  <span className="text-xs font-semibold bg-primary/10 text-primary px-2.5 py-0.5 rounded-full">
-                    {pkg.ppp.toFixed(2)} € / fotka
-                  </span>
-                  <span className="text-xs font-semibold bg-muted text-muted-foreground px-2.5 py-0.5 rounded-full">
-                    {pkg.photos} kreditov
-                  </span>
+
+                {/* Mobile: horizontal compact layout */}
+                <div className="sm:hidden flex items-center gap-3">
+                  <div className="flex items-baseline gap-0.5 shrink-0">
+                    <span className="font-heading text-4xl font-extrabold text-primary">
+                      {pkg.price}
+                    </span>
+                    <span className="font-heading text-xl font-bold text-primary/70">€</span>
+                  </div>
+                  <div className="h-10 w-px bg-border shrink-0" />
+                  <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs min-w-0">
+                    <div>
+                      <span className="text-muted-foreground">Cena/fotka</span>
+                      <p className="font-bold text-foreground">{pkg.ppp.toFixed(2)} €</p>
+                    </div>
+                    <div>
+                      <span className="text-muted-foreground">Fotiek</span>
+                      <p className="font-bold text-foreground">{pkg.photos} ks</p>
+                    </div>
+                    <div className="col-span-2">
+                      <span className="text-muted-foreground">Cca</span>{" "}
+                      <span className="font-bold text-foreground">
+                        {pkg.properties} {pkg.properties === 1 ? "nehnuteľnosť" : pkg.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"}
+                      </span>
+                    </div>
+                  </div>
                 </div>
               </div>
 
