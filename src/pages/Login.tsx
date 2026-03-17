@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useUserAuth } from '@/hooks/use-user-auth';
 import { lovable } from '@/integrations/lovable/index';
 import { supabase } from '@/integrations/supabase/client';
@@ -22,10 +22,17 @@ export default function Login() {
   const [isDemoLoading, setIsDemoLoading] = useState(false);
   const { demoLogin } = useUserAuth();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
   const { toast } = useToast();
+
+  const redirectTo = searchParams.get('redirect') || '/dashboard';
 
   const handleGoogleLogin = async () => {
     setIsGoogleLoading(true);
+    // Persist redirect target across OAuth round-trip
+    if (redirectTo !== '/dashboard') {
+      sessionStorage.setItem('auth_redirect', redirectTo);
+    }
     const { error } = await lovable.auth.signInWithOAuth('google', {
       redirect_uri: window.location.origin,
     });
@@ -78,7 +85,7 @@ export default function Login() {
           { onConflict: 'user_id,role' }
         );
       }
-      navigate('/dashboard');
+      navigate(redirectTo);
     }
   };
 
@@ -89,7 +96,7 @@ export default function Login() {
     if (error) {
       toast({ title: 'Chyba', description: error.message, variant: 'destructive' });
     } else {
-      navigate('/dashboard');
+      navigate(redirectTo);
     }
   };
 
