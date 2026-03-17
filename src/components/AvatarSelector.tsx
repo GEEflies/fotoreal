@@ -62,7 +62,7 @@ export function AvatarSelector({ onSelect }: AvatarSelectorProps) {
               <div className={`h-10 w-10 rounded-lg ${opt.iconBg} flex items-center justify-center mb-3`}>
                 <opt.icon className={`h-5 w-5 ${opt.iconColor}`} />
               </div>
-              <h3 className="font-heading font-bold text-foreground text-sm sm:text-base mb-3 min-h-[2.5rem] flex items-center">
+              <h3 className="font-heading font-bold text-foreground text-sm sm:text-base mb-3 flex-1">
                 {opt.label}
               </h3>
               <span className="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-primary group-hover:gap-1.5 transition-all">
