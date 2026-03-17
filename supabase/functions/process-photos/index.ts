@@ -162,34 +162,31 @@ function buildEnhancementPrompt(analysis: AnalysisResult): string {
 }
 
 async function enhancePhoto(imageUrl: string, prompt: string, apiKey: string): Promise<string | null> {
-  const imageBase64 = await fetchImageAsBase64(imageUrl);
-
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key=${apiKey}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [
-          {
-            role: "user",
-            parts: [
-              { text: prompt },
-              {
-                inline_data: {
-                  mime_type: "image/jpeg",
-                  data: imageBase64,
-                },
+  const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      model: "google/gemini-3-pro-image-preview",
+      messages: [
+        {
+          role: "user",
+          content: [
+            { type: "text", text: prompt },
+            {
+              type: "image_url",
+              image_url: {
+                url: imageUrl,
               },
-            ],
-          },
-        ],
-        generationConfig: {
-          responseModalities: ["TEXT", "IMAGE"],
+            },
+          ],
         },
-      }),
-    }
-  );
+      ],
+      modalities: ["image", "text"],
+    }),
+  });
 
   if (!response.ok) {
     const errText = await response.text();
@@ -197,22 +194,14 @@ async function enhancePhoto(imageUrl: string, prompt: string, apiKey: string): P
   }
 
   const data = await response.json();
-  const parts = data.candidates?.[0]?.content?.parts;
-  if (!parts) return null;
-
-  for (const part of parts) {
-    if (part.inline_data?.data) {
-      return `data:${part.inline_data.mime_type};base64,${part.inline_data.data}`;
-    }
-  }
-  return null;
+  return data.choices?.[0]?.message?.images?.[0]?.image_url?.url ?? null;
 }
 
 function getFriendlyPhotoError(error: unknown): string {
   const message = error instanceof Error ? error.message : String(error);
 
   if (message.includes("[429]")) return "Chyba: Príliš veľa požiadaviek, skúste to znova o chvíľu";
-  if (message.includes("[402]")) return "Chyba: Nedostatok kreditu na Gemini API";
+  if (message.includes("[402]")) return "Chyba: Nedostatok kreditu pre AI spracovanie";
   if (message.includes("NOT_FOUND") || message.includes("[404]")) {
     return "Chyba: AI model pre generovanie obrázkov nie je dostupný";
   }
@@ -239,6 +228,9 @@ Deno.serve(async (req) => {
 
     const GEMINI_API_KEY = Deno.env.get("GEMINI_API_KEY");
     if (!GEMINI_API_KEY) throw new Error("GEMINI_API_KEY not configured");
+
+    const LOVABLE_API_KEY = Deno.env.get("LOVABLE_API_KEY");
+    if (!LOVABLE_API_KEY) throw new Error("LOVABLE_API_KEY not configured");
 
     const supabase = createClient(
       Deno.env.get("SUPABASE_URL")!,
@@ -271,7 +263,7 @@ Deno.serve(async (req) => {
         // Phase 2: Enhance
         const prompt = buildEnhancementPrompt(analysis);
         await updatePhotoStatus(supabase, photo.id, "enhancing", "Vylepšujem fotku...");
-        const editedImageUrl = await enhancePhoto(photo.original_url, prompt, GEMINI_API_KEY);
+        const editedImageUrl = await enhancePhoto(photo.original_url, prompt, LOVABLE_API_KEY);
 
         if (editedImageUrl) {
           const base64Data = editedImageUrl.replace(/^data:image\/\w+;base64,/, "");
