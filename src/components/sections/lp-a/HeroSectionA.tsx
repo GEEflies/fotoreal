@@ -19,7 +19,7 @@ export function HeroSectionA() {
             <h1 className="font-heading text-3xl sm:text-4xl lg:text-[3.25rem] xl:text-[3.75rem] font-extrabold leading-[1.1] text-foreground tracking-tight">
               Rovnaká kvalita.
               <br />
-              <span className="text-primary">90% nižšia cena.</span>
+              <span className="text-primary">Až 95% úspora.</span>
             </h1>
 
             <p className="text-muted-foreground text-base sm:text-lg max-w-xl leading-relaxed">
@@ -57,7 +57,7 @@ export function HeroSectionA() {
               </span>
               <span className="flex items-center gap-1.5">
                 <TrendingDown className="h-4 w-4 text-warning" />
-                10x lacnejšie
+                Úspora 90–95%
               </span>
             </div>
 
