@@ -45,8 +45,8 @@ export function AvatarSelector({ onSelect }: AvatarSelectorProps) {
 
         <div className="grid grid-cols-2 gap-3">
           {[
-            { key: "photographer" as AvatarType, icon: Camera, iconBg: "bg-primary/10", iconColor: "text-primary", label: "Áno, používam" },
-            { key: "no-photographer" as AvatarType, icon: Smartphone, iconBg: "bg-[hsl(270,80%,96%)]", iconColor: "text-[hsl(270,60%,55%)]", label: "Nie, fotím sám" },
+            { key: "photographer" as AvatarType, icon: Camera, iconBg: "bg-primary/10", iconColor: "text-primary", label: "ÁNO" },
+            { key: "no-photographer" as AvatarType, icon: Smartphone, iconBg: "bg-[hsl(270,80%,96%)]", iconColor: "text-[hsl(270,60%,55%)]", label: "NIE" },
           ].map((opt) => (
             <button
               key={opt.key}
@@ -62,7 +62,7 @@ export function AvatarSelector({ onSelect }: AvatarSelectorProps) {
               <div className={`h-10 w-10 rounded-lg ${opt.iconBg} flex items-center justify-center mb-3`}>
                 <opt.icon className={`h-5 w-5 ${opt.iconColor}`} />
               </div>
-              <h3 className="font-heading font-bold text-foreground text-sm sm:text-base mb-3 flex-1">
+              <h3 className="font-heading font-bold text-foreground text-2xl sm:text-3xl mb-3 flex-1">
                 {opt.label}
               </h3>
               <span className="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-primary group-hover:gap-1.5 transition-all">
