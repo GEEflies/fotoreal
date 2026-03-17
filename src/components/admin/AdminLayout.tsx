@@ -29,6 +29,14 @@ const navItems = [
   { href: '/admin/analytics', label: 'Analytika', icon: BarChart3 },
 ];
 
+const outreachItems = [
+  { href: '/admin/outreach/leads', label: 'Leady', icon: Users },
+  { href: '/admin/outreach/inboxes', label: 'Schránky', icon: Mail },
+  { href: '/admin/outreach/campaigns', label: 'Kampane', icon: Send },
+  { href: '/admin/outreach/replies', label: 'Odpovede', icon: Inbox },
+  { href: '/admin/outreach/stats', label: 'Štatistiky', icon: ChartLine },
+];
+
 function NavLink({ href, label, icon: Icon, isActive }: { 
   href: string; 
   label: string; 
