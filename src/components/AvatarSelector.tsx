@@ -34,7 +34,6 @@ export function AvatarSelector({ onSelect }: AvatarSelectorProps) {
   return (
     <div className="fixed inset-0 z-[100] flex items-center justify-center bg-foreground/95 animate-fade-in px-4">
       <div className="w-full max-w-md rounded-2xl bg-card shadow-2xl p-6 sm:p-8 animate-scale-in">
-        {/* Header */}
         <div className="text-center mb-6">
           <h2 className="font-heading text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
             Používate fotografa?
@@ -44,51 +43,34 @@ export function AvatarSelector({ onSelect }: AvatarSelectorProps) {
           </p>
         </div>
 
-        {/* Options */}
         <div className="grid grid-cols-2 gap-3">
-          <button
-            onClick={() => handleSelect("photographer")}
-            onMouseEnter={() => setHoveredOption("photographer")}
-            onMouseLeave={() => setHoveredOption(null)}
-            className={`group p-4 sm:p-5 rounded-xl border-2 text-left transition-all duration-200 ${
-              hoveredOption === "photographer"
-                ? "border-primary bg-primary/5 shadow-md"
-                : "border-border hover:border-primary/30"
-            }`}
-          >
-            <div className="h-10 w-10 rounded-lg bg-primary/10 flex items-center justify-center mb-3">
-              <Camera className="h-5 w-5 text-primary" />
-            </div>
-            <h3 className="font-heading font-bold text-foreground text-sm sm:text-base mb-2.5">
-              Áno, mám fotografa
-            </h3>
-            <span className="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-primary group-hover:gap-1.5 transition-all">
-              Pokračovať
-              <ArrowRight className="h-3.5 w-3.5" />
-            </span>
-          </button>
-
-          <button
-            onClick={() => handleSelect("no-photographer")}
-            onMouseEnter={() => setHoveredOption("no-photographer")}
-            onMouseLeave={() => setHoveredOption(null)}
-            className={`group p-4 sm:p-5 rounded-xl border-2 text-left transition-all duration-200 ${
-              hoveredOption === "no-photographer"
-                ? "border-primary bg-primary/5 shadow-md"
-                : "border-border hover:border-primary/30"
-            }`}
-          >
-            <div className="h-10 w-10 rounded-lg bg-warning/10 flex items-center justify-center mb-3">
-              <Smartphone className="h-5 w-5 text-warning" />
-            </div>
-            <h3 className="font-heading font-bold text-foreground text-sm sm:text-base mb-2.5">
-              Nie, fotím sám
-            </h3>
-            <span className="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-primary group-hover:gap-1.5 transition-all">
-              Pokračovať
-              <ArrowRight className="h-3.5 w-3.5" />
-            </span>
-          </button>
+          {[
+            { key: "photographer" as AvatarType, icon: Camera, iconBg: "bg-primary/10", iconColor: "text-primary", label: "Áno, mám fotografa" },
+            { key: "no-photographer" as AvatarType, icon: Smartphone, iconBg: "bg-warning/10", iconColor: "text-warning", label: "Nie, fotím sám" },
+          ].map((opt) => (
+            <button
+              key={opt.key}
+              onClick={() => handleSelect(opt.key)}
+              onMouseEnter={() => setHoveredOption(opt.key)}
+              onMouseLeave={() => setHoveredOption(null)}
+              className={`group flex flex-col items-center text-center p-4 sm:p-5 rounded-xl border-2 transition-all duration-200 ${
+                hoveredOption === opt.key
+                  ? "border-primary bg-primary/5 shadow-md"
+                  : "border-border hover:border-primary/30"
+              }`}
+            >
+              <div className={`h-10 w-10 rounded-lg ${opt.iconBg} flex items-center justify-center mb-3`}>
+                <opt.icon className={`h-5 w-5 ${opt.iconColor}`} />
+              </div>
+              <h3 className="font-heading font-bold text-foreground text-sm sm:text-base mb-3 min-h-[2.5rem] flex items-center">
+                {opt.label}
+              </h3>
+              <span className="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-primary group-hover:gap-1.5 transition-all">
+                Pokračovať
+                <ArrowRight className="h-3.5 w-3.5" />
+              </span>
+            </button>
+          ))}
         </div>
       </div>
     </div>
