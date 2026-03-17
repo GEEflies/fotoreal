@@ -113,22 +113,23 @@ function Sidebar({ currentPath, userEmail }: { currentPath: string; userEmail?: 
           Nová nehnuteľnosť
         </Link>
 
-        {/* Všetky nehnuteľnosti - collapsible group */}
-        <button
-          onClick={() => setPropertiesOpen(!propertiesOpen)}
+        {/* Všetky nehnuteľnosti - navigable + collapsible */}
+        <div
           className={cn(
-            "flex items-center justify-between w-full px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
+            "flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
             currentPath === '/dashboard'
               ? "bg-primary/10 text-primary font-semibold border-l-2 border-primary rounded-l-none"
               : "text-muted-foreground hover:bg-muted hover:text-foreground"
           )}
         >
-          <span className="flex items-center gap-2.5">
+          <Link to="/dashboard" className="flex items-center gap-2.5 flex-1">
             <Building2 className="h-4 w-4" />
             Všetky nehnuteľnosti
-          </span>
-          <ChevronDown className={cn("h-4 w-4 transition-transform", propertiesOpen && "rotate-180")} />
-        </button>
+          </Link>
+          <button onClick={() => setPropertiesOpen(!propertiesOpen)} className="p-0.5 -mr-1">
+            <ChevronDown className={cn("h-4 w-4 transition-transform", propertiesOpen && "rotate-180")} />
+          </button>
+        </div>
 
         {propertiesOpen && (
           <div className="ml-4 pl-3 border-l border-border space-y-0.5">
