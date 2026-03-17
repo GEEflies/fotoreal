@@ -1,8 +1,10 @@
 import { ArrowRight, Star, Clock, ShieldCheck, TrendingDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { BeforeAfterSlider } from "@/components/ui/BeforeAfterSlider";
 import { HERO_BEFORE, HERO_AFTER } from "@/lib/images";
+import social1 from "@/assets/avatars/social-1.png";
+import social2 from "@/assets/avatars/social-2.png";
+import social3 from "@/assets/avatars/social-3.png";
 
 export function HeroSectionA() {
   return (
