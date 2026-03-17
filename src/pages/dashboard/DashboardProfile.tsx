@@ -170,6 +170,8 @@ export default function DashboardProfile() {
       toast({ title: 'Chyba', description: 'Nepodarilo sa uložiť profil.', variant: 'destructive' });
     }
   };
+
+  const handleLogoUpload = useCallback(async (file: File) => {
     if (!file.type.startsWith('image/')) {
       toast({ title: 'Chyba', description: 'Nahrajte obrázok (PNG, JPG, SVG).', variant: 'destructive' });
       return;
@@ -194,7 +196,6 @@ export default function DashboardProfile() {
       if (uploadError) throw uploadError;
 
       const { data: urlData } = supabase.storage.from('logos').getPublicUrl(filePath);
-      // Add cache-bust to force refresh
       setLogoUrl(`${urlData.publicUrl}?t=${Date.now()}`);
       toast({ title: 'Logo nahrané', description: 'Logo bolo úspešne nahrané.' });
     } catch (error) {
