@@ -110,8 +110,26 @@ export default function DashboardProfile() {
     setIsLoading(false);
   };
 
+  // Auto-save with debounce
+  useEffect(() => {
+    if (!initialLoadDone.current) return;
+    if (debounceTimer.current) clearTimeout(debounceTimer.current);
+    debounceTimer.current = setTimeout(() => {
+      handleSave();
+    }, 800);
+    return () => { if (debounceTimer.current) clearTimeout(debounceTimer.current); };
+  }, [companyName, ico, dic, icDph, address, watermarkPosition, logoUrl]);
+
+  // Mark initial load done after profile loads
+  useEffect(() => {
+    if (!isLoading) {
+      // Small delay to avoid triggering save on initial state hydration
+      setTimeout(() => { initialLoadDone.current = true; }, 100);
+    }
+  }, [isLoading]);
+
   const handleSave = async () => {
-    setIsSaving(true);
+    setSaveStatus('saving');
     try {
       const { data: { user } } = await supabase.auth.getUser();
       if (!user) throw new Error('Not authenticated');
@@ -135,23 +153,23 @@ export default function DashboardProfile() {
           .eq('id', profile.id);
         if (error) throw error;
       } else {
-        const { error } = await supabase
+        const { data, error } = await supabase
           .from('profiles')
-          .insert(profileData);
+          .insert(profileData)
+          .select()
+          .single();
         if (error) throw error;
+        if (data) setProfile(data as unknown as Profile);
       }
 
-      toast({ title: 'Uložené', description: 'Profil bol úspešne uložený.' });
-      await loadProfile();
+      setSaveStatus('saved');
+      setTimeout(() => setSaveStatus('idle'), 2000);
     } catch (error) {
       console.error('Save error:', error);
+      setSaveStatus('idle');
       toast({ title: 'Chyba', description: 'Nepodarilo sa uložiť profil.', variant: 'destructive' });
-    } finally {
-      setIsSaving(false);
     }
   };
-
-  const handleLogoUpload = useCallback(async (file: File) => {
     if (!file.type.startsWith('image/')) {
       toast({ title: 'Chyba', description: 'Nahrajte obrázok (PNG, JPG, SVG).', variant: 'destructive' });
       return;
