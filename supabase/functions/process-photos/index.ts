@@ -165,7 +165,7 @@ async function enhancePhoto(imageUrl: string, prompt: string, apiKey: string): P
   const imageBase64 = await fetchImageAsBase64(imageUrl);
 
   const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp-image-generation:generateContent?key=${apiKey}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key=${apiKey}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -185,7 +185,7 @@ async function enhancePhoto(imageUrl: string, prompt: string, apiKey: string): P
           },
         ],
         generationConfig: {
-          responseModalities: ["IMAGE", "TEXT"],
+          responseModalities: ["TEXT", "IMAGE"],
         },
       }),
     }
@@ -206,6 +206,26 @@ async function enhancePhoto(imageUrl: string, prompt: string, apiKey: string): P
     }
   }
   return null;
+}
+
+function getFriendlyPhotoError(error: unknown): string {
+  const message = error instanceof Error ? error.message : String(error);
+
+  if (message.includes("[429]")) return "Chyba: Príliš veľa požiadaviek, skúste to znova o chvíľu";
+  if (message.includes("[402]")) return "Chyba: Nedostatok kreditu na Gemini API";
+  if (message.includes("NOT_FOUND") || message.includes("[404]")) {
+    return "Chyba: AI model pre generovanie obrázkov nie je dostupný";
+  }
+  if (message.toLowerCase().includes("safety")) {
+    return "Chyba: Fotka bola zablokovaná bezpečnostným filtrom AI";
+  }
+
+  const compactMessage = message
+    .replace(/\s+/g, " ")
+    .replace(/^Error:\s*/i, "")
+    .slice(0, 140);
+
+  return `Chyba: ${compactMessage || "Nepodarilo sa spracovať fotku"}`;
 }
 
 Deno.serve(async (req) => {
@@ -286,24 +306,21 @@ Deno.serve(async (req) => {
         }
       } catch (photoError: unknown) {
         console.error(`Error processing photo ${photo.id}:`, photoError);
-        const isRateLimit = photoError instanceof Error &&
-          (photoError.message.includes("[429]") || photoError.message.includes("[402]"));
-        const errorLabel = isRateLimit
-          ? "Chyba: Rate limit"
-          : "Chyba pri spracovaní";
-        await updatePhotoStatus(supabase, photo.id, "error", errorLabel);
+        const message = photoError instanceof Error ? photoError.message : String(photoError);
+        const isRateLimit = message.includes("[429]") || message.includes("[402]");
+        await updatePhotoStatus(supabase, photo.id, "error", getFriendlyPhotoError(photoError));
         if (isRateLimit) break;
       }
     }
 
-    const { data: remainingPhotos } = await supabase
+    const { data: finalPhotos } = await supabase
       .from("property_photos")
-      .select("id")
-      .eq("property_id", property_id)
-      .neq("ai_status", "done")
-      .neq("ai_status", "error");
+      .select("ai_status")
+      .eq("property_id", property_id);
 
-    const finalStatus = (!remainingPhotos || remainingPhotos.length === 0) ? "done" : "error";
+    const hasPending = finalPhotos?.some((photo) => photo.ai_status !== "done" && photo.ai_status !== "error") ?? false;
+    const hasErrors = finalPhotos?.some((photo) => photo.ai_status === "error") ?? false;
+    const finalStatus = hasPending ? "processing" : hasErrors ? "error" : "done";
     await supabase.from("properties").update({ status: finalStatus }).eq("id", property_id);
 
     return new Response(
