@@ -89,26 +89,28 @@ export function PricingPackagesA() {
                           setSelected(i);
                           setOpen(false);
                         }}
-                        className={`w-full flex items-center justify-between px-4 py-2.5 text-left transition-colors hover:bg-accent/50 ${
+                        className={`w-full px-4 py-3 text-left transition-colors hover:bg-accent/50 ${
                           i === selected ? "bg-primary/5" : ""
                         } ${i < PACKAGES.length - 1 ? "border-b border-border/50" : ""}`}
                       >
-                        <div className="flex items-center gap-3">
-                          <span className="font-heading text-lg font-bold text-foreground">
-                            {p.photos}
-                          </span>
-                          <span className="text-muted-foreground text-sm">fotiek</span>
-                          {p.discount > 0 && (
-                            <span className="text-xs font-bold text-success bg-success/10 px-2 py-0.5 rounded-full">
-                              -{p.discount}%
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-2">
+                            <span className="font-heading text-lg font-bold text-foreground">
+                              {p.photos}
                             </span>
-                          )}
+                            <span className="text-muted-foreground text-sm">fotiek</span>
+                            {p.discount > 0 && (
+                              <span className="text-xs font-bold text-success bg-success/10 px-2 py-0.5 rounded-full">
+                                -{p.discount}%
+                              </span>
+                            )}
+                          </div>
+                          <span className="font-bold text-foreground">{p.price} €</span>
+                        </div>
+                        <div className="flex items-center justify-between mt-1">
                           <span className="text-xs text-muted-foreground">
                             ~{p.properties} {p.properties === 1 ? "nehnuteľnosť" : p.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"}
                           </span>
-                        </div>
-                        <div className="flex items-center gap-2">
-                          <span className="font-bold text-foreground">{p.price} €</span>
                           <span className="text-xs text-muted-foreground">({p.ppp.toFixed(2)} € / ks)</span>
                         </div>
                       </button>
@@ -144,7 +146,7 @@ export function PricingPackagesA() {
                 </div>
 
                 {/* Mobile: horizontal compact layout */}
-                <div className="sm:hidden flex items-center gap-3">
+                <div className="sm:hidden flex items-center gap-3 p-3">
                   <div className="flex items-baseline gap-0.5 shrink-0">
                     <span className="font-heading text-4xl font-extrabold text-primary">
                       {pkg.price}
@@ -172,7 +174,7 @@ export function PricingPackagesA() {
               </div>
 
               {/* Savings strip */}
-              <div className="rounded-xl bg-success/5 border border-success/20 px-4 py-3 flex items-center justify-between gap-3">
+              <div className="rounded-xl bg-success/5 border border-success/20 px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-1 sm:gap-3">
                 <div className="text-sm">
                   <span className="text-muted-foreground">
                     Fotograf: 
@@ -205,7 +207,7 @@ export function PricingPackagesA() {
           </div>
 
           {/* Quick-select chips */}
-          <div className="mt-6 flex items-center justify-center gap-4 flex-wrap text-xs text-muted-foreground">
+          <div className="mt-6 flex items-center justify-center gap-2 sm:gap-4 flex-wrap text-xs text-muted-foreground">
             {PACKAGES.map((p, i) => (
               <button
                 key={p.photos}
