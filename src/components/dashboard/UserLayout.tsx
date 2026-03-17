@@ -163,32 +163,27 @@ function Sidebar({ currentPath, userEmail }: { currentPath: string; userEmail?: 
         {userEmail && (
           <p className="px-3 pb-2 text-xs text-muted-foreground truncate">{userEmail}</p>
         )}
-        <Link
-          to="/dashboard/profile"
-          className={cn(
-            "flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
-            currentPath === '/dashboard/profile'
-              ? "bg-primary/10 text-primary font-semibold border-l-2 border-primary rounded-l-none"
-              : "text-muted-foreground hover:bg-muted hover:text-foreground"
-          )}
-        >
-          <User className="h-4 w-4" />
-          Profil
-        </Link>
-        <Link
-          to="/"
-          className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
-        >
-          <Home className="h-4 w-4" />
-          Späť na web
-        </Link>
-        <button
-          onClick={handleSignOut}
-          className="flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors w-full"
-        >
-          <LogOut className="h-4 w-4" />
-          Odhlásiť sa
-        </button>
+        <div className="flex items-center gap-1">
+          <Link
+            to="/dashboard/profile"
+            className={cn(
+              "flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
+              currentPath === '/dashboard/profile'
+                ? "bg-primary/10 text-primary font-semibold"
+                : "text-muted-foreground hover:bg-muted hover:text-foreground"
+            )}
+          >
+            <User className="h-4 w-4" />
+            Profil
+          </Link>
+          <button
+            onClick={handleSignOut}
+            className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors"
+          >
+            <LogOut className="h-4 w-4" />
+            Odhlásiť sa
+          </button>
+        </div>
       </div>
     </div>
   );
