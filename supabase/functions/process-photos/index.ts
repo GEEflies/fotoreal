@@ -277,8 +277,18 @@ Deno.serve(async (req) => {
             console.error(`Upload error for photo ${photo.id}:`, uploadError);
             await updatePhotoStatus(supabase, photo.id, "done", "Hotovo", editedImageUrl);
           }
+
+          // Deduct 1 credit ONLY after successful processing
+          const { data: propData } = await supabase
+            .from("properties")
+            .select("user_id")
+            .eq("id", property_id)
+            .single();
+          if (propData?.user_id) {
+            await supabase.rpc("increment_total_used", { _user_id: propData.user_id });
+          }
         } else {
-          // Generator returned no image — mark done with original
+          // Generator returned no image — mark done with original (no credit charge)
           await updatePhotoStatus(supabase, photo.id, "done", "Hotovo");
         }
       } catch (photoError: unknown) {

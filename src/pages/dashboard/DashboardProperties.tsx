@@ -98,6 +98,7 @@ export default function DashboardProperties() {
                 photoCount={p.photo_count}
                 thumbnailUrl={p.thumbnail_url}
                 createdAt={p.created_at}
+                onDeleted={loadProperties}
               />
             ))}
           </div>
