@@ -26,7 +26,7 @@ export function PricingPackagesA() {
     <section
       id="balicky"
       ref={ref as React.RefObject<HTMLElement>}
-      className="section-padding bg-background"
+      className="section-padding bg-background relative z-10"
     >
       <div
         className={`section-container transition-all duration-700 ${
