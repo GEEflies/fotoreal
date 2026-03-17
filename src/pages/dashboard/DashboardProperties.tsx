@@ -19,7 +19,6 @@ interface Property {
 export default function DashboardProperties() {
   const [properties, setProperties] = useState<Property[]>([]);
   const [isLoading, setIsLoading] = useState(true);
-  const { credits, isLoading: creditsLoading } = useCredits();
 
   useEffect(() => {
     loadProperties();
