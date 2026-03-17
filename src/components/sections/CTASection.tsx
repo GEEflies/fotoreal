@@ -1,11 +1,13 @@
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 interface CTASectionProps {
   onOpenForm?: () => void;
 }
 
 export function CTASection({ onOpenForm }: CTASectionProps) {
+  const navigate = useNavigate();
   return (
     <section className="section-padding relative overflow-hidden">
       {/* Background accent */}
