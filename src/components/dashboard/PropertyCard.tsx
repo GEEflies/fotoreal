@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
@@ -15,7 +15,6 @@ import {
   AlertDialogFooter,
   AlertDialogHeader,
   AlertDialogTitle,
-  AlertDialogTrigger,
 } from '@/components/ui/alert-dialog';
 
 const statusLabels: Record<string, { label: string; variant: 'default' | 'secondary' | 'destructive' | 'outline' }> = {
@@ -38,18 +37,18 @@ interface PropertyCardProps {
 export function PropertyCard({ id, name, status, photoCount, thumbnailUrl, createdAt, onDeleted }: PropertyCardProps) {
   const statusInfo = statusLabels[status] || statusLabels.uploading;
   const { toast } = useToast();
+  const navigate = useNavigate();
   const [deleting, setDeleting] = useState(false);
+  const [dialogOpen, setDialogOpen] = useState(false);
 
-  const handleDelete = async (e: React.MouseEvent) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleDelete = async () => {
     setDeleting(true);
     try {
-      // Delete photos first (cascade should handle, but explicit)
       await supabase.from('property_photos').delete().eq('property_id', id);
       const { error } = await supabase.from('properties').delete().eq('id', id);
       if (error) throw error;
       toast({ title: 'Vymazané', description: 'Nehnuteľnosť bola vymazaná.' });
+      setDialogOpen(false);
       onDeleted?.();
     } catch (err) {
       console.error('Delete error:', err);
@@ -59,9 +58,16 @@ export function PropertyCard({ id, name, status, photoCount, thumbnailUrl, creat
     }
   };
 
+  const handleCardClick = () => {
+    navigate(`/dashboard/properties/${id}`);
+  };
+
   return (
-    <Link to={`/dashboard/properties/${id}`}>
-      <Card className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer group">
+    <>
+      <Card
+        className="overflow-hidden hover:shadow-md transition-shadow cursor-pointer group"
+        onClick={handleCardClick}
+      >
         <div className="aspect-video bg-muted flex items-center justify-center overflow-hidden relative">
           {thumbnailUrl ? (
             <img src={thumbnailUrl} alt={name} className="w-full h-full object-cover" />
@@ -69,32 +75,17 @@ export function PropertyCard({ id, name, status, photoCount, thumbnailUrl, creat
             <Building2 className="h-12 w-12 text-muted-foreground/40" />
           )}
           <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-            <AlertDialog>
-              <AlertDialogTrigger asChild>
-                <Button
-                  variant="destructive"
-                  size="icon"
-                  className="h-8 w-8"
-                  onClick={(e) => e.preventDefault()}
-                >
-                  <Trash2 className="h-4 w-4" />
-                </Button>
-              </AlertDialogTrigger>
-              <AlertDialogContent onClick={(e) => e.stopPropagation()}>
-                <AlertDialogHeader>
-                  <AlertDialogTitle>Vymazať nehnuteľnosť?</AlertDialogTitle>
-                  <AlertDialogDescription>
-                    Táto akcia vymaže nehnuteľnosť "{name}" a všetky jej fotky. Nedá sa vrátiť.
-                  </AlertDialogDescription>
-                </AlertDialogHeader>
-                <AlertDialogFooter>
-                  <AlertDialogCancel>Zrušiť</AlertDialogCancel>
-                  <AlertDialogAction onClick={handleDelete} disabled={deleting}>
-                    {deleting ? 'Mažem...' : 'Vymazať'}
-                  </AlertDialogAction>
-                </AlertDialogFooter>
-              </AlertDialogContent>
-            </AlertDialog>
+            <Button
+              variant="destructive"
+              size="icon"
+              className="h-8 w-8"
+              onClick={(e) => {
+                e.stopPropagation();
+                setDialogOpen(true);
+              }}
+            >
+              <Trash2 className="h-4 w-4" />
+            </Button>
           </div>
         </div>
         <CardContent className="p-4">
@@ -111,6 +102,23 @@ export function PropertyCard({ id, name, status, photoCount, thumbnailUrl, creat
           </div>
         </CardContent>
       </Card>
-    </Link>
+
+      <AlertDialog open={dialogOpen} onOpenChange={setDialogOpen}>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Vymazať nehnuteľnosť?</AlertDialogTitle>
+            <AlertDialogDescription>
+              Táto akcia vymaže nehnuteľnosť "{name}" a všetky jej fotky. Nedá sa vrátiť.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel>Zrušiť</AlertDialogCancel>
+            <AlertDialogAction onClick={handleDelete} disabled={deleting}>
+              {deleting ? 'Mažem...' : 'Vymazať'}
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
+    </>
   );
 }
