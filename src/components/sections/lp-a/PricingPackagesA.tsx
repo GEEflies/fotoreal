@@ -21,14 +21,10 @@ export function PricingPackagesA() {
     if (loading) return;
     setLoading(true);
     try {
-      // Ensure we have a fresh session token before calling the edge function
-      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
-      if (sessionError || !session) {
-        const { error: refreshError } = await supabase.auth.refreshSession();
-        if (refreshError) {
-          window.location.href = "/login";
-          return;
-        }
+      // Refresh session for authenticated users; guests proceed without it
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        await supabase.auth.refreshSession();
       }
 
       const { data, error } = await supabase.functions.invoke("create-checkout", {
