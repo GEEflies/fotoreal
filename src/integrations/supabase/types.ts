@@ -255,6 +255,7 @@ export type Database = {
       app_role: "admin" | "user"
       photo_ai_status:
         | "pending"
+        | "analyzing"
         | "enhancing"
         | "sky_replace"
         | "hdr"
@@ -400,6 +401,7 @@ export const Constants = {
       app_role: ["admin", "user"],
       photo_ai_status: [
         "pending",
+        "analyzing",
         "enhancing",
         "sky_replace",
         "hdr",
