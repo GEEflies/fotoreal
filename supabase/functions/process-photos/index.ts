@@ -212,6 +212,7 @@ async function applyWatermark(
   return await baseImage.encode();
 }
 
+async function enhancePhoto(imageUrl: string, prompt: string, apiKey: string): Promise<string | null> {
   const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
     method: "POST",
     headers: {
