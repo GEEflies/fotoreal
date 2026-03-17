@@ -40,11 +40,13 @@ export function ProblemSectionB() {
 
         <div className="grid md:grid-cols-3 gap-5 sm:gap-8">
           {painPoints.map((p, i) => (
-            <div key={i} className="relative p-6 rounded-xl bg-destructive/[0.04] border border-destructive/10 hover:border-destructive/20 transition-colors">
-              <div className="h-11 w-11 rounded-lg bg-destructive/10 flex items-center justify-center mb-4">
-                <p.icon className="h-5 w-5 text-destructive" />
+            <div key={i} className="relative p-4 sm:p-6 rounded-xl bg-destructive/[0.04] border border-destructive/10 hover:border-destructive/20 transition-colors">
+              <div className="flex items-center gap-3 mb-2">
+                <div className="h-9 w-9 sm:h-11 sm:w-11 rounded-lg bg-destructive/10 flex items-center justify-center shrink-0">
+                  <p.icon className="h-4 w-4 sm:h-5 sm:w-5 text-destructive" />
+                </div>
+                <h3 className="font-heading font-semibold text-foreground text-sm sm:text-lg">{p.title}</h3>
               </div>
-              <h3 className="font-heading font-semibold text-foreground text-base sm:text-lg mb-2">{p.title}</h3>
               <p className="text-sm text-muted-foreground leading-relaxed">{p.description}</p>
             </div>
           ))}
