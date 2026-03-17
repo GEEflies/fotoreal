@@ -21,7 +21,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
-  const [step, setStep] = useState<AuthStep>('login');
+  const [step, setStep] = useState<AuthStep>('signup');
   const [checkEmailReason, setCheckEmailReason] = useState<'signup' | 'reset'>('signup');
   const [formError, setFormError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
