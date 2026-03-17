@@ -7,7 +7,13 @@ import {
   BarChart3,
   LogOut,
   Home,
-  Menu
+  Menu,
+  Megaphone,
+  Mail,
+  Inbox,
+  Send,
+  ChartLine,
+  ChevronDown,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
