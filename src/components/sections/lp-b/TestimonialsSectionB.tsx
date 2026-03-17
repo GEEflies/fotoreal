@@ -1,25 +1,28 @@
 import { Star, Quote } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
+import tomasAvatar from "@/assets/avatars/tomas-lukac.png";
+import andreaAvatar from "@/assets/avatars/andrea-kmetova.png";
+import marekAvatar from "@/assets/avatars/marek-balaz.png";
 
 const testimonials = [
   {
     name: "Tomáš Lukáč",
     role: "Realitný maklér, Žilina",
-    avatar: "https://realfoto-adames.vercel.app/_next/image?url=%2Ftestimonials%2FGemini_Generated_Image_339lzr339lzr339l.png&w=96&q=80",
+    avatar: tomasAvatar,
     text: "Vždy som fotil na mobil a myslel som, že to stačí. Od kedy používam FotoReal, mám o 50% viac telefonátov. Klienti si všímajú kvalitné fotky.",
     stars: 5,
   },
   {
     name: "Andrea Kmeťová",
     role: "Maklérka, Košice",
-    avatar: "https://realfoto-adames.vercel.app/_next/image?url=%2Ftestimonials%2FGemini_Generated_Image_job9rjob9rjob9rj.png&w=96&q=80",
+    avatar: andreaAvatar,
     text: "Posledný byt som predala za 8 000 € nad pôvodnú cenu. Jediné, čo som zmenila, boli fotky — FotoReal im dal úplne iný level.",
     stars: 5,
   },
   {
     name: "Marek Baláž",
     role: "Nezávislý maklér, Banská Bystrica",
-    avatar: "https://realfoto-adames.vercel.app/_next/image?url=%2Ftestimonials%2FGemini_Generated_Image_l0v0vll0v0vll0v0.png&w=96&q=80",
+    avatar: marekAvatar,
     text: "Za 14 € mesačne mám fotky, ktoré vyzerajú ako od profesionála. Klienti sú nadšení a odporúčajú ma ďalej.",
     stars: 5,
   },
