@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, ChevronDown, TrendingDown, Sparkles } from "lucide-react";
+import { ChevronDown, TrendingDown, Sparkles } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { Button } from "@/components/ui/button";
 
