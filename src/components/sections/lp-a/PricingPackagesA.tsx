@@ -128,49 +128,8 @@ export function PricingPackagesA() {
               </div>
             </div>
 
-            {/* Price hero + savings + CTA */}
+            {/* Savings + CTA */}
             <div className="p-3 sm:p-5 space-y-3 sm:space-y-4">
-              {/* Price hero */}
-              <div className="rounded-xl bg-primary/5 border border-primary/10 p-2.5 sm:p-4">
-                {/* Desktop: centered vertical */}
-                <div className="hidden sm:block text-center py-2">
-                  <div className="flex items-baseline justify-center gap-1">
-                    <span className="font-heading text-5xl font-extrabold text-primary">
-                      {pkg.price}
-                    </span>
-                    <span className="font-heading text-2xl font-bold text-primary/70">€</span>
-                  </div>
-                  <div className="flex items-center justify-center gap-2 mt-2">
-                    <span className="text-xs font-semibold bg-primary/10 text-primary px-2.5 py-0.5 rounded-full">
-                      {pkg.ppp.toFixed(2)} € / fotka
-                    </span>
-                    <span className="text-xs font-semibold bg-muted text-muted-foreground px-2.5 py-0.5 rounded-full">
-                      {pkg.photos} fotiek
-                    </span>
-                    <span className="text-xs font-semibold bg-muted text-muted-foreground px-2.5 py-0.5 rounded-full">
-                      ~{pkg.properties} {pkg.properties === 1 ? "nehnuteľnosť" : pkg.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"}
-                    </span>
-                  </div>
-                </div>
-
-                {/* Mobile: centered metadata grid, no large price */}
-                <div className="sm:hidden grid grid-cols-3 gap-2 text-center text-[11px]">
-                  <div>
-                    <span className="text-muted-foreground">Cena/fotka</span>
-                    <p className="font-bold text-foreground text-sm">{pkg.ppp.toFixed(2)} €</p>
-                  </div>
-                  <div>
-                    <span className="text-muted-foreground">Fotiek</span>
-                    <p className="font-bold text-foreground text-sm">{pkg.photos} ks</p>
-                  </div>
-                  <div>
-                    <span className="text-muted-foreground">Cca</span>
-                    <p className="font-bold text-foreground text-sm">
-                      {pkg.properties} {pkg.properties === 1 ? "nehnuteľnosť" : pkg.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"}
-                    </p>
-                  </div>
-                </div>
-              </div>
 
               {/* Savings strip */}
               <div className="relative rounded-lg sm:rounded-xl bg-success/5 border border-success/20 px-3 py-3.5 sm:px-4 sm:py-3 flex items-center">
