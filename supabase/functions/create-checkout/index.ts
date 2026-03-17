@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -33,6 +34,26 @@ serve(async (req) => {
       throw new Error("Stripe not configured");
     }
 
+    // Try to extract authenticated user from JWT
+    let userId: string | null = null;
+    let userEmail: string | null = null;
+    const authHeader = req.headers.get("authorization");
+    if (authHeader) {
+      try {
+        const token = authHeader.replace("Bearer ", "");
+        const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+        const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+        const supabase = createClient(supabaseUrl, supabaseKey);
+        const { data: { user } } = await supabase.auth.getUser(token);
+        if (user) {
+          userId = user.id;
+          userEmail = user.email ?? null;
+        }
+      } catch (e) {
+        // Anonymous checkout — proceed without user identity
+      }
+    }
+
     // Create Checkout Session via Stripe API
     const params = new URLSearchParams({
       "mode": "payment",
@@ -45,6 +66,10 @@ serve(async (req) => {
       "payment_method_types[0]": "card",
       "allow_promotion_codes": "true",
     });
+
+    // Forward user identity so webhook can grant credits immediately
+    if (userId) params.set("metadata[user_id]", userId);
+    if (userEmail) params.set("customer_email", userEmail);
 
     const response = await fetch(
       "https://api.stripe.com/v1/checkout/sessions",

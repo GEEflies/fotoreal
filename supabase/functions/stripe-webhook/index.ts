@@ -18,11 +18,12 @@ serve(async (req) => {
       const photos = parseInt(session.metadata?.photos || "0");
       const email = session.customer_details?.email;
       const name = session.customer_details?.name;
+      const userId = session.metadata?.user_id || null;
       const stripeSessionId = session.id;
       const amountTotal = session.amount_total; // in cents
 
       console.log(
-        `Payment received: ${photos} photos, ${amountTotal / 100} EUR, ${email}`
+        `Payment received: ${photos} photos, ${amountTotal / 100} EUR, ${email}, user_id=${userId}`
       );
 
       // Store the purchase in Supabase
@@ -30,19 +31,39 @@ serve(async (req) => {
       const supabaseKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
       const supabase = createClient(supabaseUrl, supabaseKey);
 
-      const { error } = await supabase.from("purchases").insert({
-        stripe_session_id: stripeSessionId,
-        email,
-        name,
-        photos,
-        amount_cents: amountTotal,
-        status: "paid",
-      });
+      const { data: purchase, error } = await supabase
+        .from("purchases")
+        .insert({
+          stripe_session_id: stripeSessionId,
+          email,
+          name,
+          photos,
+          amount_cents: amountTotal,
+          status: "paid",
+          user_id: userId,
+        })
+        .select("id")
+        .single();
 
       if (error) {
         console.error("Failed to store purchase:", error);
       } else {
         console.log("Purchase stored successfully");
+
+        // Grant credits immediately if we know the user
+        if (userId && purchase) {
+          const { data: granted, error: grantError } = await supabase.rpc(
+            "grant_purchase_credits",
+            { _purchase_id: purchase.id, _user_id: userId }
+          );
+          if (grantError) {
+            console.error("Failed to grant credits:", grantError);
+          } else {
+            console.log(`Credits granted: ${photos} photos to user ${userId}`);
+          }
+        } else if (!userId) {
+          console.log(`Anonymous purchase stored for ${email}, credits await claim on login`);
+        }
       }
     }
 
