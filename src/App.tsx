@@ -22,6 +22,13 @@ import {
   AdminClientDetail,
   AdminAnalytics,
 } from "./pages/admin";
+import {
+  OutreachLeads,
+  OutreachInboxes,
+  OutreachCampaigns,
+  OutreachReplies,
+  OutreachStats,
+} from "./pages/admin/outreach";
 import { Navigate } from "react-router-dom";
 
 const queryClient = new QueryClient();
