@@ -58,7 +58,7 @@ export function HeroSectionA() {
               </span>
               <span className="flex items-center gap-1.5">
                 <TrendingDown className="h-4 w-4 text-warning" />
-                10x lacnejšie
+                Úspora 90–95%
               </span>
             </div>
 
