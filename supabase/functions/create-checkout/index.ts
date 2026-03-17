@@ -43,6 +43,7 @@ serve(async (req) => {
       "metadata[photos]": String(photos),
       "locale": "sk",
       "payment_method_types[0]": "card",
+      "allow_promotion_codes": "true",
     });
 
     const response = await fetch(
