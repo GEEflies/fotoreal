@@ -69,7 +69,6 @@ serve(async (req) => {
 
     // Forward user identity so webhook can grant credits immediately
     if (userId) params.set("metadata[user_id]", userId);
-    if (userEmail) params.set("customer_email", userEmail);
 
     const response = await fetch(
       "https://api.stripe.com/v1/checkout/sessions",
