@@ -49,12 +49,7 @@ export function Header({ onOpenForm }: HeaderProps) {
             }}
             className="flex items-center gap-2 group"
           >
-            <div className="h-8 w-8 rounded-lg bg-primary flex items-center justify-center">
-              <Wand2 className="h-4 w-4 text-primary-foreground" />
-            </div>
-            <span className="font-heading font-bold text-lg text-foreground group-hover:text-primary transition-colors">
-              Foto<span className="text-primary">Real</span>
-            </span>
+            <img src={logoFotoreal} alt="FotoReal" className="h-8 w-auto" />
           </a>
 
           {/* Desktop Nav */}

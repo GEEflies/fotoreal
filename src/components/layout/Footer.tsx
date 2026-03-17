@@ -6,12 +6,7 @@ export function Footer() {
       <div className="section-container">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-2">
-            <div className="h-6 w-6 rounded bg-primary flex items-center justify-center">
-              <Wand2 className="h-3 w-3 text-primary-foreground" />
-            </div>
-            <span className="font-heading font-bold text-sm">
-              Foto<span className="text-primary">Real</span>
-            </span>
+            <img src={logoFotoreal} alt="FotoReal" className="h-6 w-auto" />
           </div>
           <div className="flex items-center gap-4 text-xs text-background/60">
             <span>© {new Date().getFullYear()} FotoReal</span>
