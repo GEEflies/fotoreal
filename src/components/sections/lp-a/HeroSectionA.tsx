@@ -36,14 +36,6 @@ export function HeroSectionA() {
                 Vyskúšať 5 fotiek ZADARMO
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
-              <Button
-                size="lg"
-                variant="outline"
-                onClick={() => document.querySelector("#funkcie")?.scrollIntoView({ behavior: "smooth" })}
-                className="w-full sm:w-auto font-semibold"
-              >
-                Porovnať s fotografom
-              </Button>
             </div>
 
             <p className="text-xs text-muted-foreground text-center sm:text-left">*Bez kreditnej karty • Hotové za 30 sekúnd</p>
