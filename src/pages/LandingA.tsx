@@ -10,6 +10,7 @@ import { ProblemSectionA } from "@/components/sections/lp-a/ProblemSectionA";
 import { FeaturesGrid } from "@/components/sections/FeaturesGrid";
 import { HowItWorksSection } from "@/components/sections/HowItWorksSection";
 import { PricingComparisonA } from "@/components/sections/lp-a/PricingComparisonA";
+import { PricingPackagesA } from "@/components/sections/lp-a/PricingPackagesA";
 import { TestimonialsSectionA } from "@/components/sections/lp-a/TestimonialsSectionA";
 import { FaqSection } from "@/components/sections/FaqSection";
 import { CTASectionA } from "@/components/sections/lp-a/CTASectionA";
@@ -24,6 +25,7 @@ const LandingA = () => (
       <FeaturesGrid />
       <HowItWorksSection />
       <PricingComparisonA />
+      <PricingPackagesA />
       <TestimonialsSectionA />
       <FaqSection />
       <CTASectionA />
