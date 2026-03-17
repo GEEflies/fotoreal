@@ -6,6 +6,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import LandingA from "./pages/LandingA";
 import LandingB from "./pages/LandingB";
+import PaymentSuccess from "./pages/PaymentSuccess";
 import NotFound from "./pages/NotFound";
 import {
   AdminLogin,
@@ -28,6 +29,7 @@ const App = () => (
           <Route path="/" element={<Index />} />
           <Route path="/pre-fotografov" element={<LandingA />} />
           <Route path="/bez-fotografa" element={<LandingB />} />
+          <Route path="/platba-uspesna" element={<PaymentSuccess />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<Navigate to="/admin/submissions" replace />} />
           <Route path="/admin/submissions" element={<AdminSubmissions />} />

@@ -1,7 +1,8 @@
 import { useState } from "react";
-import { ChevronDown, Sparkles } from "lucide-react";
+import { ChevronDown, Sparkles, Loader2 } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { Button } from "@/components/ui/button";
+import { supabase } from "@/integrations/supabase/client";
 
 const PACKAGES = [
   { photos: 20, price: 14, ppp: 0.70, properties: 1, discount: 0 },
@@ -14,6 +15,7 @@ const PACKAGES = [
 export function PricingPackagesA() {
   const [selected, setSelected] = useState(2);
   const [open, setOpen] = useState(false);
+  const [loading, setLoading] = useState(false);
   const { ref, isVisible } = useScrollAnimation({ threshold: 0.1 });
 
   const pkg = PACKAGES[selected];
@@ -21,6 +23,22 @@ export function PricingPackagesA() {
   const photographerHigh = pkg.properties * 300;
   const photographerMid = (photographerLow + photographerHigh) / 2;
   const savingsPercent = Math.round(((photographerMid - pkg.price) / photographerMid) * 100);
+
+  const handleCheckout = async () => {
+    setLoading(true);
+    try {
+      const { data, error } = await supabase.functions.invoke("create-checkout", {
+        body: { photos: pkg.photos, origin: window.location.origin },
+      });
+      if (error) throw error;
+      if (data?.url) {
+        window.location.href = data.url;
+      }
+    } catch (e: any) {
+      console.error("Checkout error:", e);
+      setLoading(false);
+    }
+  };
 
   return (
     <section
@@ -150,10 +168,16 @@ export function PricingPackagesA() {
               {/* Green CTA */}
               <Button
                 size="lg"
+                onClick={handleCheckout}
+                disabled={loading}
                 className="w-full font-bold text-sm sm:text-base bg-success hover:bg-success/90 text-success-foreground shadow-[0_4px_20px_-4px_hsl(var(--success)/0.4)] group"
               >
-                <Sparkles className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
-                Kúpiť za {pkg.price} €
+                {loading ? (
+                  <Loader2 className="mr-2 h-4 w-4 sm:h-5 sm:w-5 animate-spin" />
+                ) : (
+                  <Sparkles className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                )}
+                {loading ? "Presmerovanie..." : `Kúpiť za ${pkg.price} €`}
               </Button>
 
               <p className="text-[10px] sm:text-xs text-muted-foreground text-center">
