@@ -31,8 +31,8 @@ export function PricingComparisonA() {
               <span className="text-muted-foreground text-sm">/ fotka</span>
             </div>
             <BeforeAfterSlider
-              beforeSrc={IMG("white balance/wb-before.jpg")}
-              afterSrc={IMG("white balance/wb-after.jpeg")}
+              beforeSrc={FEATURE_IMAGES.whiteBalance.before}
+              afterSrc={FEATURE_IMAGES.whiteBalance.after}
               className="aspect-[16/10] rounded-lg mb-5"
             />
             <ul className="space-y-2.5">

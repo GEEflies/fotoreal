@@ -43,8 +43,8 @@ export function ResultsSectionB() {
         {/* Before/After showcase */}
         <div className="max-w-3xl mx-auto mb-12">
           <BeforeAfterSlider
-            beforeSrc={IMG("sky replacement/sky-before.jpeg")}
-            afterSrc={IMG("sky replacement/sky-after.jpeg")}
+            beforeSrc={FEATURE_IMAGES.sky.before}
+            afterSrc={FEATURE_IMAGES.sky.after}
             className="aspect-[16/9] rounded-2xl shadow-xl"
           />
           <p className="text-center text-sm text-muted-foreground mt-3">
