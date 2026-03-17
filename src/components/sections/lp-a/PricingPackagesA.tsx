@@ -165,17 +165,19 @@ export function PricingPackagesA() {
               </div>
 
               {/* Savings strip */}
-              <div className="rounded-lg sm:rounded-xl bg-success/5 border border-success/20 px-3 py-2 sm:px-4 sm:py-3 flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-0.5 sm:gap-3">
+              <div className="relative rounded-lg sm:rounded-xl bg-success/5 border border-success/20 px-3 py-2 sm:px-4 sm:py-3 text-center sm:text-left pb-5 sm:pb-3">
                 <div className="text-xs sm:text-sm">
                   <span className="text-muted-foreground">Fotograf: </span>
                   <span className="text-destructive font-semibold line-through">
                     {photographerLow}–{photographerHigh} €
-                  </span>{" "}
+                  </span>
+                  <br className="sm:hidden" />
+                  <span className="hidden sm:inline"> </span>
                   <span className="text-muted-foreground">
-                    · ~{pkg.properties} {pkg.properties === 1 ? "nehnuteľnosť" : pkg.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"}
+                    ~{pkg.properties} {pkg.properties === 1 ? "nehnuteľnosť" : pkg.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"}
                   </span>
                 </div>
-                <span className="text-xs sm:text-sm font-bold text-success whitespace-nowrap">
+                <span className="absolute bottom-1.5 right-2 sm:static sm:float-right sm:mt-0 text-[10px] sm:text-sm font-bold text-success-foreground bg-success px-2 py-0.5 rounded-full whitespace-nowrap">
                   Ušetríte {savingsPercent}%
                 </span>
               </div>
