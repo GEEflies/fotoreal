@@ -89,7 +89,7 @@ export function PricingPackagesA() {
                 </button>
 
                 {open && (
-                  <div className="absolute top-[calc(100%-1.5rem)] left-0 right-0 z-30 mt-1 rounded-xl border border-border bg-card shadow-xl overflow-hidden">
+                  <div className="absolute top-full left-0 right-0 z-30 mt-1 rounded-xl border border-border bg-card shadow-xl overflow-hidden">
                     {PACKAGES.map((p, i) => (
                       <button
                         key={p.photos}
