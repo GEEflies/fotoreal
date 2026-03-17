@@ -1,9 +1,11 @@
 import { ReactNode, useEffect } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useUserAuth } from '@/hooks/use-user-auth';
-import { Building2, Plus, LogOut, Home, Menu } from 'lucide-react';
+import { useCredits } from '@/hooks/use-credits';
+import { Building2, Plus, LogOut, Home, Menu, ShoppingCart, Sparkles } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
+import { CreditsBanner } from '@/components/dashboard/CreditsBanner';
 import { cn } from '@/lib/utils';
 
 interface UserLayoutProps {
@@ -13,10 +15,11 @@ interface UserLayoutProps {
 const navItems = [
   { href: '/dashboard', label: 'Nehnuteľnosti', icon: Building2 },
   { href: '/dashboard/new', label: 'Nová nehnuteľnosť', icon: Plus },
+  { href: '/dashboard/credits', label: 'Dokúpiť kredity', icon: ShoppingCart },
 ];
 
-function NavItem({ href, label, icon: Icon, isActive }: {
-  href: string; label: string; icon: typeof Building2; isActive: boolean;
+function NavItem({ href, label, icon: Icon, isActive, highlight }: {
+  href: string; label: string; icon: typeof Building2; isActive: boolean; highlight?: boolean;
 }) {
   return (
     <Link
@@ -25,7 +28,9 @@ function NavItem({ href, label, icon: Icon, isActive }: {
         "flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium transition-colors",
         isActive
           ? "bg-primary text-primary-foreground"
-          : "text-muted-foreground hover:bg-muted hover:text-foreground"
+          : highlight
+            ? "bg-success/10 text-success hover:bg-success/20 font-bold"
+            : "text-muted-foreground hover:bg-muted hover:text-foreground"
       )}
     >
       <Icon className="h-4 w-4" />
@@ -36,6 +41,7 @@ function NavItem({ href, label, icon: Icon, isActive }: {
 
 function Sidebar({ currentPath }: { currentPath: string }) {
   const { signOut } = useUserAuth();
+  const { credits } = useCredits();
   const navigate = useNavigate();
 
   const handleSignOut = async () => {
@@ -49,6 +55,17 @@ function Sidebar({ currentPath }: { currentPath: string }) {
         <h1 className="text-lg font-heading font-bold text-foreground">RealFoto</h1>
         <p className="text-xs text-muted-foreground">Spracovanie fotiek</p>
       </div>
+
+      {/* Credits in sidebar */}
+      {credits && (
+        <div className="px-4 py-3 border-b border-border">
+          <div className="flex items-center gap-2 text-sm">
+            <Sparkles className="h-4 w-4 text-primary" />
+            <span className="font-medium">{credits.available}</span>
+            <span className="text-muted-foreground text-xs">fotiek k dispozícii</span>
+          </div>
+        </div>
+      )}
       
       <nav className="flex-1 p-4 space-y-1">
         {navItems.map((item) => (
@@ -58,6 +75,7 @@ function Sidebar({ currentPath }: { currentPath: string }) {
             label={item.label}
             icon={item.icon}
             isActive={currentPath === item.href}
+            highlight={item.href === '/dashboard/credits' && currentPath !== '/dashboard/credits'}
           />
         ))}
       </nav>
