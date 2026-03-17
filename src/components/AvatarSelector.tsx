@@ -45,8 +45,8 @@ export function AvatarSelector({ onSelect }: AvatarSelectorProps) {
 
         <div className="grid grid-cols-2 gap-3">
           {[
-            { key: "photographer" as AvatarType, icon: Camera, iconBg: "bg-primary/10", iconColor: "text-primary", label: "Áno, mám fotografa" },
-            { key: "no-photographer" as AvatarType, icon: Smartphone, iconBg: "bg-warning/10", iconColor: "text-warning", label: "Nie, fotím sám" },
+            { key: "photographer" as AvatarType, icon: Camera, iconBg: "bg-primary/10", iconColor: "text-primary", label: "Áno, používam" },
+            { key: "no-photographer" as AvatarType, icon: Smartphone, iconBg: "bg-[hsl(270,80%,92%)]", iconColor: "text-[hsl(270,70%,50%)]", label: "Nie, fotím sám" },
           ].map((opt) => (
             <button
               key={opt.key}
