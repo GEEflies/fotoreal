@@ -13,6 +13,7 @@ import DashboardProperties from "./pages/dashboard/DashboardProperties";
 import DashboardNewProperty from "./pages/dashboard/DashboardNewProperty";
 import DashboardPropertyDetail from "./pages/dashboard/DashboardPropertyDetail";
 import DashboardCredits from "./pages/dashboard/DashboardCredits";
+import DashboardProfile from "./pages/dashboard/DashboardProfile";
 import {
   AdminLogin,
   AdminSubmissions,
