@@ -60,6 +60,7 @@ function NavLink({ href, label, icon: Icon, isActive }: {
 }
 
 function Sidebar({ currentPath }: { currentPath: string }) {
+  const [outreachOpen, setOutreachOpen] = useState(true);
   const { signOut } = useAdminAuth();
   const navigate = useNavigate();
 
