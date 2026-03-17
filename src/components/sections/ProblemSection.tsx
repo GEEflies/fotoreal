@@ -10,9 +10,9 @@ const painPoints = [
   },
   {
     icon: DollarSign,
-    title: "Drahí externí editori",
+    title: "Drahí externí fotografi",
     description:
-      "Profesionálna úprava stojí 3–5 € za fotku. Pri 20 fotkách na nehnuteľnosť je to 60–100 € za jedno inzerát.",
+      "Profesionálny fotograf si účtuje 150–300 € za fotoshoot (cca 20 fotiek). Pri viacerých nehnuteľnostiach sú to tisíce eur ročne.",
   },
   {
     icon: AlertTriangle,
