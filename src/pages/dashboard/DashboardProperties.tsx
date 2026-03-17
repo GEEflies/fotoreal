@@ -58,10 +58,6 @@ export default function DashboardProperties() {
   return (
     <UserLayout>
       <div className="space-y-6">
-        {/* Credits banner - prominent */}
-        {!creditsLoading && credits && (
-          <CreditsBanner available={credits.available} />
-        )}
 
         <div className="flex items-center justify-between">
           <div>
