@@ -60,7 +60,7 @@ export function HeroSectionA() {
             <div className="flex items-center gap-3 pt-1 justify-center sm:justify-start">
               <div className="flex -space-x-2.5">
                 {[social1, social2, social3].map((src, i) => (
-                  <img key={i} src={src} alt="Používateľ" className="h-8 w-8 sm:h-9 sm:w-9 rounded-full border-2 border-background object-cover" />
+                  <img key={i} src={src} alt="Používateľ" width={36} height={36} className="h-8 w-8 sm:h-9 sm:w-9 rounded-full border-2 border-background object-cover" />
                 ))}
               </div>
               <div className="flex flex-col">
@@ -75,7 +75,7 @@ export function HeroSectionA() {
           </div>
 
           <div className="animate-fade-in">
-            <BeforeAfterSlider beforeSrc={HERO_BEFORE} afterSrc={HERO_AFTER} className="aspect-[4/3] shadow-2xl rounded-2xl" />
+            <BeforeAfterSlider beforeSrc={HERO_BEFORE} afterSrc={HERO_AFTER} className="aspect-[4/3] shadow-2xl rounded-2xl" eager />
           </div>
         </div>
       </div>

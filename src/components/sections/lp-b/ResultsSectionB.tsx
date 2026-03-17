@@ -29,7 +29,7 @@ export function ResultsSectionB() {
 
   return (
     <section id="vysledky" ref={ref as React.RefObject<HTMLElement>} className="section-padding bg-accent/30">
-      <div className={`section-container transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+      <div className={`section-container transition-[opacity,transform] duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
         <div className="text-center mb-10 sm:mb-14 max-w-2xl mx-auto">
           <p className="text-sm font-semibold text-primary uppercase tracking-wider mb-2">Výsledky</p>
           <h2 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-3">

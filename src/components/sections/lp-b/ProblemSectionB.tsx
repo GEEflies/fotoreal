@@ -27,7 +27,7 @@ export function ProblemSectionB() {
 
   return (
     <section ref={ref as React.RefObject<HTMLElement>} className="section-padding">
-      <div className={`section-container transition-all duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
+      <div className={`section-container transition-[opacity,transform] duration-700 ${isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"}`}>
         <div className="text-center mb-10 sm:mb-14 max-w-2xl mx-auto">
           <p className="text-sm font-semibold text-destructive uppercase tracking-wider mb-2">Problém</p>
           <h2 className="font-heading text-2xl sm:text-3xl lg:text-4xl font-bold text-foreground mb-3">

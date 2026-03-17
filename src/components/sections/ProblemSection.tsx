@@ -31,7 +31,7 @@ export function ProblemSection() {
       className="section-padding"
     >
       <div
-        className={`section-container transition-all duration-700 ${
+        className={`section-container transition-[opacity,transform] duration-700 ${
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
         }`}
       >

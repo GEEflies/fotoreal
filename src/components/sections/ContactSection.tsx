@@ -29,7 +29,7 @@ export function ContactSection({ onOpenForm }: ContactSectionProps) {
       />
       
       <div
-        className={`section-container relative z-10 transition-all duration-700 ${
+        className={`section-container relative z-10 transition-[opacity,transform] duration-700 ${
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
         }`}
       >

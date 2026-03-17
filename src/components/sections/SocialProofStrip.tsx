@@ -17,7 +17,7 @@ export function SocialProofStrip() {
       className="py-8 sm:py-12 border-y border-border bg-muted/40"
     >
       <div
-        className={`section-container transition-all duration-700 ${
+        className={`section-container transition-[opacity,transform] duration-700 ${
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
         }`}
       >

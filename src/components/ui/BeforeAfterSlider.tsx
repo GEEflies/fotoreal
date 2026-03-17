@@ -6,6 +6,7 @@ interface BeforeAfterSliderProps {
   beforeLabel?: string;
   afterLabel?: string;
   className?: string;
+  eager?: boolean;
 }
 
 export function BeforeAfterSlider({
@@ -14,6 +15,7 @@ export function BeforeAfterSlider({
   beforeLabel = "Pred",
   afterLabel = "Po",
   className = "",
+  eager = false,
 }: BeforeAfterSliderProps) {
   const [position, setPosition] = useState(50);
   const containerRef = useRef<HTMLDivElement>(null);
@@ -41,6 +43,8 @@ export function BeforeAfterSlider({
     isDragging.current = false;
   }, []);
 
+  const loadingAttr = eager ? "eager" : "lazy";
+
   return (
     <div
       ref={containerRef}
@@ -50,14 +54,32 @@ export function BeforeAfterSlider({
       onPointerUp={handlePointerUp}
     >
       {/* After (full) */}
-      <img src={afterSrc} alt={afterLabel} className="w-full h-full object-cover block" draggable={false} />
+      <img
+        src={afterSrc}
+        alt={afterLabel}
+        className="w-full h-full object-cover block"
+        draggable={false}
+        loading={loadingAttr}
+        decoding="async"
+        width={1200}
+        height={750}
+      />
 
       {/* Before (clipped) */}
       <div
         className="absolute inset-0"
         style={{ clipPath: `inset(0 ${100 - position}% 0 0)` }}
       >
-        <img src={beforeSrc} alt={beforeLabel} className="w-full h-full object-cover" draggable={false} />
+        <img
+          src={beforeSrc}
+          alt={beforeLabel}
+          className="w-full h-full object-cover"
+          draggable={false}
+          loading={loadingAttr}
+          decoding="async"
+          width={1200}
+          height={750}
+        />
       </div>
 
       {/* Divider line */}

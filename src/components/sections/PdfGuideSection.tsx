@@ -26,7 +26,7 @@ export function PdfGuideSection({ onOpenForm }: PdfGuideSectionProps) {
       ref={ref as React.RefObject<HTMLElement>}
     >
       <div
-        className={`section-container transition-all duration-700 ${
+        className={`section-container transition-[opacity,transform] duration-700 ${
           isVisible ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
         }`}
       >

@@ -1,3 +1,4 @@
+import { lazy, Suspense } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -6,21 +7,21 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Index from "./pages/Index";
 import LandingA from "./pages/LandingA";
 import LandingB from "./pages/LandingB";
-import PaymentSuccess from "./pages/PaymentSuccess";
-import NotFound from "./pages/NotFound";
-import Login from "./pages/Login";
-import DashboardProperties from "./pages/dashboard/DashboardProperties";
-import DashboardNewProperty from "./pages/dashboard/DashboardNewProperty";
-import DashboardPropertyDetail from "./pages/dashboard/DashboardPropertyDetail";
-import DashboardCredits from "./pages/dashboard/DashboardCredits";
-import {
-  AdminLogin,
-  AdminSubmissions,
-  AdminSubmissionDetail,
-  AdminAnalytics,
-  AdminSettings,
-} from "./pages/admin";
 import { Navigate } from "react-router-dom";
+
+// Lazy-load non-landing routes — these are never needed on first visit
+const PaymentSuccess = lazy(() => import("./pages/PaymentSuccess"));
+const NotFound = lazy(() => import("./pages/NotFound"));
+const Login = lazy(() => import("./pages/Login"));
+const DashboardProperties = lazy(() => import("./pages/dashboard/DashboardProperties"));
+const DashboardNewProperty = lazy(() => import("./pages/dashboard/DashboardNewProperty"));
+const DashboardPropertyDetail = lazy(() => import("./pages/dashboard/DashboardPropertyDetail"));
+const DashboardCredits = lazy(() => import("./pages/dashboard/DashboardCredits"));
+const AdminLogin = lazy(() => import("./pages/admin").then(m => ({ default: m.AdminLogin })));
+const AdminSubmissions = lazy(() => import("./pages/admin").then(m => ({ default: m.AdminSubmissions })));
+const AdminSubmissionDetail = lazy(() => import("./pages/admin").then(m => ({ default: m.AdminSubmissionDetail })));
+const AdminAnalytics = lazy(() => import("./pages/admin").then(m => ({ default: m.AdminAnalytics })));
+const AdminSettings = lazy(() => import("./pages/admin").then(m => ({ default: m.AdminSettings })));
 
 const queryClient = new QueryClient();
 
@@ -30,25 +31,27 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
-        <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/pre-fotografov" element={<LandingA />} />
-          <Route path="/bez-fotografa" element={<LandingB />} />
-          <Route path="/platba-uspesna" element={<PaymentSuccess />} />
-          <Route path="/login" element={<Login />} />
-          <Route path="/dashboard" element={<DashboardProperties />} />
-          <Route path="/dashboard/new" element={<DashboardNewProperty />} />
-          <Route path="/dashboard/properties/:id" element={<DashboardPropertyDetail />} />
-          <Route path="/dashboard/credits" element={<DashboardCredits />} />
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin" element={<Navigate to="/admin/submissions" replace />} />
-          <Route path="/admin/submissions" element={<AdminSubmissions />} />
-          <Route path="/admin/submissions/:id" element={<AdminSubmissionDetail />} />
-          <Route path="/admin/analytics" element={<AdminAnalytics />} />
-          <Route path="/admin/settings" element={<AdminSettings />} />
-          {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-          <Route path="*" element={<NotFound />} />
-        </Routes>
+        <Suspense fallback={<div className="min-h-screen" />}>
+          <Routes>
+            <Route path="/" element={<Index />} />
+            <Route path="/pre-fotografov" element={<LandingA />} />
+            <Route path="/bez-fotografa" element={<LandingB />} />
+            <Route path="/platba-uspesna" element={<PaymentSuccess />} />
+            <Route path="/login" element={<Login />} />
+            <Route path="/dashboard" element={<DashboardProperties />} />
+            <Route path="/dashboard/new" element={<DashboardNewProperty />} />
+            <Route path="/dashboard/properties/:id" element={<DashboardPropertyDetail />} />
+            <Route path="/dashboard/credits" element={<DashboardCredits />} />
+            <Route path="/admin/login" element={<AdminLogin />} />
+            <Route path="/admin" element={<Navigate to="/admin/submissions" replace />} />
+            <Route path="/admin/submissions" element={<AdminSubmissions />} />
+            <Route path="/admin/submissions/:id" element={<AdminSubmissionDetail />} />
+            <Route path="/admin/analytics" element={<AdminAnalytics />} />
+            <Route path="/admin/settings" element={<AdminSettings />} />
+            {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+            <Route path="*" element={<NotFound />} />
+          </Routes>
+        </Suspense>
       </BrowserRouter>
     </TooltipProvider>
   </QueryClientProvider>
