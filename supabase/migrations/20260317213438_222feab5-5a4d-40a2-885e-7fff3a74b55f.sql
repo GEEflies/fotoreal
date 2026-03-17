@@ -1,0 +1,1 @@
+ALTER TYPE public.photo_ai_status ADD VALUE IF NOT EXISTS 'analyzing' BEFORE 'enhancing';
