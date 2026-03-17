@@ -4,8 +4,6 @@ import { useAdminAuth } from '@/hooks/use-admin-auth';
 import { 
   Users,
   UserCheck,
-  BarChart3, 
-  Settings, 
   LogOut,
   Home,
   Menu
