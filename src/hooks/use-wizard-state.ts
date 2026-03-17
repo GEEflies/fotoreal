@@ -88,7 +88,7 @@ export function useWizardState(options: UseWizardStateOptions = {}) {
     };
   });
 
-  const saveTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+  const saveTimeoutRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const hasPhoneBeenCaptured = useRef(false);
 
   // Save draft to localStorage
