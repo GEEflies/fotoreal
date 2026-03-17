@@ -112,9 +112,7 @@ export function PricingPackagesA() {
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="font-bold text-foreground">{p.price} €</span>
-                          {i === selected && (
-                            <Check className="h-4 w-4 text-primary" />
-                          )}
+                          <span className="text-xs text-muted-foreground">({p.ppp.toFixed(2)} € / ks)</span>
                         </div>
                       </button>
                     ))}
