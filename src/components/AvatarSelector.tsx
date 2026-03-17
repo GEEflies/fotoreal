@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Camera, Smartphone } from "lucide-react";
+import { Camera, Smartphone, ArrowRight } from "lucide-react";
 
 export type AvatarType = "photographer" | "no-photographer" | null;
 
@@ -32,19 +32,18 @@ export function AvatarSelector({ onSelect }: AvatarSelectorProps) {
   };
 
   return (
-    <div
-      className="fixed inset-0 z-[100] flex items-center justify-center animate-fade-in px-4"
-      style={{
-        background:
-          "radial-gradient(circle at center, hsl(244 95% 10%) 0%, hsl(244 95% 5%) 60%)",
-      }}
-    >
+    <div className="fixed inset-0 z-[100] flex items-center justify-center animate-fade-in px-4" style={{ background: "radial-gradient(circle at center, hsl(244 95% 10%) 0%, hsl(244 95% 5%) 60%)" }}>
       <div className="w-full max-w-md lg:max-w-xl rounded-2xl bg-card shadow-2xl p-6 sm:p-8 lg:p-10 animate-scale-in">
-        <h2 className="font-heading text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight text-center mb-6 sm:mb-8">
-          Používate realitného fotografa?
-        </h2>
+        <div className="text-center mb-6">
+          <h2 className="font-heading text-2xl sm:text-3xl font-extrabold text-foreground tracking-tight">
+            Používate realitného fotografa?
+          </h2>
+          <p className="text-sm text-muted-foreground mt-1.5">
+            Prispôsobíme obsah vašim potrebám.
+          </p>
+        </div>
 
-        <div className="grid grid-cols-2 gap-3 sm:gap-4">
+        <div className="grid grid-cols-2 gap-3">
           {[
             { key: "photographer" as AvatarType, icon: Camera, iconBg: "bg-primary/10", iconColor: "text-primary", label: "ÁNO" },
             { key: "no-photographer" as AvatarType, icon: Smartphone, iconBg: "bg-[hsl(270,80%,96%)]", iconColor: "text-[hsl(270,60%,55%)]", label: "NIE" },
@@ -54,18 +53,22 @@ export function AvatarSelector({ onSelect }: AvatarSelectorProps) {
               onClick={() => handleSelect(opt.key)}
               onMouseEnter={() => setHoveredOption(opt.key)}
               onMouseLeave={() => setHoveredOption(null)}
-              className={`group flex flex-col items-center justify-center p-5 sm:p-6 rounded-xl border-2 transition-all duration-200 ${
+              className={`group flex flex-col items-start text-left p-4 sm:p-5 rounded-xl border-2 transition-all duration-200 h-full ${
                 hoveredOption === opt.key
-                  ? "border-primary bg-primary/5 shadow-lg scale-[1.02]"
+                  ? "border-primary bg-primary/5 shadow-md"
                   : "border-border hover:border-primary/30"
               }`}
             >
-              <div className={`h-12 w-12 sm:h-14 sm:w-14 rounded-xl ${opt.iconBg} flex items-center justify-center mb-4`}>
-                <opt.icon className={`h-6 w-6 sm:h-7 sm:w-7 ${opt.iconColor}`} />
+              <div className={`h-10 w-10 rounded-lg ${opt.iconBg} flex items-center justify-center mb-3`}>
+                <opt.icon className={`h-5 w-5 ${opt.iconColor}`} />
               </div>
-              <h3 className="font-heading font-extrabold text-foreground text-xl sm:text-2xl">
+              <h3 className="font-heading font-bold text-foreground text-2xl sm:text-3xl mb-3 flex-1">
                 {opt.label}
               </h3>
+              <span className="inline-flex items-center gap-1 text-xs sm:text-sm font-semibold text-primary group-hover:gap-1.5 transition-all">
+                Pokračovať
+                <ArrowRight className="h-3.5 w-3.5" />
+              </span>
             </button>
           ))}
         </div>
