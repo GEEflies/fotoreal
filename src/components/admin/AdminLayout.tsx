@@ -24,9 +24,8 @@ interface AdminLayoutProps {
 }
 
 const navItems = [
-  { href: '/admin/submissions', label: 'Leady', icon: Users },
-  { href: '/admin/clients', label: 'Klienti', icon: UserCheck },
   { href: '/admin/analytics', label: 'Analytika', icon: BarChart3 },
+  { href: '/admin/clients', label: 'Klienti', icon: UserCheck },
 ];
 
 const outreachItems = [
