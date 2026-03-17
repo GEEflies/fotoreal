@@ -3,73 +3,71 @@ import {
 } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { BeforeAfterSlider } from "@/components/ui/BeforeAfterSlider";
-
-const IMG = (path: string) =>
-  `https://realfoto-adames.vercel.app/_next/image?url=%2Flanding%2F${encodeURIComponent(path)}&w=1200&q=85`;
+import { FEATURE_IMAGES } from "@/lib/images";
 
 const features = [
   {
     icon: Layers,
     title: "HDR Zlúčenie",
     desc: "Zlúčte viacero expozícií do jedného obrazu s vysokým dynamickým rozsahom. Vyvážený, prirodzený vzhľad.",
-    before: IMG("hdr merging/hdr-before.jpg"),
-    after: IMG("hdr merging/hdr-after.jpeg"),
+    before: FEATURE_IMAGES.hdr.before,
+    after: FEATURE_IMAGES.hdr.after,
   },
   {
     icon: Sun,
     title: "Zjasnenie Okien",
     desc: "Detekuje okná a odkryje jasný výhľad von. Interiéry aj exteriéry s dokonalou jasnosťou.",
-    before: IMG("window pulling/wp-before.jpg"),
-    after: IMG("window pulling/wp-after.jpeg"),
+    before: FEATURE_IMAGES.windows.before,
+    after: FEATURE_IMAGES.windows.after,
   },
   {
     icon: Cloud,
     title: "Výmena Oblohy",
     desc: "Premeňte zamračenú oblohu na jasnú pre príťažlivejší vzhľad. Prirodzene vyzerajúca obloha.",
-    before: IMG("sky replacement/sky-before.jpeg"),
-    after: IMG("sky replacement/sky-after.jpeg"),
+    before: FEATURE_IMAGES.sky.before,
+    after: FEATURE_IMAGES.sky.after,
   },
   {
     icon: Palette,
     title: "Vyváženie Bielej",
     desc: "Automaticky upraví farby aby dokonale odrážali prirodzené tóny v každom obraze.",
-    before: IMG("white balance/wb-before.jpg"),
-    after: IMG("white balance/wb-after.jpeg"),
+    before: FEATURE_IMAGES.whiteBalance.before,
+    after: FEATURE_IMAGES.whiteBalance.after,
   },
   {
     icon: Move,
     title: "Korekcia Perspektívy",
     desc: "Narovnajte obrazy pre vyvážený pohľad. Profesionálne zarovnané interiéry aj exteriéry.",
-    before: IMG("perspective correction/prsp-before.jpeg"),
-    after: IMG("perspective correction/prsp-after.jpeg"),
+    before: FEATURE_IMAGES.perspective.before,
+    after: FEATURE_IMAGES.perspective.after,
   },
   {
     icon: Lightbulb,
     title: "Nasvietenie Obrazu",
     desc: "Upraví jas, svetlá a tiene pre dobre osvetlený, dynamický a vizuálne pútavý obraz.",
-    before: IMG("relighting/religh-before.jpg"),
-    after: IMG("relighting/religh-after.jpg"),
+    before: FEATURE_IMAGES.relighting.before,
+    after: FEATURE_IMAGES.relighting.after,
   },
   {
     icon: FileImage,
     title: "RAW Podpora",
     desc: "Nahrajte RAW súbory priamo pre maximálne zachovanie kvality a detailov.",
-    before: IMG("raw/raw-before.jpg"),
-    after: IMG("raw/raw-after.jpg"),
+    before: FEATURE_IMAGES.raw.before,
+    after: FEATURE_IMAGES.raw.after,
   },
   {
     icon: Eye,
     title: "Auto Súkromie",
     desc: "Automaticky rozmaže ŠPZ, tváre a citlivé informácie. GDPR súlad na každej fotke.",
-    before: IMG("privacy/privacy-before.jpeg"),
-    after: IMG("privacy/privacy-after.jpeg"),
+    before: FEATURE_IMAGES.privacy.before,
+    after: FEATURE_IMAGES.privacy.after,
   },
   {
     icon: Droplets,
     title: "Korekcia Farieb",
     desc: "Vylepšite živosť a presnú reprodukciu farieb. Úžasné, verné fotografie.",
-    before: IMG("color correction/cc-before.jpg"),
-    after: IMG("color correction/cc-after.jpg"),
+    before: FEATURE_IMAGES.colorCorrection.before,
+    after: FEATURE_IMAGES.colorCorrection.after,
   },
 ];
 

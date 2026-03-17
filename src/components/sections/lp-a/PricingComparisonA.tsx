@@ -1,9 +1,7 @@
 import { Check, X } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { BeforeAfterSlider } from "@/components/ui/BeforeAfterSlider";
-
-const IMG = (path: string) =>
-  `https://realfoto-adames.vercel.app/_next/image?url=%2Flanding%2F${encodeURIComponent(path)}&w=1200&q=85`;
+import { FEATURE_IMAGES } from "@/lib/images";
 
 export function PricingComparisonA() {
   const { ref, isVisible } = useScrollAnimation({ threshold: 0.1 });
