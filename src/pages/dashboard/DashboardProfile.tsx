@@ -53,8 +53,8 @@ function WatermarkPreview({ position, logoUrl }: { position: WatermarkPosition; 
         {logoUrl ? (
           <img src={logoUrl} alt="Logo" className="max-w-full max-h-full object-contain opacity-70" />
         ) : (
-          <div className="w-10 h-10 rounded bg-foreground/20 border border-foreground/30 flex items-center justify-center">
-            <span className="text-[8px] text-foreground/50 font-bold">LOGO</span>
+          <div className="w-10 h-10 rounded bg-destructive/80 border border-destructive flex items-center justify-center shadow-sm">
+            <span className="text-[8px] text-white font-bold tracking-wider">LOGO</span>
           </div>
         )}
       </div>
