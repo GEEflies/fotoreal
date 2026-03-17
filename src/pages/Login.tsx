@@ -64,7 +64,7 @@ export default function Login() {
     setIsLoading(false);
 
     if (error) {
-      toast({ title: 'Chyba', description: error.message, variant: 'destructive' });
+      toast({ title: 'Chyba', description: translateError(error.message), variant: 'destructive' });
     } else {
       setStep('otp');
       toast({ title: 'Kód odoslaný', description: 'Skontrolujte si email a zadajte overovací kód.' });
@@ -83,7 +83,7 @@ export default function Login() {
     setIsLoading(false);
 
     if (error) {
-      toast({ title: 'Neplatný kód', description: error.message, variant: 'destructive' });
+      toast({ title: 'Neplatný kód', description: translateError(error.message), variant: 'destructive' });
     } else {
       // Ensure user role exists
       const { data: { user } } = await supabase.auth.getUser();
