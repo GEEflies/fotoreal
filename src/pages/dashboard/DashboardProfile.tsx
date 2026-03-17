@@ -66,7 +66,10 @@ export default function DashboardProfile() {
   const [profile, setProfile] = useState<Profile | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isSaving, setIsSaving] = useState(false);
+  const [saveStatus, setSaveStatus] = useState<'idle' | 'saving' | 'saved'>('idle');
   const [isUploadingLogo, setIsUploadingLogo] = useState(false);
+  const initialLoadDone = useRef(false);
+  const debounceTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Form fields
   const [companyName, setCompanyName] = useState('');
