@@ -110,7 +110,7 @@ export default function Login() {
             <img src={logoRealfoto} alt="RealFoto" className="h-10 w-auto" />
             <span className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">RealFoto</span>
           </a>
-          <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
+          <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
             <ArrowLeft className="h-4 w-4 mr-1" />
             Späť
           </Button>
