@@ -1,13 +1,11 @@
 import { ArrowRight, Star, Clock, ShieldCheck, TrendingDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BeforeAfterSlider } from "@/components/ui/BeforeAfterSlider";
+import { HERO_BEFORE, HERO_AFTER } from "@/lib/images";
 
 interface HeroSectionProps {
   onOpenForm?: () => void;
 }
-
-const HERO_BEFORE = "https://realfoto-adames.vercel.app/_next/image?url=%2Flanding%2Fhero%20images%2Fwb-before.jpg&w=1920&q=90";
-const HERO_AFTER = "https://realfoto-adames.vercel.app/_next/image?url=%2Flanding%2Fhero%20images%2Fwb-after.jpg&w=1920&q=90";
 
 export function HeroSection({ onOpenForm }: HeroSectionProps) {
   return (
