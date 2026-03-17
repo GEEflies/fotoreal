@@ -285,6 +285,22 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
+      get_admin_user_list: {
+        Args: never
+        Returns: {
+          address: string
+          company_name: string
+          email: string
+          free_credits: number
+          ico: string
+          logo_url: string
+          properties_count: number
+          purchased_credits: number
+          total_used: number
+          user_created_at: string
+          user_id: string
+        }[]
+      }
       has_role: {
         Args: {
           _role: Database["public"]["Enums"]["app_role"]
