@@ -12,6 +12,7 @@ import { Loader2, Zap, Mail, ArrowLeft } from 'lucide-react';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import logoRealfoto from '@/assets/logo-realfoto.svg';
 import { getStoredAvatar } from '@/components/AvatarSelector';
+import { translateError } from '@/lib/translate-error';
 
 type AuthStep = 'initial' | 'otp';
 
@@ -45,7 +46,7 @@ export default function Login() {
     });
     setIsGoogleLoading(false);
     if (error) {
-      toast({ title: 'Chyba prihlásenia', description: String(error), variant: 'destructive' });
+      toast({ title: 'Chyba prihlásenia', description: translateError(String(error)), variant: 'destructive' });
     }
   };
 
