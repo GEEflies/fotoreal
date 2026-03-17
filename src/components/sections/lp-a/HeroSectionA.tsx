@@ -21,7 +21,6 @@ export function HeroSectionA() {
               <br />
               <span className="text-primary">Až 95% úspora.</span>
             </h1>
-            </h1>
 
             <p className="text-muted-foreground text-base sm:text-lg max-w-xl leading-relaxed">
               Prečo platiť fotografovi <span className="font-bold text-foreground">150–300 € za 20 fotiek</span>,
