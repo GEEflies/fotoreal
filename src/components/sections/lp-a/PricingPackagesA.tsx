@@ -150,9 +150,6 @@ export function PricingPackagesA() {
                   <span className="text-muted-foreground">
                     · ~{pkg.properties} {pkg.properties === 1 ? "nehnuteľnosť" : pkg.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"}
                   </span>
-                  <span className="text-destructive font-semibold line-through">
-                    {photographerLow}–{photographerHigh} €
-                  </span>
                 </div>
                 <span className="text-sm font-bold text-success whitespace-nowrap">
                   Ušetríte {savingsPercent}%
