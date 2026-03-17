@@ -14,6 +14,71 @@ export type Database = {
   }
   public: {
     Tables: {
+      properties: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          status: Database["public"]["Enums"]["property_status"]
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name: string
+          status?: Database["public"]["Enums"]["property_status"]
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          status?: Database["public"]["Enums"]["property_status"]
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
+      property_photos: {
+        Row: {
+          ai_status: Database["public"]["Enums"]["photo_ai_status"]
+          ai_step_label: string | null
+          created_at: string
+          id: string
+          original_url: string
+          processed_url: string | null
+          property_id: string
+        }
+        Insert: {
+          ai_status?: Database["public"]["Enums"]["photo_ai_status"]
+          ai_step_label?: string | null
+          created_at?: string
+          id?: string
+          original_url: string
+          processed_url?: string | null
+          property_id: string
+        }
+        Update: {
+          ai_status?: Database["public"]["Enums"]["photo_ai_status"]
+          ai_step_label?: string | null
+          created_at?: string
+          id?: string
+          original_url?: string
+          processed_url?: string | null
+          property_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "property_photos_property_id_fkey"
+            columns: ["property_id"]
+            isOneToOne: false
+            referencedRelation: "properties"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       settings: {
         Row: {
           created_at: string
@@ -158,6 +223,15 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      photo_ai_status:
+        | "pending"
+        | "enhancing"
+        | "sky_replace"
+        | "hdr"
+        | "privacy_blur"
+        | "done"
+        | "error"
+      property_status: "uploading" | "processing" | "done" | "error"
       property_type: "byt" | "dom" | "pozemok"
       submission_status:
         | "nove"
@@ -294,6 +368,16 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      photo_ai_status: [
+        "pending",
+        "enhancing",
+        "sky_replace",
+        "hdr",
+        "privacy_blur",
+        "done",
+        "error",
+      ],
+      property_status: ["uploading", "processing", "done", "error"],
       property_type: ["byt", "dom", "pozemok"],
       submission_status: [
         "nove",
