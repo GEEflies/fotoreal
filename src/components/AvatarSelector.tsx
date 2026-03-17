@@ -33,7 +33,7 @@ export function AvatarSelector({ onSelect }: AvatarSelectorProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-foreground/60 backdrop-blur-sm animate-fade-in">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-gradient-to-br from-[hsl(244,95%,9%)] via-[hsl(217,97%,20%)] to-[hsl(244,95%,9%)] animate-fade-in">
       <div className="mx-4 w-full max-w-2xl rounded-2xl bg-card border border-border shadow-xl p-6 sm:p-10 animate-scale-in">
         {/* Header */}
         <div className="text-center mb-8">
