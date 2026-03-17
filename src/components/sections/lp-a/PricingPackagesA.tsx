@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Check, ChevronDown, TrendingDown, Sparkles } from "lucide-react";
+import { ChevronDown, TrendingDown, Sparkles } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { Button } from "@/components/ui/button";
 
@@ -112,9 +112,7 @@ export function PricingPackagesA() {
                         </div>
                         <div className="flex items-center gap-2">
                           <span className="font-bold text-foreground">{p.price} €</span>
-                          {i === selected && (
-                            <Check className="h-4 w-4 text-primary" />
-                          )}
+                          <span className="text-xs text-muted-foreground">({p.ppp.toFixed(2)} € / ks)</span>
                         </div>
                       </button>
                     ))}
