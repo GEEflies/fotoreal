@@ -32,7 +32,7 @@ export function HeroSectionA() {
             </p>
 
             <div className="flex flex-col sm:flex-row gap-3 pt-1">
-              <Button size="lg" className="group font-bold shadow-glow hover:shadow-lg transition-all text-base px-7">
+              <Button size="lg" className="w-full sm:w-auto group font-bold shadow-glow hover:shadow-lg transition-all text-base px-7">
                 Vyskúšať 5 fotiek ZADARMO
                 <ArrowRight className="ml-2 h-5 w-5 group-hover:translate-x-1 transition-transform" />
               </Button>
@@ -40,15 +40,15 @@ export function HeroSectionA() {
                 size="lg"
                 variant="outline"
                 onClick={() => document.querySelector("#funkcie")?.scrollIntoView({ behavior: "smooth" })}
-                className="font-semibold"
+                className="w-full sm:w-auto font-semibold"
               >
                 Porovnať s fotografom
               </Button>
             </div>
 
-            <p className="text-xs text-muted-foreground">*Bez kreditnej karty • Hotové za 30 sekúnd</p>
+            <p className="text-xs text-muted-foreground text-center sm:text-left">*Bez kreditnej karty • Hotové za 30 sekúnd</p>
 
-            <div className="flex flex-wrap gap-5 text-xs sm:text-sm text-muted-foreground pt-1">
+            <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:gap-5 text-xs sm:text-sm text-muted-foreground pt-1">
               <span className="flex items-center gap-1.5">
                 <Clock className="h-4 w-4 text-primary" />
                 Hotovo do 30s
@@ -63,10 +63,10 @@ export function HeroSectionA() {
               </span>
             </div>
 
-            <div className="flex items-center gap-3 pt-1">
+            <div className="flex items-center gap-3 pt-1 justify-center sm:justify-start">
               <div className="flex -space-x-2.5">
                 {[social1, social2, social3].map((src, i) => (
-                  <img key={i} src={src} alt="Používateľ" className="h-9 w-9 rounded-full border-2 border-background object-cover" />
+                  <img key={i} src={src} alt="Používateľ" className="h-8 w-8 sm:h-9 sm:w-9 rounded-full border-2 border-background object-cover" />
                 ))}
               </div>
               <div className="flex flex-col">
