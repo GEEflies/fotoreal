@@ -8,8 +8,9 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { useToast } from '@/hooks/use-toast';
-import { Loader2, Zap, Mail } from 'lucide-react';
+import { Loader2, Zap, Mail, ArrowLeft } from 'lucide-react';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
+import logoRealfoto from '@/assets/logo-realfoto.svg';
 
 type AuthStep = 'initial' | 'otp';
 
@@ -101,7 +102,22 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-muted p-4">
+    <div className="min-h-screen flex flex-col bg-muted">
+      {/* Navigation bar */}
+      <header className="w-full border-b border-border bg-background/95 backdrop-blur-md">
+        <div className="max-w-7xl mx-auto flex h-16 items-center justify-between px-4">
+          <a href="/" onClick={(e) => { e.preventDefault(); navigate('/'); }} className="flex items-center gap-2 group">
+            <img src={logoRealfoto} alt="RealFoto" className="h-10 w-auto" />
+            <span className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">RealFoto</span>
+          </a>
+          <Button variant="ghost" size="sm" onClick={() => navigate('/')}>
+            <ArrowLeft className="h-4 w-4 mr-1" />
+            Späť
+          </Button>
+        </div>
+      </header>
+
+      <div className="flex-1 flex items-center justify-center p-4">
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-heading">
@@ -228,6 +244,7 @@ export default function Login() {
           )}
         </CardContent>
       </Card>
+      </div>
     </div>
   );
 }
