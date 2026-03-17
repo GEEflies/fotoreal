@@ -9,6 +9,7 @@ import { SocialProofStripB } from "@/components/sections/lp-b/SocialProofStripB"
 import { ProblemSectionB } from "@/components/sections/lp-b/ProblemSectionB";
 import { FeaturesGrid } from "@/components/sections/FeaturesGrid";
 import { HowItWorksSection } from "@/components/sections/HowItWorksSection";
+import { PricingPackagesA } from "@/components/sections/lp-a/PricingPackagesA";
 import { ResultsSectionB } from "@/components/sections/lp-b/ResultsSectionB";
 import { TestimonialsSectionB } from "@/components/sections/lp-b/TestimonialsSectionB";
 import { FaqSectionB } from "@/components/sections/lp-b/FaqSectionB";
@@ -23,6 +24,7 @@ const LandingB = () => (
       <ProblemSectionB />
       <FeaturesGrid />
       <HowItWorksSection />
+      <PricingPackagesA />
       <ResultsSectionB />
       <TestimonialsSectionB />
       <FaqSectionB />
