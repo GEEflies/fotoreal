@@ -87,23 +87,23 @@ export function PricingPackagesA() {
                         </span>
                       )}
                     </div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-heading text-xl font-bold text-foreground">
-                        {pkg.price} €
-                      </span>
-                      <ChevronDown
-                        className={`h-5 w-5 text-muted-foreground transition-transform ${
-                          open ? "rotate-180" : ""
-                        }`}
-                      />
+                    <div className="text-right">
+                      <div className="flex items-center gap-1">
+                        <span className="font-heading text-xl font-bold text-foreground">
+                          {pkg.price} €
+                        </span>
+                        <ChevronDown
+                          className={`h-5 w-5 text-muted-foreground transition-transform ${
+                            open ? "rotate-180" : ""
+                          }`}
+                        />
+                      </div>
+                      <span className="text-sm font-semibold text-primary">({pkg.ppp.toFixed(2)} € / ks)</span>
                     </div>
                   </div>
-                  <div className="flex items-center justify-between mt-1 text-xs text-muted-foreground">
-                    <span>
-                      ~{pkg.properties} {pkg.properties === 1 ? "nehnuteľnosť" : pkg.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"}
-                    </span>
-                    <span className="mr-7">({pkg.ppp.toFixed(2)} € / ks)</span>
-                  </div>
+                  <p className="text-xs text-muted-foreground text-center mt-1">
+                    ~{pkg.properties} {pkg.properties === 1 ? "nehnuteľnosť" : pkg.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"}
+                  </p>
                 </button>
 
                 {open && (
