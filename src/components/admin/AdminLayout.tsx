@@ -19,8 +19,6 @@ interface AdminLayoutProps {
 const navItems = [
   { href: '/admin/submissions', label: 'Leady', icon: Users },
   { href: '/admin/clients', label: 'Klienti', icon: UserCheck },
-  { href: '/admin/analytics', label: 'Analytika', icon: BarChart3 },
-  { href: '/admin/settings', label: 'Nastavenia', icon: Settings },
 ];
 
 function NavLink({ href, label, icon: Icon, isActive }: { 
