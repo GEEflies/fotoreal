@@ -9,6 +9,7 @@ export default function PaymentSuccess() {
   const navigate = useNavigate();
   const [searchParams] = useSearchParams();
   const sessionId = searchParams.get("session_id");
+  const photos = searchParams.get("photos");
   const { user, isLoading: authLoading } = useUserAuth();
   const { claimPurchases } = useClaimPurchases();
   const [hasClaimed, setHasClaimed] = useState(false);
@@ -22,6 +23,8 @@ export default function PaymentSuccess() {
   }, [user, hasClaimed, claimPurchases]);
 
   const isLoggedIn = !!user;
+
+  const loginUrl = `/login?redirect=/platba-uspesna${sessionId ? `&session_id=${sessionId}` : ""}${photos ? `&photos=${photos}` : ""}`;
 
   return (
     <div
@@ -58,16 +61,17 @@ export default function PaymentSuccess() {
         ) : (
           <>
             <p className="text-muted-foreground text-sm sm:text-base mb-8">
-              Ďakujeme za nákup! Prihláste sa alebo sa zaregistrujte
-              pre pripísanie kreditov na váš účet.
+              {photos
+                ? `Ďakujeme za nákup ${photos} fotiek! Zaregistrujte sa pre pripísanie kreditov na váš účet.`
+                : "Ďakujeme za nákup! Prihláste sa alebo sa zaregistrujte pre pripísanie kreditov na váš účet."}
             </p>
             <Button
               size="lg"
-              onClick={() => navigate(`/login?redirect=/platba-uspesna${sessionId ? `&session_id=${sessionId}` : ""}`)}
+              onClick={() => navigate(loginUrl)}
               className="w-full font-bold"
             >
               <LogIn className="mr-2 h-4 w-4" />
-              Prihlásiť sa
+              Zaregistrovať sa
             </Button>
           </>
         )}

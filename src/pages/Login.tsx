@@ -28,6 +28,9 @@ export default function Login() {
   const { toast } = useToast();
 
   const redirectTo = searchParams.get('redirect') || '/dashboard';
+  const photosParam = searchParams.get('photos');
+  const purchasedPhotos = photosParam ? parseInt(photosParam, 10) : null;
+  const isPaidUser = purchasedPhotos !== null && purchasedPhotos > 0;
 
   const landingPage = getStoredAvatar() === 'photographer' ? '/pre-fotografov' : getStoredAvatar() === 'no-photographer' ? '/bez-fotografa' : '/';
 
@@ -124,12 +127,18 @@ export default function Login() {
       <Card className="w-full max-w-md">
         <CardHeader className="text-center">
           <CardTitle className="text-2xl font-heading">
-            {step === 'otp' ? 'Zadajte overovací kód' : 'Vyskúšajte 5 fotiek zadarmo'}
+            {step === 'otp'
+              ? 'Zadajte overovací kód'
+              : isPaidUser
+                ? `Pre prístup k vašim ${purchasedPhotos} fotkám sa zaregistrujte`
+                : 'Vyskúšajte 5 fotiek zadarmo'}
           </CardTitle>
           <CardDescription>
-            {step === 'otp' 
-              ? `Poslali sme kód na ${email}` 
-              : 'Prihláste sa a začnite za 30 sekúnd'}
+            {step === 'otp'
+              ? `Poslali sme kód na ${email}`
+              : isPaidUser
+                ? 'Vytvorte si účet a vaše kredity budú automaticky pripísané'
+                : 'Prihláste sa a začnite za 30 sekúnd'}
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-5">
