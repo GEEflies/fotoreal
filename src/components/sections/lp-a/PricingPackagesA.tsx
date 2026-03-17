@@ -121,13 +121,21 @@ export function PricingPackagesA() {
             {/* Price hero + savings + CTA */}
             <div className="p-5 space-y-4">
               {/* Price hero */}
-              <div className="text-center py-2">
-                <span className="font-heading text-5xl font-extrabold text-foreground">
-                  {pkg.price} €
-                </span>
-                <p className="text-sm text-muted-foreground mt-1">
-                  {pkg.ppp.toFixed(2)} € za fotku · {pkg.photos} kreditov
-                </p>
+              <div className="text-center py-4 rounded-xl bg-primary/5 border border-primary/10">
+                <div className="flex items-baseline justify-center gap-1">
+                  <span className="font-heading text-5xl font-extrabold text-primary">
+                    {pkg.price}
+                  </span>
+                  <span className="font-heading text-2xl font-bold text-primary/70">€</span>
+                </div>
+                <div className="flex items-center justify-center gap-2 mt-2">
+                  <span className="text-xs font-semibold bg-primary/10 text-primary px-2.5 py-0.5 rounded-full">
+                    {pkg.ppp.toFixed(2)} € / fotka
+                  </span>
+                  <span className="text-xs font-semibold bg-muted text-muted-foreground px-2.5 py-0.5 rounded-full">
+                    {pkg.photos} kreditov
+                  </span>
+                </div>
               </div>
 
               {/* Savings strip */}
