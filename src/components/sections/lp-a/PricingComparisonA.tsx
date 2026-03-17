@@ -1,9 +1,7 @@
 import { Check, X } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { BeforeAfterSlider } from "@/components/ui/BeforeAfterSlider";
-
-const IMG = (path: string) =>
-  `https://realfoto-adames.vercel.app/_next/image?url=%2Flanding%2F${encodeURIComponent(path)}&w=1200&q=85`;
+import { FEATURE_IMAGES } from "@/lib/images";
 
 export function PricingComparisonA() {
   const { ref, isVisible } = useScrollAnimation({ threshold: 0.1 });
@@ -33,8 +31,8 @@ export function PricingComparisonA() {
               <span className="text-muted-foreground text-sm">/ fotka</span>
             </div>
             <BeforeAfterSlider
-              beforeSrc={IMG("white balance/wb-before.jpg")}
-              afterSrc={IMG("white balance/wb-after.jpeg")}
+              beforeSrc={FEATURE_IMAGES.whiteBalance.before}
+              afterSrc={FEATURE_IMAGES.whiteBalance.after}
               className="aspect-[16/10] rounded-lg mb-5"
             />
             <ul className="space-y-2.5">

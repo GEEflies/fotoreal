@@ -1,9 +1,7 @@
 import { TrendingUp, Users, DollarSign } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { BeforeAfterSlider } from "@/components/ui/BeforeAfterSlider";
-
-const IMG = (path: string) =>
-  `https://realfoto-adames.vercel.app/_next/image?url=%2Flanding%2F${encodeURIComponent(path)}&w=1200&q=85`;
+import { FEATURE_IMAGES } from "@/lib/images";
 
 const results = [
   {
@@ -45,8 +43,8 @@ export function ResultsSectionB() {
         {/* Before/After showcase */}
         <div className="max-w-3xl mx-auto mb-12">
           <BeforeAfterSlider
-            beforeSrc={IMG("sky replacement/sky-before.jpeg")}
-            afterSrc={IMG("sky replacement/sky-after.jpeg")}
+            beforeSrc={FEATURE_IMAGES.sky.before}
+            afterSrc={FEATURE_IMAGES.sky.after}
             className="aspect-[16/9] rounded-2xl shadow-xl"
           />
           <p className="text-center text-sm text-muted-foreground mt-3">
