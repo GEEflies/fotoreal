@@ -28,84 +28,36 @@ export function PricingComparisonA() {
           </p>
         </div>
 
-        {/* Mobile comparison table */}
-        <div className="sm:hidden max-w-md mx-auto">
+        {/* Comparison table */}
+        <div className="max-w-lg mx-auto">
           <div className="rounded-xl border border-border overflow-hidden bg-card">
             {/* Header */}
             <div className="grid grid-cols-2">
-              <div className="p-3 bg-primary/10 border-r border-border relative">
+              <div className="p-3 sm:p-4 bg-primary/10 border-r border-border relative">
                 <span className="absolute -top-0 left-3 px-2 py-0.5 bg-primary text-primary-foreground text-[10px] font-bold rounded-b-md">
                   ODPORÚČANÉ
                 </span>
-                <p className="font-heading font-bold text-foreground text-sm mt-4">RealFoto AI</p>
-                <p className="font-heading text-xl font-extrabold text-primary">0,70 €<span className="text-muted-foreground text-xs font-normal"> /fotka</span></p>
+                <p className="font-heading font-bold text-foreground text-sm sm:text-base mt-4">RealFoto AI</p>
+                <p className="font-heading text-xl sm:text-2xl font-extrabold text-primary">0,70 €<span className="text-muted-foreground text-xs font-normal"> /fotka</span></p>
               </div>
-              <div className="p-3">
-                <p className="font-heading font-bold text-foreground text-sm mt-4">Fotograf</p>
-                <p className="font-heading text-xl font-extrabold text-destructive">8–15 €<span className="text-muted-foreground text-xs font-normal"> /fotka</span></p>
+              <div className="p-3 sm:p-4">
+                <p className="font-heading font-bold text-foreground text-sm sm:text-base mt-4">Fotograf</p>
+                <p className="font-heading text-xl sm:text-2xl font-extrabold text-destructive">8–15 €<span className="text-muted-foreground text-xs font-normal"> /fotka</span></p>
               </div>
             </div>
             {/* Rows */}
             {comparisonRows.map((row, i) => (
               <div key={i} className="grid grid-cols-2 border-t border-border">
-                <div className="p-2.5 bg-primary/5 border-r border-border flex items-center gap-1.5">
+                <div className="p-2.5 sm:p-3 bg-primary/5 border-r border-border flex items-center gap-1.5">
                   <Check className="h-3.5 w-3.5 text-success shrink-0" />
-                  <span className="text-xs text-foreground">{row.pro}</span>
+                  <span className="text-xs sm:text-sm text-foreground">{row.pro}</span>
                 </div>
-                <div className="p-2.5 flex items-center gap-1.5">
+                <div className="p-2.5 sm:p-3 flex items-center gap-1.5">
                   <X className="h-3.5 w-3.5 text-destructive shrink-0" />
-                  <span className="text-xs text-muted-foreground">{row.con}</span>
+                  <span className="text-xs sm:text-sm text-muted-foreground">{row.con}</span>
                 </div>
               </div>
             ))}
-          </div>
-        </div>
-
-        {/* Desktop cards */}
-        <div className="hidden sm:grid md:grid-cols-2 gap-6 max-w-5xl mx-auto">
-          {/* RealFoto */}
-          <div className="rounded-xl border-2 border-primary bg-card p-6 relative">
-            <div className="absolute -top-3 left-6 px-3 py-1 bg-primary text-primary-foreground text-xs font-bold rounded-full">
-              ODPORÚČANÉ
-            </div>
-            <h3 className="font-heading font-bold text-foreground text-xl mb-1">RealFoto AI</h3>
-            <div className="flex items-baseline gap-1 mb-4">
-              <span className="font-heading text-3xl font-extrabold text-primary">0,70 €</span>
-              <span className="text-muted-foreground text-sm">/ fotka</span>
-            </div>
-            <BeforeAfterSlider
-              beforeSrc={FEATURE_IMAGES.whiteBalance.before}
-              afterSrc={FEATURE_IMAGES.whiteBalance.after}
-              className="aspect-[16/10] rounded-lg mb-5"
-            />
-            <ul className="space-y-2.5">
-              {comparisonRows.map((row, i) => (
-                <li key={i} className="flex items-center gap-2 text-sm text-foreground">
-                  <Check className="h-4 w-4 text-success shrink-0" />
-                  {row.pro}
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Photographer */}
-          <div className="rounded-xl border border-border bg-card p-6">
-            <h3 className="font-heading font-bold text-foreground text-xl mb-1">Profesionálny fotograf</h3>
-            <div className="flex items-baseline gap-1 mb-4">
-              <span className="font-heading text-3xl font-extrabold text-destructive">8–15 €</span>
-              <span className="text-muted-foreground text-sm">/ fotka</span>
-            </div>
-            <div className="aspect-[16/10] rounded-lg mb-5 bg-muted flex items-center justify-center text-center px-4">
-              <p className="text-muted-foreground text-sm">150–300 € za 20 fotiek</p>
-            </div>
-            <ul className="space-y-2.5">
-              {comparisonRows.map((row, i) => (
-                <li key={i} className="flex items-center gap-2 text-sm text-muted-foreground">
-                  <X className="h-4 w-4 text-destructive shrink-0" />
-                  {row.con}
-                </li>
-              ))}
-            </ul>
           </div>
         </div>
 
