@@ -11,6 +11,7 @@ import { useToast } from '@/hooks/use-toast';
 import { Loader2, Zap, Mail, ArrowLeft } from 'lucide-react';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import logoRealfoto from '@/assets/logo-realfoto.svg';
+import { getStoredAvatar } from '@/components/AvatarSelector';
 
 type AuthStep = 'initial' | 'otp';
 
@@ -27,6 +28,8 @@ export default function Login() {
   const { toast } = useToast();
 
   const redirectTo = searchParams.get('redirect') || '/dashboard';
+
+  const landingPage = getStoredAvatar() === 'photographer' ? '/pre-fotografov' : getStoredAvatar() === 'no-photographer' ? '/bez-fotografa' : '/';
 
   const handleGoogleLogin = async () => {
     setIsGoogleLoading(true);
@@ -106,11 +109,11 @@ export default function Login() {
       {/* Navigation bar */}
       <header className="w-full border-b border-border bg-background/95 backdrop-blur-md">
         <div className="max-w-7xl mx-auto flex h-16 items-center justify-between px-4">
-          <a href="#" onClick={(e) => { e.preventDefault(); navigate(-1); }} className="flex items-center gap-2 group">
+          <a href={landingPage} onClick={(e) => { e.preventDefault(); navigate(landingPage); }} className="flex items-center gap-2 group">
             <img src={logoRealfoto} alt="RealFoto" className="h-10 w-auto" />
             <span className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">RealFoto</span>
           </a>
-          <Button variant="ghost" size="sm" onClick={() => navigate(-1)}>
+          <Button variant="ghost" size="sm" onClick={() => navigate(landingPage)}>
             <ArrowLeft className="h-4 w-4 mr-1" />
             Späť
           </Button>

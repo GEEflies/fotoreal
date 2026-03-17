@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
+import { getStoredAvatar } from '@/components/AvatarSelector';
 
 interface UserLayoutProps {
   children: ReactNode;
@@ -78,8 +79,10 @@ function Sidebar({ currentPath, userEmail }: { currentPath: string; userEmail?: 
   }, []);
 
   const handleSignOut = async () => {
+    const avatar = getStoredAvatar();
+    const landing = avatar === 'photographer' ? '/pre-fotografov' : avatar === 'no-photographer' ? '/bez-fotografa' : '/';
     await signOut();
-    navigate('/login');
+    navigate(landing);
   };
 
   const statusDot: Record<string, string> = {
