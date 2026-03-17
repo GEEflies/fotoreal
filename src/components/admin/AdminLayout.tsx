@@ -1,4 +1,4 @@
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useAdminAuth } from '@/hooks/use-admin-auth';
 import { 
@@ -7,7 +7,13 @@ import {
   BarChart3,
   LogOut,
   Home,
-  Menu
+  Menu,
+  Megaphone,
+  Mail,
+  Inbox,
+  Send,
+  ChartLine,
+  ChevronDown,
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -21,6 +27,14 @@ const navItems = [
   { href: '/admin/submissions', label: 'Leady', icon: Users },
   { href: '/admin/clients', label: 'Klienti', icon: UserCheck },
   { href: '/admin/analytics', label: 'Analytika', icon: BarChart3 },
+];
+
+const outreachItems = [
+  { href: '/admin/outreach/leads', label: 'Leady', icon: Users },
+  { href: '/admin/outreach/inboxes', label: 'Schránky', icon: Mail },
+  { href: '/admin/outreach/campaigns', label: 'Kampane', icon: Send },
+  { href: '/admin/outreach/replies', label: 'Odpovede', icon: Inbox },
+  { href: '/admin/outreach/stats', label: 'Štatistiky', icon: ChartLine },
 ];
 
 function NavLink({ href, label, icon: Icon, isActive }: { 
@@ -46,6 +60,7 @@ function NavLink({ href, label, icon: Icon, isActive }: {
 }
 
 function Sidebar({ currentPath }: { currentPath: string }) {
+  const [outreachOpen, setOutreachOpen] = useState(true);
   const { signOut } = useAdminAuth();
   const navigate = useNavigate();
 
@@ -63,7 +78,7 @@ function Sidebar({ currentPath }: { currentPath: string }) {
         <p className="text-xs text-muted-foreground">Ocenenie nehnuteľností</p>
       </div>
       
-      <nav className="flex-1 p-4 space-y-1">
+      <nav className="flex-1 p-4 space-y-1 overflow-y-auto">
         {navItems.map((item) => (
           <NavLink
             key={item.href}
@@ -73,6 +88,31 @@ function Sidebar({ currentPath }: { currentPath: string }) {
             isActive={currentPath === item.href}
           />
         ))}
+
+        {/* Outreach section */}
+        <div className="pt-3 mt-3 border-t border-border">
+          <button
+            onClick={() => setOutreachOpen(!outreachOpen)}
+            className="flex items-center gap-3 px-3 py-2 rounded-md text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors w-full"
+          >
+            <Megaphone className="h-4 w-4" />
+            Outreach
+            <ChevronDown className={cn("h-3 w-3 ml-auto transition-transform", outreachOpen && "rotate-180")} />
+          </button>
+          {outreachOpen && (
+            <div className="ml-3 space-y-0.5 mt-1">
+              {outreachItems.map((item) => (
+                <NavLink
+                  key={item.href}
+                  href={item.href}
+                  label={item.label}
+                  icon={item.icon}
+                  isActive={currentPath === item.href}
+                />
+              ))}
+            </div>
+          )}
+        </div>
       </nav>
 
       <div className="p-4 border-t border-border space-y-2">

@@ -14,6 +14,279 @@ export type Database = {
   }
   public: {
     Tables: {
+      outreach_campaigns: {
+        Row: {
+          created_at: string
+          delay_max_seconds: number
+          delay_min_seconds: number
+          id: string
+          inbox_ids: string[] | null
+          lead_count: number | null
+          lead_filter: Json | null
+          name: string
+          reply_to_inbox_id: string | null
+          scheduled_at: string | null
+          status: Database["public"]["Enums"]["outreach_campaign_status"]
+          supplier_profile: Json | null
+          template_blocks: Json | null
+          template_subject: string | null
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          delay_max_seconds?: number
+          delay_min_seconds?: number
+          id?: string
+          inbox_ids?: string[] | null
+          lead_count?: number | null
+          lead_filter?: Json | null
+          name: string
+          reply_to_inbox_id?: string | null
+          scheduled_at?: string | null
+          status?: Database["public"]["Enums"]["outreach_campaign_status"]
+          supplier_profile?: Json | null
+          template_blocks?: Json | null
+          template_subject?: string | null
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          delay_max_seconds?: number
+          delay_min_seconds?: number
+          id?: string
+          inbox_ids?: string[] | null
+          lead_count?: number | null
+          lead_filter?: Json | null
+          name?: string
+          reply_to_inbox_id?: string | null
+          scheduled_at?: string | null
+          status?: Database["public"]["Enums"]["outreach_campaign_status"]
+          supplier_profile?: Json | null
+          template_blocks?: Json | null
+          template_subject?: string | null
+          updated_at?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "outreach_campaigns_reply_to_inbox_id_fkey"
+            columns: ["reply_to_inbox_id"]
+            isOneToOne: false
+            referencedRelation: "outreach_inboxes"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      outreach_emails: {
+        Row: {
+          body_html: string | null
+          campaign_id: string
+          created_at: string
+          error_message: string | null
+          id: string
+          inbox_id: string | null
+          lead_id: string
+          sent_at: string | null
+          status: Database["public"]["Enums"]["outreach_email_status"]
+          subject: string | null
+        }
+        Insert: {
+          body_html?: string | null
+          campaign_id: string
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          inbox_id?: string | null
+          lead_id: string
+          sent_at?: string | null
+          status?: Database["public"]["Enums"]["outreach_email_status"]
+          subject?: string | null
+        }
+        Update: {
+          body_html?: string | null
+          campaign_id?: string
+          created_at?: string
+          error_message?: string | null
+          id?: string
+          inbox_id?: string | null
+          lead_id?: string
+          sent_at?: string | null
+          status?: Database["public"]["Enums"]["outreach_email_status"]
+          subject?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "outreach_emails_campaign_id_fkey"
+            columns: ["campaign_id"]
+            isOneToOne: false
+            referencedRelation: "outreach_campaigns"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "outreach_emails_inbox_id_fkey"
+            columns: ["inbox_id"]
+            isOneToOne: false
+            referencedRelation: "outreach_inboxes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "outreach_emails_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "outreach_leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      outreach_inboxes: {
+        Row: {
+          created_at: string
+          daily_limit: number
+          display_name: string | null
+          email: string
+          id: string
+          imap_host: string | null
+          imap_port: number | null
+          is_active: boolean
+          is_reply_to: boolean
+          sent_today: number
+          sent_today_reset_at: string
+          smtp_host: string
+          smtp_password: string
+          smtp_port: number
+          smtp_user: string
+        }
+        Insert: {
+          created_at?: string
+          daily_limit?: number
+          display_name?: string | null
+          email: string
+          id?: string
+          imap_host?: string | null
+          imap_port?: number | null
+          is_active?: boolean
+          is_reply_to?: boolean
+          sent_today?: number
+          sent_today_reset_at?: string
+          smtp_host: string
+          smtp_password: string
+          smtp_port?: number
+          smtp_user: string
+        }
+        Update: {
+          created_at?: string
+          daily_limit?: number
+          display_name?: string | null
+          email?: string
+          id?: string
+          imap_host?: string | null
+          imap_port?: number | null
+          is_active?: boolean
+          is_reply_to?: boolean
+          sent_today?: number
+          sent_today_reset_at?: string
+          smtp_host?: string
+          smtp_password?: string
+          smtp_port?: number
+          smtp_user?: string
+        }
+        Relationships: []
+      }
+      outreach_leads: {
+        Row: {
+          city: string | null
+          company_name: string | null
+          created_at: string
+          email: string | null
+          id: string
+          name: string | null
+          phone: string | null
+          source: string
+          specialization: string | null
+          tags: string[] | null
+          website: string | null
+        }
+        Insert: {
+          city?: string | null
+          company_name?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string | null
+          phone?: string | null
+          source?: string
+          specialization?: string | null
+          tags?: string[] | null
+          website?: string | null
+        }
+        Update: {
+          city?: string | null
+          company_name?: string | null
+          created_at?: string
+          email?: string | null
+          id?: string
+          name?: string | null
+          phone?: string | null
+          source?: string
+          specialization?: string | null
+          tags?: string[] | null
+          website?: string | null
+        }
+        Relationships: []
+      }
+      outreach_replies: {
+        Row: {
+          body_html: string | null
+          body_text: string | null
+          created_at: string
+          from_email: string
+          id: string
+          inbox_id: string | null
+          is_read: boolean
+          lead_id: string | null
+          received_at: string
+          subject: string | null
+        }
+        Insert: {
+          body_html?: string | null
+          body_text?: string | null
+          created_at?: string
+          from_email: string
+          id?: string
+          inbox_id?: string | null
+          is_read?: boolean
+          lead_id?: string | null
+          received_at?: string
+          subject?: string | null
+        }
+        Update: {
+          body_html?: string | null
+          body_text?: string | null
+          created_at?: string
+          from_email?: string
+          id?: string
+          inbox_id?: string | null
+          is_read?: boolean
+          lead_id?: string | null
+          received_at?: string
+          subject?: string | null
+        }
+        Relationships: [
+          {
+            foreignKeyName: "outreach_replies_inbox_id_fkey"
+            columns: ["inbox_id"]
+            isOneToOne: false
+            referencedRelation: "outreach_inboxes"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "outreach_replies_lead_id_fkey"
+            columns: ["lead_id"]
+            isOneToOne: false
+            referencedRelation: "outreach_leads"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       profiles: {
         Row: {
           address: string | null
@@ -312,6 +585,14 @@ export type Database = {
     }
     Enums: {
       app_role: "admin" | "user"
+      outreach_campaign_status:
+        | "draft"
+        | "generating"
+        | "ready"
+        | "sending"
+        | "paused"
+        | "completed"
+      outreach_email_status: "draft" | "queued" | "sending" | "sent" | "failed"
       photo_ai_status:
         | "pending"
         | "analyzing"
@@ -458,6 +739,15 @@ export const Constants = {
   public: {
     Enums: {
       app_role: ["admin", "user"],
+      outreach_campaign_status: [
+        "draft",
+        "generating",
+        "ready",
+        "sending",
+        "paused",
+        "completed",
+      ],
+      outreach_email_status: ["draft", "queued", "sending", "sent", "failed"],
       photo_ai_status: [
         "pending",
         "analyzing",
