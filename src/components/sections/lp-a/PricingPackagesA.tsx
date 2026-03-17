@@ -169,7 +169,7 @@ export function PricingPackagesA() {
                 ) : (
                   <Sparkles className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                 )}
-                {loading ? "Presmerovanie..." : `Kúpiť za ${pkg.price} €`}
+                {loading ? "Presmerovanie..." : `Kúpiť ${pkg.photos} fotiek za ${pkg.price} €`}
               </Button>
 
               <p className="text-[10px] sm:text-xs text-muted-foreground text-center">
