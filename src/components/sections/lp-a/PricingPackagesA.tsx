@@ -142,10 +142,13 @@ export function PricingPackagesA() {
               <div className="rounded-xl bg-success/5 border border-success/20 px-4 py-3 flex items-center justify-between gap-3">
                 <div className="text-sm">
                   <span className="text-muted-foreground">
-                    ~{pkg.properties} {pkg.properties === 1 ? "nehnuteľnosť" : pkg.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"} · Fotograf:
+                    Fotograf: 
                   </span>{" "}
                   <span className="text-destructive font-semibold line-through">
                     {photographerLow}–{photographerHigh} €
+                  </span>{" "}
+                  <span className="text-muted-foreground">
+                    · ~{pkg.properties} {pkg.properties === 1 ? "nehnuteľnosť" : pkg.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"}
                   </span>
                 </div>
                 <span className="text-sm font-bold text-success whitespace-nowrap">
