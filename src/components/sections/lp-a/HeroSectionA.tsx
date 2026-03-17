@@ -1,5 +1,6 @@
 import { ArrowRight, Star, Clock, ShieldCheck, TrendingDown } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { BeforeAfterSlider } from "@/components/ui/BeforeAfterSlider";
 import { HERO_BEFORE, HERO_AFTER } from "@/lib/images";
 
