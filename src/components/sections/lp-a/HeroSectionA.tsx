@@ -48,17 +48,17 @@ export function HeroSectionA() {
 
             <p className="text-xs text-muted-foreground text-center sm:text-left">*Bez kreditnej karty • Hotové za 30 sekúnd</p>
 
-            <div className="flex flex-col sm:flex-row sm:flex-wrap gap-2 sm:gap-5 text-xs sm:text-sm text-muted-foreground pt-1">
+            <div className="flex flex-wrap justify-center sm:justify-start gap-x-4 gap-y-1.5 text-xs sm:text-sm text-muted-foreground pt-1">
               <span className="flex items-center gap-1.5">
-                <Clock className="h-4 w-4 text-primary" />
+                <Clock className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-primary" />
                 Hotovo do 30s
               </span>
               <span className="flex items-center gap-1.5">
-                <ShieldCheck className="h-4 w-4 text-success" />
+                <ShieldCheck className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-success" />
                 Kvalita ako od fotografa
               </span>
               <span className="flex items-center gap-1.5">
-                <TrendingDown className="h-4 w-4 text-warning" />
+                <TrendingDown className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-warning" />
                 Úspora 90–95%
               </span>
             </div>
