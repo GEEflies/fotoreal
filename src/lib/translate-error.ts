@@ -21,6 +21,9 @@ const errorMap: Array<[RegExp, string | ((m: RegExpMatchArray) => string)]> = [
   [/signup.*disabled/i, 'Registrácia je momentálne vypnutá.'],
   [/new password should be different/i, 'Nové heslo musí byť odlišné od predchádzajúceho.'],
   [/unable to validate email address/i, 'Neplatná e-mailová adresa.'],
+  [/email.*already.*use/i, 'Tento email je už zaregistrovaný.'],
+  [/cannot.*sign.*up/i, 'Registrácia zlyhala. Skúste to znova.'],
+  [/password.*at least/i, 'Heslo musí mať aspoň 6 znakov.'],
   [/network/i, 'Chyba siete. Skontrolujte pripojenie a skúste znova.'],
 ];
 

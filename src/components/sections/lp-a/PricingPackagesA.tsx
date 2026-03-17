@@ -18,8 +18,19 @@ export function PricingPackagesA() {
   const savingsPercent = Math.round(((photographerMid - pkg.price) / photographerMid) * 100);
 
   const handleCheckout = async () => {
+    if (loading) return;
     setLoading(true);
     try {
+      // Ensure we have a fresh session token before calling the edge function
+      const { data: { session }, error: sessionError } = await supabase.auth.getSession();
+      if (sessionError || !session) {
+        const { error: refreshError } = await supabase.auth.refreshSession();
+        if (refreshError) {
+          window.location.href = "/login";
+          return;
+        }
+      }
+
       const { data, error } = await supabase.functions.invoke("create-checkout", {
         body: { photos: pkg.photos, origin: window.location.origin },
       });

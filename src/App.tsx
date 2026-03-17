@@ -23,6 +23,7 @@ const AdminSubmissions = lazy(() => import("./pages/admin/AdminSubmissions"));
 const AdminSubmissionDetail = lazy(() => import("./pages/admin/AdminSubmissionDetail"));
 const AdminAnalytics = lazy(() => import("./pages/admin/AdminAnalytics"));
 const AdminSettings = lazy(() => import("./pages/admin/AdminSettings"));
+const ResetPassword = lazy(() => import("./pages/ResetPassword"));
 
 const queryClient = new QueryClient();
 
@@ -40,6 +41,7 @@ const App = () => (
             <Route path="/bez-fotografa" element={<LandingB />} />
             <Route path="/platba-uspesna" element={<PaymentSuccess />} />
             <Route path="/login" element={<Login />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/dashboard" element={<DashboardProperties />} />
             <Route path="/dashboard/new" element={<DashboardNewProperty />} />
             <Route path="/dashboard/properties/:id" element={<DashboardPropertyDetail />} />
