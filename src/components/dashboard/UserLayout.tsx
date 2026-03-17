@@ -1,8 +1,9 @@
-import { ReactNode, useEffect } from 'react';
+import { ReactNode, useEffect, useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useUserAuth } from '@/hooks/use-user-auth';
 import { useCredits } from '@/hooks/use-credits';
-import { Building2, Plus, LogOut, Home, Menu, Sparkles, ShoppingCart } from 'lucide-react';
+import { supabase } from '@/integrations/supabase/client';
+import { Building2, Plus, LogOut, Home, Menu, Sparkles, ShoppingCart, ChevronDown } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Progress } from '@/components/ui/progress';
@@ -12,28 +13,10 @@ interface UserLayoutProps {
   children: ReactNode;
 }
 
-const navItems = [
-  { href: '/dashboard', label: 'Nehnuteľnosti', icon: Building2 },
-  { href: '/dashboard/new', label: 'Nová nehnuteľnosť', icon: Plus },
-];
-
-function NavItem({ href, label, icon: Icon, isActive }: {
-  href: string; label: string; icon: typeof Building2; isActive: boolean;
-}) {
-  return (
-    <Link
-      to={href}
-      className={cn(
-        "flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
-        isActive
-          ? "bg-primary/10 text-primary font-semibold border-l-2 border-primary rounded-l-none"
-          : "text-muted-foreground hover:bg-muted hover:text-foreground"
-      )}
-    >
-      <Icon className="h-4 w-4" />
-      {label}
-    </Link>
-  );
+interface SidebarProperty {
+  id: string;
+  name: string;
+  status: string;
 }
 
 function CreditWidget() {
@@ -70,10 +53,40 @@ function CreditWidget() {
 function Sidebar({ currentPath, userEmail }: { currentPath: string; userEmail?: string }) {
   const { signOut } = useUserAuth();
   const navigate = useNavigate();
+  const [properties, setProperties] = useState<SidebarProperty[]>([]);
+  const [propertiesOpen, setPropertiesOpen] = useState(true);
+
+  useEffect(() => {
+    const loadProperties = async () => {
+      const { data } = await supabase
+        .from('properties')
+        .select('id, name, status')
+        .order('created_at', { ascending: false });
+      if (data) setProperties(data);
+    };
+    loadProperties();
+
+    // Listen for realtime changes
+    const channel = supabase
+      .channel('sidebar-properties')
+      .on('postgres_changes', { event: '*', schema: 'public', table: 'properties' }, () => {
+        loadProperties();
+      })
+      .subscribe();
+
+    return () => { supabase.removeChannel(channel); };
+  }, []);
 
   const handleSignOut = async () => {
     await signOut();
     navigate('/login');
+  };
+
+  const statusDot: Record<string, string> = {
+    uploading: 'bg-muted-foreground',
+    processing: 'bg-primary animate-pulse',
+    done: 'bg-success',
+    error: 'bg-destructive',
   };
 
   return (
@@ -85,16 +98,64 @@ function Sidebar({ currentPath, userEmail }: { currentPath: string; userEmail?: 
 
       <CreditWidget />
 
-      <nav className="flex-1 px-4 space-y-1">
-        {navItems.map((item) => (
-          <NavItem
-            key={item.href}
-            href={item.href}
-            label={item.label}
-            icon={item.icon}
-            isActive={currentPath === item.href}
-          />
-        ))}
+      <nav className="flex-1 px-4 space-y-1 overflow-y-auto">
+        {/* Nová nehnuteľnosť - above the list */}
+        <Link
+          to="/dashboard/new"
+          className={cn(
+            "flex items-center gap-2.5 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
+            currentPath === '/dashboard/new'
+              ? "bg-primary/10 text-primary font-semibold border-l-2 border-primary rounded-l-none"
+              : "text-muted-foreground hover:bg-muted hover:text-foreground"
+          )}
+        >
+          <Plus className="h-4 w-4" />
+          Nová nehnuteľnosť
+        </Link>
+
+        {/* Všetky nehnuteľnosti - collapsible group */}
+        <button
+          onClick={() => setPropertiesOpen(!propertiesOpen)}
+          className={cn(
+            "flex items-center justify-between w-full px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
+            currentPath === '/dashboard'
+              ? "bg-primary/10 text-primary font-semibold border-l-2 border-primary rounded-l-none"
+              : "text-muted-foreground hover:bg-muted hover:text-foreground"
+          )}
+        >
+          <span className="flex items-center gap-2.5">
+            <Building2 className="h-4 w-4" />
+            Všetky nehnuteľnosti
+          </span>
+          <ChevronDown className={cn("h-4 w-4 transition-transform", propertiesOpen && "rotate-180")} />
+        </button>
+
+        {propertiesOpen && (
+          <div className="ml-4 pl-3 border-l border-border space-y-0.5">
+            {properties.length === 0 ? (
+              <p className="text-xs text-muted-foreground px-3 py-2">Žiadne nehnuteľnosti</p>
+            ) : (
+              properties.map((p) => {
+                const isActive = currentPath === `/dashboard/properties/${p.id}`;
+                return (
+                  <Link
+                    key={p.id}
+                    to={`/dashboard/properties/${p.id}`}
+                    className={cn(
+                      "flex items-center gap-2 px-3 py-2 rounded-md text-xs transition-colors truncate",
+                      isActive
+                        ? "bg-primary/10 text-primary font-semibold"
+                        : "text-muted-foreground hover:bg-muted hover:text-foreground"
+                    )}
+                  >
+                    <span className={cn("h-2 w-2 rounded-full shrink-0", statusDot[p.status] || statusDot.uploading)} />
+                    <span className="truncate">{p.name}</span>
+                  </Link>
+                );
+              })
+            )}
+          </div>
+        )}
       </nav>
 
       <div className="p-4 border-t border-border space-y-1">
