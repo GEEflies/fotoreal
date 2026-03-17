@@ -18,6 +18,8 @@ import {
   AdminLogin,
   AdminSubmissions,
   AdminSubmissionDetail,
+  AdminClients,
+  AdminClientDetail,
   AdminAnalytics,
   AdminSettings,
 } from "./pages/admin";
