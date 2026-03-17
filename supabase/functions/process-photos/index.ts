@@ -165,7 +165,7 @@ async function enhancePhoto(imageUrl: string, prompt: string, apiKey: string): P
   const imageBase64 = await fetchImageAsBase64(imageUrl);
 
   const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-exp-image-generation:generateContent?key=${apiKey}`,
+    `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash-preview-image-generation:generateContent?key=${apiKey}`,
     {
       method: "POST",
       headers: { "Content-Type": "application/json" },
@@ -185,7 +185,7 @@ async function enhancePhoto(imageUrl: string, prompt: string, apiKey: string): P
           },
         ],
         generationConfig: {
-          responseModalities: ["IMAGE", "TEXT"],
+          responseModalities: ["TEXT", "IMAGE"],
         },
       }),
     }
@@ -206,6 +206,26 @@ async function enhancePhoto(imageUrl: string, prompt: string, apiKey: string): P
     }
   }
   return null;
+}
+
+function getFriendlyPhotoError(error: unknown): string {
+  const message = error instanceof Error ? error.message : String(error);
+
+  if (message.includes("[429]")) return "Chyba: Príliš veľa požiadaviek, skúste to znova o chvíľu";
+  if (message.includes("[402]")) return "Chyba: Nedostatok kreditu na Gemini API";
+  if (message.includes("NOT_FOUND") || message.includes("[404]")) {
+    return "Chyba: AI model pre generovanie obrázkov nie je dostupný";
+  }
+  if (message.toLowerCase().includes("safety")) {
+    return "Chyba: Fotka bola zablokovaná bezpečnostným filtrom AI";
+  }
+
+  const compactMessage = message
+    .replace(/\s+/g, " ")
+    .replace(/^Error:\s*/i, "")
+    .slice(0, 140);
+
+  return `Chyba: ${compactMessage || "Nepodarilo sa spracovať fotku"}`;
 }
 
 Deno.serve(async (req) => {
