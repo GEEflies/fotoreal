@@ -12,6 +12,11 @@ dist
 dist-ssr
 *.local
 
+# Environment variables (local only — set in Vercel dashboard for production)
+.env
+.env.local
+.env.*.local
+
 # Editor directories and files
 .vscode/*
 !.vscode/extensions.json
