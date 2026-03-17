@@ -4,9 +4,9 @@ import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 const comparisonRows = [
   { pro: "30 sekúnd", con: "24–48 hodín" },
   { pro: "24/7 dostupné", con: "Podľa rozvrhu" },
-  { pro: "9 AI úprav", con: "Len základné" },
+  { pro: "Automatické úpravy", con: "Manuálne úpravy" },
   { pro: "Konzistentná kvalita", con: "Rôzna kvalita" },
-  { pro: "GDPR ochrana", con: "Žiadna ochrana" },
+  { pro: "Auto rozmazanie tvárí/ŠPZ", con: "Manuálne riešenie" },
   { pro: "50+ fotiek naraz", con: "Max 10–20" },
 ];
 
