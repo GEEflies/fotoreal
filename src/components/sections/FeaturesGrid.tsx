@@ -1,5 +1,6 @@
+import { useState } from "react";
 import {
-  Layers, Sun, Cloud, Palette, Move, Lightbulb, FileImage, Eye, Droplets,
+  Layers, Sun, Cloud, Palette, Move, Lightbulb, FileImage, Eye, Droplets, ChevronDown,
 } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { BeforeAfterSlider } from "@/components/ui/BeforeAfterSlider";
@@ -71,8 +72,11 @@ const features = [
   },
 ];
 
+const MOBILE_VISIBLE = 3;
+
 export function FeaturesGrid() {
   const { ref, isVisible } = useScrollAnimation({ threshold: 0.03 });
+  const [showAll, setShowAll] = useState(false);
 
   return (
     <section
@@ -100,34 +104,62 @@ export function FeaturesGrid() {
         </div>
 
         {/* Feature cards */}
-        <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
-          {features.map((f, i) => (
-            <div
-              key={i}
-              className="group rounded-xl bg-card border border-border hover:border-primary/30 hover:shadow-lg transition-all overflow-hidden"
-            >
-              {/* Before/After image */}
-              <BeforeAfterSlider
-                beforeSrc={f.before}
-                afterSrc={f.after}
-                className="aspect-[16/10]"
-              />
-              {/* Text */}
-              <div className="p-5">
-                <div className="flex items-center gap-2.5 mb-2">
-                  <div className="h-8 w-8 rounded-md bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
-                    <f.icon className="h-4 w-4 text-primary" />
+        <div className="relative">
+          <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-5 sm:gap-6">
+            {features.map((f, i) => (
+              <div
+                key={i}
+                className={`group rounded-xl bg-card border border-border hover:border-primary/30 hover:shadow-lg transition-all overflow-hidden ${
+                  !showAll && i >= MOBILE_VISIBLE ? "hidden sm:block" : ""
+                } ${!showAll && i === MOBILE_VISIBLE ? "sm:block" : ""}`}
+              >
+                <BeforeAfterSlider
+                  beforeSrc={f.before}
+                  afterSrc={f.after}
+                  className="aspect-[16/10]"
+                />
+                <div className="p-5">
+                  <div className="flex items-center gap-2.5 mb-2">
+                    <div className="h-8 w-8 rounded-md bg-primary/10 flex items-center justify-center group-hover:bg-primary/20 transition-colors">
+                      <f.icon className="h-4 w-4 text-primary" />
+                    </div>
+                    <h3 className="font-heading font-semibold text-foreground text-base">
+                      {f.title}
+                    </h3>
                   </div>
-                  <h3 className="font-heading font-semibold text-foreground text-base">
-                    {f.title}
-                  </h3>
+                  <p className="text-sm text-muted-foreground leading-relaxed">
+                    {f.desc}
+                  </p>
                 </div>
-                <p className="text-sm text-muted-foreground leading-relaxed">
-                  {f.desc}
-                </p>
+              </div>
+            ))}
+          </div>
+
+          {/* Mobile: blurred peek + show more */}
+          {!showAll && (
+            <div className="sm:hidden relative -mt-4">
+              {/* Blurred 4th card peek */}
+              <div className="h-32 overflow-hidden rounded-xl pointer-events-none" style={{ filter: "blur(6px)", opacity: 0.5 }}>
+                <div className="rounded-xl bg-card border border-border overflow-hidden">
+                  <BeforeAfterSlider
+                    beforeSrc={features[MOBILE_VISIBLE].before}
+                    afterSrc={features[MOBILE_VISIBLE].after}
+                    className="aspect-[16/10]"
+                  />
+                </div>
+              </div>
+              {/* Gradient overlay + button */}
+              <div className="absolute inset-0 bg-gradient-to-t from-accent/90 via-accent/60 to-transparent flex items-end justify-center pb-3">
+                <button
+                  onClick={() => setShowAll(true)}
+                  className="flex items-center gap-1.5 px-5 py-2 rounded-full bg-primary text-primary-foreground text-sm font-semibold shadow-lg hover:bg-primary/90 transition-colors"
+                >
+                  Zobraziť všetkých {features.length} funkcií
+                  <ChevronDown className="h-4 w-4" />
+                </button>
               </div>
             </div>
-          ))}
+          )}
         </div>
       </div>
     </section>
