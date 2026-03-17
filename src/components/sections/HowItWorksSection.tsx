@@ -48,22 +48,44 @@ export function HowItWorksSection() {
 
         <div className="grid md:grid-cols-3 gap-6 sm:gap-8 max-w-5xl mx-auto">
           {steps.map((step, i) => (
-            <div key={i} className="relative text-center">
+            <div key={i} className="relative text-center md:text-center">
               {i < steps.length - 1 && (
                 <div className="hidden md:block absolute top-10 left-[60%] w-[80%] h-px border-t-2 border-dashed border-primary/20" />
               )}
-              <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 mb-5 mx-auto">
-                <step.icon className="h-7 w-7 text-primary" />
+              {/* Mobile: horizontal row */}
+              <div className="flex sm:hidden items-start gap-4 text-left">
+                <div className="flex flex-col items-center shrink-0">
+                  <div className="h-12 w-12 rounded-xl bg-primary/10 flex items-center justify-center">
+                    <step.icon className="h-5 w-5 text-primary" />
+                  </div>
+                  <span className="text-[10px] font-bold text-primary tracking-widest mt-1">
+                    {step.number}
+                  </span>
+                </div>
+                <div className="min-w-0 pt-0.5">
+                  <h3 className="font-heading font-bold text-foreground text-base mb-0.5">
+                    {step.title}
+                  </h3>
+                  <p className="text-xs text-muted-foreground leading-relaxed">
+                    {step.description}
+                  </p>
+                </div>
               </div>
-              <span className="text-xs font-bold text-primary tracking-widest">
-                {step.number}
-              </span>
-              <h3 className="font-heading font-bold text-foreground text-lg mt-1 mb-2">
-                {step.title}
-              </h3>
-              <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">
-                {step.description}
-              </p>
+              {/* Desktop: vertical centered */}
+              <div className="hidden sm:block">
+                <div className="inline-flex h-16 w-16 items-center justify-center rounded-2xl bg-primary/10 mb-5 mx-auto">
+                  <step.icon className="h-7 w-7 text-primary" />
+                </div>
+                <span className="text-xs font-bold text-primary tracking-widest">
+                  {step.number}
+                </span>
+                <h3 className="font-heading font-bold text-foreground text-lg mt-1 mb-2">
+                  {step.title}
+                </h3>
+                <p className="text-sm text-muted-foreground leading-relaxed max-w-xs mx-auto">
+                  {step.description}
+                </p>
+              </div>
             </div>
           ))}
         </div>
