@@ -85,16 +85,33 @@ export default function AdminClientDetail() {
     if (!amount || amount <= 0 || !client) return;
 
     setIsSaving(true);
-    const { error } = await supabase
+    
+    // First check if user_credits row exists
+    const { data: existing } = await supabase
       .from('user_credits')
-      .update({ purchased_credits: client.purchased_credits + amount })
-      .eq('user_id', client.user_id);
+      .select('id, purchased_credits')
+      .eq('user_id', client.user_id)
+      .maybeSingle();
+
+    let error;
+    if (existing) {
+      // Update existing row
+      ({ error } = await supabase
+        .from('user_credits')
+        .update({ purchased_credits: existing.purchased_credits + amount })
+        .eq('user_id', client.user_id));
+    } else {
+      // Insert new row
+      ({ error } = await supabase
+        .from('user_credits')
+        .insert({ user_id: client.user_id, purchased_credits: amount, free_credits: 5 }));
+    }
 
     if (error) {
       toast({ title: 'Chyba', description: 'Nepodarilo sa pridať kredity.', variant: 'destructive' });
     } else {
       toast({ title: 'Hotovo', description: `Pridaných ${amount} kreditov.` });
-      setClient(prev => prev ? { ...prev, purchased_credits: prev.purchased_credits + amount } : null);
+      setClient(prev => prev ? { ...prev, purchased_credits: (existing?.purchased_credits ?? 0) + amount } : null);
       setAddCreditsAmount('');
     }
     setIsSaving(false);
