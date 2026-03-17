@@ -159,30 +159,37 @@ function Sidebar({ currentPath, userEmail }: { currentPath: string; userEmail?: 
         )}
       </nav>
 
-      <div className="p-4 border-t border-border space-y-1">
-        {userEmail && (
-          <p className="px-3 pb-2 text-xs text-muted-foreground truncate">{userEmail}</p>
-        )}
-        <div className="flex items-center gap-1">
-          <Link
-            to="/dashboard/profile"
-            className={cn(
-              "flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium transition-colors",
-              currentPath === '/dashboard/profile'
-                ? "bg-primary/10 text-primary font-semibold"
-                : "text-muted-foreground hover:bg-muted hover:text-foreground"
+      <div className="p-3 border-t border-border">
+        <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl bg-muted/60">
+          <div className="h-8 w-8 rounded-full bg-primary/10 flex items-center justify-center shrink-0">
+            <User className="h-4 w-4 text-primary" />
+          </div>
+          <div className="flex-1 min-w-0">
+            {userEmail && (
+              <p className="text-xs text-muted-foreground truncate leading-tight">{userEmail}</p>
             )}
-          >
-            <User className="h-4 w-4" />
-            Profil
-          </Link>
-          <button
-            onClick={handleSignOut}
-            className="flex-1 flex items-center justify-center gap-2 px-3 py-2.5 rounded-lg text-sm font-medium text-destructive hover:bg-destructive/10 transition-colors"
-          >
-            <LogOut className="h-4 w-4" />
-            Odhlásiť sa
-          </button>
+          </div>
+          <div className="flex items-center gap-0.5 shrink-0">
+            <Link
+              to="/dashboard/profile"
+              className={cn(
+                "p-2 rounded-lg transition-colors",
+                currentPath === '/dashboard/profile'
+                  ? "bg-primary/15 text-primary"
+                  : "text-muted-foreground hover:bg-background hover:text-foreground"
+              )}
+              title="Profil"
+            >
+              <User className="h-4 w-4" />
+            </Link>
+            <button
+              onClick={handleSignOut}
+              className="p-2 rounded-lg text-muted-foreground hover:bg-destructive/10 hover:text-destructive transition-colors"
+              title="Odhlásiť sa"
+            >
+              <LogOut className="h-4 w-4" />
+            </button>
+          </div>
         </div>
       </div>
     </div>
