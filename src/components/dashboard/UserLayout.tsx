@@ -3,7 +3,7 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useUserAuth } from '@/hooks/use-user-auth';
 import { useCredits } from '@/hooks/use-credits';
 import { supabase } from '@/integrations/supabase/client';
-import { Building2, Plus, LogOut, Home, Menu, Sparkles, ShoppingCart, ChevronDown } from 'lucide-react';
+import { Building2, Plus, LogOut, Home, Menu, Sparkles, ShoppingCart, ChevronDown, User } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Progress } from '@/components/ui/progress';
