@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ChevronDown, TrendingDown, Sparkles } from "lucide-react";
+import { ChevronDown, Sparkles } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { Button } from "@/components/ui/button";
 
@@ -11,17 +11,16 @@ const PACKAGES = [
   { photos: 320, price: 165, ppp: 0.51, properties: 16, discount: 27 },
 ] as const;
 
-const PHOTOGRAPHER_PPP = 11.5; // average of 8-15€
-
 export function PricingPackagesA() {
-  const [selected, setSelected] = useState(2); // default 80 photos
+  const [selected, setSelected] = useState(2);
   const [open, setOpen] = useState(false);
   const { ref, isVisible } = useScrollAnimation({ threshold: 0.1 });
 
   const pkg = PACKAGES[selected];
-  const photographerCost = pkg.photos * PHOTOGRAPHER_PPP;
-  const savings = photographerCost - pkg.price;
-  const savingsPercent = Math.round((savings / photographerCost) * 100);
+  const photographerLow = pkg.properties * 100;
+  const photographerHigh = pkg.properties * 300;
+  const photographerMid = (photographerLow + photographerHigh) / 2;
+  const savingsPercent = Math.round(((photographerMid - pkg.price) / photographerMid) * 100);
 
   return (
     <section
@@ -47,7 +46,6 @@ export function PricingPackagesA() {
         </div>
 
         <div className="max-w-lg mx-auto">
-          {/* Package card */}
           <div className="rounded-2xl border-2 border-primary/20 bg-card shadow-lg overflow-hidden">
             {/* Dropdown selector */}
             <div className="p-5 pb-0">
@@ -82,7 +80,6 @@ export function PricingPackagesA() {
                   </div>
                 </button>
 
-                {/* Dropdown */}
                 {open && (
                   <div className="absolute top-full left-0 right-0 z-30 mt-1 rounded-xl border border-border bg-card shadow-xl overflow-hidden">
                     {PACKAGES.map((p, i) => (
@@ -121,60 +118,38 @@ export function PricingPackagesA() {
               </div>
             </div>
 
-            {/* Breakdown */}
-            <div className="p-5 space-y-3">
-              <div className="rounded-xl bg-muted/50 p-4 space-y-2.5 text-sm">
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Počet kreditov</span>
-                  <span className="font-semibold text-foreground">{pkg.photos} fotiek</span>
-                </div>
-                <div className="flex justify-between">
-                  <span className="text-muted-foreground">Cena za kus</span>
-                  <span className="font-semibold text-foreground">{pkg.ppp.toFixed(2)} €</span>
-                </div>
-                {pkg.discount > 0 && (
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Zľava</span>
-                    <span className="font-bold text-success">-{pkg.discount}%</span>
-                  </div>
-                )}
-                <div className="border-t border-border pt-2.5 flex justify-between">
-                  <span className="font-bold text-foreground">Celkom</span>
-                  <span className="font-heading text-2xl font-extrabold text-foreground">
-                    {pkg.price} €
-                  </span>
-                </div>
+            {/* Price hero + savings + CTA */}
+            <div className="p-5 space-y-4">
+              {/* Price hero */}
+              <div className="text-center py-2">
+                <span className="font-heading text-5xl font-extrabold text-foreground">
+                  {pkg.price} €
+                </span>
+                <p className="text-sm text-muted-foreground mt-1">
+                  {pkg.ppp.toFixed(2)} € za fotku · {pkg.photos} kreditov
+                </p>
               </div>
 
-              {/* Savings vs photographer */}
-              <div className="rounded-xl bg-success/5 border border-success/20 p-4">
-                <div className="flex items-center gap-2 mb-2.5">
-                  <TrendingDown className="h-4 w-4 text-success" />
-                  <span className="text-sm font-bold text-success">
-                    Ušetríte {savingsPercent}% oproti fotografovi
+              {/* Savings strip */}
+              <div className="rounded-xl bg-success/5 border border-success/20 px-4 py-3 flex items-center justify-between gap-3">
+                <div className="text-sm">
+                  <span className="text-muted-foreground">
+                    ~{pkg.properties} {pkg.properties === 1 ? "nehnuteľnosť" : pkg.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"} · Fotograf:
+                  </span>{" "}
+                  <span className="text-destructive font-semibold line-through">
+                    {photographerLow}–{photographerHigh} €
                   </span>
                 </div>
-                <div className="space-y-1.5 text-sm">
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">Fotograf ({pkg.photos}× fotka)</span>
-                    <span className="text-destructive font-semibold line-through">
-                      {Math.round(photographerCost)} €
-                    </span>
-                  </div>
-                  <div className="flex justify-between">
-                    <span className="text-muted-foreground">FotoReal ({pkg.photos}× fotka)</span>
-                    <span className="text-primary font-bold">{pkg.price} €</span>
-                  </div>
-                  <div className="border-t border-success/20 pt-1.5 flex justify-between">
-                    <span className="font-semibold text-foreground">Vaša úspora</span>
-                    <span className="font-heading font-extrabold text-success text-lg">
-                      {Math.round(savings)} €
-                    </span>
-                  </div>
-                </div>
+                <span className="text-sm font-bold text-success whitespace-nowrap">
+                  Ušetríte {savingsPercent}%
+                </span>
               </div>
 
-              <Button size="lg" className="w-full font-bold text-base shadow-glow group">
+              {/* Green CTA */}
+              <Button
+                size="lg"
+                className="w-full font-bold text-base bg-success hover:bg-success/90 text-success-foreground shadow-[0_4px_20px_-4px_hsl(var(--success)/0.4)] group"
+              >
                 <Sparkles className="mr-2 h-5 w-5" />
                 Kúpiť za {pkg.price} €
               </Button>
@@ -185,7 +160,7 @@ export function PricingPackagesA() {
             </div>
           </div>
 
-          {/* Price per photo scale */}
+          {/* Quick-select chips */}
           <div className="mt-6 flex items-center justify-center gap-4 flex-wrap text-xs text-muted-foreground">
             {PACKAGES.map((p, i) => (
               <button
