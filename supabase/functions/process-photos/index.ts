@@ -162,7 +162,56 @@ function buildEnhancementPrompt(analysis: AnalysisResult): string {
   return parts.join(" ");
 }
 
-async function enhancePhoto(imageUrl: string, prompt: string, apiKey: string): Promise<string | null> {
+async function applyWatermark(
+  imageBytes: Uint8Array,
+  logoUrl: string,
+  position: string
+): Promise<Uint8Array> {
+  // Decode the base image
+  const baseImage = await Image.decode(imageBytes);
+
+  // Fetch and decode the logo
+  const logoResp = await fetch(logoUrl);
+  if (!logoResp.ok) throw new Error(`Failed to fetch logo: ${logoResp.status}`);
+  const logoBuffer = new Uint8Array(await logoResp.arrayBuffer());
+  const logoImage = await Image.decode(logoBuffer);
+
+  // Scale logo to ~8% of image width, maintaining aspect ratio
+  const targetWidth = Math.round(baseImage.width * 0.08);
+  const scale = targetWidth / logoImage.width;
+  const targetHeight = Math.round(logoImage.height * scale);
+  const scaledLogo = logoImage.resize(targetWidth, targetHeight);
+
+  // Calculate position with padding (2% of image size)
+  const padX = Math.round(baseImage.width * 0.02);
+  const padY = Math.round(baseImage.height * 0.02);
+  let x: number, y: number;
+
+  switch (position) {
+    case 'top-left':
+      x = padX; y = padY; break;
+    case 'top-right':
+      x = baseImage.width - targetWidth - padX; y = padY; break;
+    case 'bottom-left':
+      x = padX; y = baseImage.height - targetHeight - padY; break;
+    case 'center-center':
+      x = Math.round((baseImage.width - targetWidth) / 2);
+      y = Math.round((baseImage.height - targetHeight) / 2);
+      break;
+    case 'bottom-right':
+    default:
+      x = baseImage.width - targetWidth - padX;
+      y = baseImage.height - targetHeight - padY;
+      break;
+  }
+
+  // Composite the logo onto the image
+  baseImage.composite(scaledLogo, x, y);
+
+  // Encode back to PNG
+  return await baseImage.encode();
+}
+
   const response = await fetch("https://ai.gateway.lovable.dev/v1/chat/completions", {
     method: "POST",
     headers: {
