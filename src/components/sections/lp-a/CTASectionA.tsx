@@ -1,7 +1,9 @@
 import { ArrowRight } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { useNavigate } from "react-router-dom";
 
 export function CTASectionA() {
+  const navigate = useNavigate();
   return (
     <section className="section-padding relative overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-br from-primary/5 via-accent/40 to-background" />
