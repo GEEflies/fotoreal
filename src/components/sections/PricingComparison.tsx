@@ -99,7 +99,7 @@ export function PricingComparison() {
               </h3>
               <div className="flex items-baseline gap-1 mb-5">
                 <span className="text-3xl sm:text-4xl font-extrabold text-muted-foreground">
-                  7,50–15€
+                  8–15€
                 </span>
                 <span className="text-muted-foreground text-sm">/ fotka</span>
               </div>

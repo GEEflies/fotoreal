@@ -56,7 +56,7 @@ export function PricingComparisonA() {
           <div className="rounded-xl border border-border bg-card p-6">
             <h3 className="font-heading font-bold text-foreground text-xl mb-1">Profesionálny fotograf</h3>
             <div className="flex items-baseline gap-1 mb-4">
-              <span className="font-heading text-3xl font-extrabold text-destructive">7,50–15 €</span>
+              <span className="font-heading text-3xl font-extrabold text-destructive">8–15 €</span>
               <span className="text-muted-foreground text-sm">/ fotka</span>
             </div>
             <div className="aspect-[16/10] rounded-lg mb-5 bg-muted flex items-center justify-center text-center px-4">
