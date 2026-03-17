@@ -46,7 +46,7 @@ export function PricingPackagesA() {
         </div>
 
         <div className="max-w-lg mx-auto">
-          <div className="rounded-2xl border-2 border-primary/20 bg-card shadow-lg overflow-hidden">
+          <div className="rounded-2xl border-2 border-primary/20 bg-card shadow-lg overflow-visible">
             {/* Dropdown selector */}
             <div className="p-5 pb-0">
               <p className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wide">
