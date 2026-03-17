@@ -121,9 +121,9 @@ export function PricingPackagesA() {
             </div>
 
             {/* Price hero + savings + CTA */}
-            <div className="p-5 space-y-4">
+            <div className="p-3 sm:p-5 space-y-3 sm:space-y-4">
               {/* Price hero */}
-              <div className="rounded-xl bg-primary/5 border border-primary/10 p-4">
+              <div className="rounded-xl bg-primary/5 border border-primary/10 p-2.5 sm:p-4">
                 {/* Desktop: centered vertical */}
                 <div className="hidden sm:block text-center py-2">
                   <div className="flex items-baseline justify-center gap-1">
@@ -146,15 +146,15 @@ export function PricingPackagesA() {
                 </div>
 
                 {/* Mobile: horizontal compact layout */}
-                <div className="sm:hidden flex items-center gap-3 p-3">
+                <div className="sm:hidden flex items-center gap-2.5">
                   <div className="flex items-baseline gap-0.5 shrink-0">
-                    <span className="font-heading text-4xl font-extrabold text-primary">
+                    <span className="font-heading text-3xl font-extrabold text-primary">
                       {pkg.price}
                     </span>
-                    <span className="font-heading text-xl font-bold text-primary/70">€</span>
+                    <span className="font-heading text-lg font-bold text-primary/70">€</span>
                   </div>
-                  <div className="h-10 w-px bg-border shrink-0" />
-                  <div className="grid grid-cols-2 gap-x-3 gap-y-1 text-xs min-w-0">
+                  <div className="h-8 w-px bg-border shrink-0" />
+                  <div className="grid grid-cols-2 gap-x-2.5 gap-y-0.5 text-[11px] min-w-0">
                     <div>
                       <span className="text-muted-foreground">Cena/fotka</span>
                       <p className="font-bold text-foreground">{pkg.ppp.toFixed(2)} €</p>
@@ -174,11 +174,9 @@ export function PricingPackagesA() {
               </div>
 
               {/* Savings strip */}
-              <div className="rounded-xl bg-success/5 border border-success/20 px-4 py-3 flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-1 sm:gap-3">
-                <div className="text-sm">
-                  <span className="text-muted-foreground">
-                    Fotograf: 
-                  </span>{" "}
+              <div className="rounded-lg sm:rounded-xl bg-success/5 border border-success/20 px-3 py-2 sm:px-4 sm:py-3 flex flex-col sm:flex-row items-start sm:items-center sm:justify-between gap-0.5 sm:gap-3">
+                <div className="text-xs sm:text-sm">
+                  <span className="text-muted-foreground">Fotograf: </span>
                   <span className="text-destructive font-semibold line-through">
                     {photographerLow}–{photographerHigh} €
                   </span>{" "}
@@ -186,7 +184,7 @@ export function PricingPackagesA() {
                     · ~{pkg.properties} {pkg.properties === 1 ? "nehnuteľnosť" : pkg.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"}
                   </span>
                 </div>
-                <span className="text-sm font-bold text-success whitespace-nowrap">
+                <span className="text-xs sm:text-sm font-bold text-success whitespace-nowrap">
                   Ušetríte {savingsPercent}%
                 </span>
               </div>
@@ -194,13 +192,13 @@ export function PricingPackagesA() {
               {/* Green CTA */}
               <Button
                 size="lg"
-                className="w-full font-bold text-base bg-success hover:bg-success/90 text-success-foreground shadow-[0_4px_20px_-4px_hsl(var(--success)/0.4)] group"
+                className="w-full font-bold text-sm sm:text-base bg-success hover:bg-success/90 text-success-foreground shadow-[0_4px_20px_-4px_hsl(var(--success)/0.4)] group"
               >
-                <Sparkles className="mr-2 h-5 w-5" />
+                <Sparkles className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
                 Kúpiť za {pkg.price} €
               </Button>
 
-              <p className="text-xs text-muted-foreground text-center">
+              <p className="text-[10px] sm:text-xs text-muted-foreground text-center">
                 Kredity nevypršia · Bezpečná platba
               </p>
             </div>
