@@ -48,16 +48,16 @@ export function PricingPackagesA() {
         <div className="max-w-lg mx-auto">
           <div className="rounded-2xl border-2 border-primary/20 bg-card shadow-lg overflow-visible">
             {/* Dropdown selector */}
-            <div className="p-5 pb-0">
+            <div className="px-3 sm:px-5 pt-3 sm:pt-5 pb-0">
               <p className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wide">
                 Vybrať balíček
               </p>
               <div className="relative">
                 <button
                   onClick={() => setOpen(!open)}
-                  className="w-full flex items-center justify-between p-4 rounded-xl border border-border bg-background hover:border-primary/40 transition-colors text-left"
+                  className="w-full flex items-center justify-between p-3 sm:p-4 rounded-xl border border-border bg-background hover:border-primary/40 transition-colors text-left"
                 >
-                  <div className="flex items-center gap-3">
+                  <div className="flex items-center gap-2">
                     <span className="font-heading text-2xl font-extrabold text-foreground">
                       {pkg.photos}
                     </span>
@@ -80,8 +80,16 @@ export function PricingPackagesA() {
                   </div>
                 </button>
 
+                {/* Second row: properties + price per piece */}
+                <div className="flex items-center justify-between px-3 sm:px-4 pt-1.5 pb-1 text-xs text-muted-foreground">
+                  <span>
+                    ~{pkg.properties} {pkg.properties === 1 ? "nehnuteľnosť" : pkg.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"}
+                  </span>
+                  <span>({pkg.ppp.toFixed(2)} € / ks)</span>
+                </div>
+
                 {open && (
-                  <div className="absolute top-full left-0 right-0 z-30 mt-1 rounded-xl border border-border bg-card shadow-xl overflow-hidden">
+                  <div className="absolute top-[calc(100%-1.5rem)] left-0 right-0 z-30 mt-1 rounded-xl border border-border bg-card shadow-xl overflow-hidden">
                     {PACKAGES.map((p, i) => (
                       <button
                         key={p.photos}
