@@ -2,6 +2,9 @@ import { ArrowRight, Star, TrendingUp, Eye, Zap } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { BeforeAfterSlider } from "@/components/ui/BeforeAfterSlider";
 import { HERO_BEFORE, HERO_AFTER } from "@/lib/images";
+import tomasAvatar from "@/assets/avatars/tomas-lukac.png";
+import andreaAvatar from "@/assets/avatars/andrea-kmetova.png";
+import marekAvatar from "@/assets/avatars/marek-balaz.png";
 
 export function HeroSectionB() {
   return (
