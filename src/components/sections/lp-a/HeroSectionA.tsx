@@ -64,11 +64,15 @@ export function HeroSectionA() {
             <div className="flex items-center gap-3 pt-1">
               <div className="flex -space-x-2.5">
                 {[
-                  "https://realfoto-adames.vercel.app/_next/image?url=%2Ftestimonials%2FGemini_Generated_Image_339lzr339lzr339l.png&w=96&q=80",
-                  "https://realfoto-adames.vercel.app/_next/image?url=%2Ftestimonials%2FGemini_Generated_Image_job9rjob9rjob9rj.png&w=96&q=80",
-                  "https://realfoto-adames.vercel.app/_next/image?url=%2Ftestimonials%2FGemini_Generated_Image_l0v0vll0v0vll0v0.png&w=96&q=80",
-                ].map((src, i) => (
-                  <img key={i} src={src} alt="Používateľ" className="h-9 w-9 rounded-full border-2 border-background object-cover" />
+                  { initials: "MK", className: "bg-primary/15 text-primary" },
+                  { initials: "RP", className: "bg-secondary text-secondary-foreground" },
+                  { initials: "DN", className: "bg-accent text-accent-foreground" },
+                ].map((person, i) => (
+                  <Avatar key={i} className="h-9 w-9 border-2 border-background">
+                    <AvatarFallback className={`text-xs font-semibold ${person.className}`}>
+                      {person.initials}
+                    </AvatarFallback>
+                  </Avatar>
                 ))}
               </div>
               <div className="flex flex-col">
