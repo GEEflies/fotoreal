@@ -195,7 +195,7 @@ export default function Login() {
       case 'reset-password':
         return 'Zabudnuté heslo';
       case 'check-email':
-        return 'Skontrolujte si email';
+        return checkEmailReason === 'signup' ? 'Zadajte overovací kód' : 'Skontrolujte si email';
       default:
         return isPaidUser
           ? `Pre prístup k vašim ${purchasedPhotos} fotkám sa prihláste`
@@ -213,7 +213,7 @@ export default function Login() {
         return 'Pošleme vám odkaz na obnovenie hesla';
       case 'check-email':
         return checkEmailReason === 'signup'
-          ? `Poslali sme potvrdzovací odkaz na ${email}`
+          ? `Poslali sme overovací kód na ${email}`
           : `Poslali sme odkaz na obnovenie hesla na ${email}`;
       default:
         return isPaidUser
@@ -469,16 +469,59 @@ export default function Login() {
             )}
 
             {/* CHECK EMAIL STEP */}
-            {step === 'check-email' && (
+            {step === 'check-email' && checkEmailReason === 'signup' && (
+              <div className="space-y-6">
+                {formError && (
+                  <Alert variant="destructive">
+                    <AlertDescription>{formError}</AlertDescription>
+                  </Alert>
+                )}
+
+                <div className="flex justify-center">
+                  <InputOTP maxLength={6} value={otpCode} onChange={setOtpCode}>
+                    <InputOTPGroup>
+                      <InputOTPSlot index={0} />
+                      <InputOTPSlot index={1} />
+                      <InputOTPSlot index={2} />
+                      <InputOTPSlot index={3} />
+                      <InputOTPSlot index={4} />
+                      <InputOTPSlot index={5} />
+                    </InputOTPGroup>
+                  </InputOTP>
+                </div>
+
+                <p className="text-xs text-muted-foreground text-center bg-muted/50 rounded-lg px-3 py-2">
+                  Nevidíte email? Skontrolujte priečinok <span className="font-medium text-foreground">Spam</span> alebo <span className="font-medium text-foreground">Reklamy</span>.
+                </p>
+
+                <Button
+                  onClick={handleOtpVerify}
+                  disabled={isLoading || otpCode.length < 6}
+                  className="w-full"
+                  size="lg"
+                >
+                  {isLoading && <Loader2 className="h-4 w-4 animate-spin mr-2" />}
+                  Overiť a pokračovať
+                </Button>
+
+                <button
+                  onClick={() => switchStep('signup')}
+                  className="text-sm text-muted-foreground hover:text-foreground w-full text-center"
+                >
+                  ← Zadať iný email
+                </button>
+              </div>
+            )}
+
+            {/* CHECK EMAIL STEP - PASSWORD RESET */}
+            {step === 'check-email' && checkEmailReason === 'reset' && (
               <div className="space-y-6 text-center">
                 <div className="flex justify-center">
                   <Mail className="h-12 w-12 text-muted-foreground" />
                 </div>
 
                 <p className="text-sm text-muted-foreground">
-                  {checkEmailReason === 'signup'
-                    ? 'Kliknite na odkaz v emaile pre potvrdenie účtu.'
-                    : 'Kliknite na odkaz v emaile pre obnovenie hesla.'}
+                  Kliknite na odkaz v emaile pre obnovenie hesla.
                 </p>
 
                 <p className="text-xs text-muted-foreground bg-muted/50 rounded-lg px-3 py-2">
