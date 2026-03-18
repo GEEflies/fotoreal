@@ -56,10 +56,15 @@ export function useCredits() {
   useEffect(() => {
     loadCredits();
 
+    // Fallback: other components dispatch this event when a credit-consuming action completes
+    const onCreditsChanged = () => loadCredits();
+    window.addEventListener('credits-changed', onCreditsChanged);
+
     // Auto-refresh when credits change in DB (photo processing, purchases, etc.)
     let channel: ReturnType<typeof supabase.channel> | undefined;
+    let cancelled = false;
     supabase.auth.getUser().then(({ data: { user } }) => {
-      if (!user) return;
+      if (!user || cancelled) return;
       channel = supabase
         .channel('credits-realtime')
         .on('postgres_changes',
@@ -69,7 +74,11 @@ export function useCredits() {
         .subscribe();
     });
 
-    return () => { if (channel) supabase.removeChannel(channel); };
+    return () => {
+      cancelled = true;
+      window.removeEventListener('credits-changed', onCreditsChanged);
+      if (channel) supabase.removeChannel(channel);
+    };
   }, [loadCredits]);
 
   const useCreditsForPhotos = useCallback(async (count: number): Promise<boolean> => {

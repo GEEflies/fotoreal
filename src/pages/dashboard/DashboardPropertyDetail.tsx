@@ -78,9 +78,12 @@ export default function DashboardPropertyDetail() {
         event: 'UPDATE', schema: 'public', table: 'property_photos',
         filter: `property_id=eq.${id}`,
       }, (payload) => {
-        setPhotos(prev => prev.map(p => 
+        setPhotos(prev => prev.map(p =>
           p.id === payload.new.id ? { ...p, ...payload.new as Photo } : p
         ));
+        if (payload.new.status === 'done') {
+          window.dispatchEvent(new Event('credits-changed'));
+        }
       })
       .subscribe();
 
