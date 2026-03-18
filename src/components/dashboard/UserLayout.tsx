@@ -16,11 +16,10 @@ interface SidebarProperty {
 }
 
 function CreditWidget() {
-  const { credits } = useCredits();
-  if (!credits) return null;
+  const { credits, isLoading } = useCredits();
 
-  const available = credits.available;
-  const total = credits.free_credits + credits.purchased_credits;
+  const available = credits?.available ?? 0;
+  const total = credits ? credits.free_credits + credits.purchased_credits : 0;
   const pct = total > 0 ? Math.round((available / total) * 100) : 0;
   const isLow = available <= 2;
   const isEmpty = available <= 0;
@@ -28,13 +27,17 @@ function CreditWidget() {
   return (
     <div className="mx-4 my-3 rounded-xl border border-border bg-muted/50 p-3 space-y-2.5">
       <div className="flex items-center gap-2">
-        <Sparkles className={cn("h-4 w-4", isEmpty ? "text-destructive" : isLow ? "text-warning" : "text-primary")} />
-        <span className="font-semibold text-sm text-foreground">{available}</span>
+        <Sparkles className={cn("h-4 w-4", isLoading ? "text-primary" : isEmpty ? "text-destructive" : isLow ? "text-warning" : "text-primary")} />
+        {isLoading ? (
+          <span className="font-semibold text-sm text-muted-foreground animate-pulse">–</span>
+        ) : (
+          <span className="font-semibold text-sm text-foreground">{available}</span>
+        )}
         <span className="text-xs text-muted-foreground">fotiek</span>
       </div>
       <Progress
-        value={pct}
-        className={cn("h-1.5", isEmpty ? "[&>div]:bg-destructive" : isLow ? "[&>div]:bg-warning" : "")}
+        value={isLoading ? 0 : pct}
+        className={cn("h-1.5", isEmpty && !isLoading ? "[&>div]:bg-destructive" : isLow && !isLoading ? "[&>div]:bg-warning" : "")}
       />
       <Link to="/dashboard/credits" className="block">
         <Button size="sm" className="w-full bg-success hover:bg-success/90 text-success-foreground text-xs h-8">
