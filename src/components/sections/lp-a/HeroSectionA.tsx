@@ -75,7 +75,7 @@ export function HeroSectionA() {
           </div>
 
           <div className="animate-fade-in">
-            <BeforeAfterSlider beforeSrc={HERO_BEFORE} afterSrc={HERO_AFTER} className="aspect-[4/3] shadow-2xl rounded-2xl" eager />
+            <BeforeAfterSlider beforeSrc={HERO_BEFORE} afterSrc={HERO_AFTER} className="aspect-[4/3] shadow-2xl rounded-2xl" />
           </div>
         </div>
       </div>

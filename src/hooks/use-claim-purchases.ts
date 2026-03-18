@@ -16,7 +16,7 @@ export function useClaimPurchases() {
         return 0;
       }
 
-      const { data, error } = await supabase.rpc('claim_purchases_by_email', {
+      const { data, error } = await (supabase.rpc as any)('claim_purchases_by_email', {
         _user_id: user.id,
         _email: user.email,
       });
