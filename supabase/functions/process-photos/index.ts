@@ -361,20 +361,31 @@ function getFriendlyPhotoError(error: unknown): string {
 
 /**
  * Self-invoke this function to process the next pending photo.
- * Fire-and-forget — errors are logged but don't block the current response.
+ * Awaited with a 5s timeout to ensure the request is sent before the runtime shuts down.
+ * If the chain fails, frontend 5s polling will re-trigger automatically.
  */
-function chainNextPhoto(propertyId: string) {
+async function chainNextPhoto(propertyId: string): Promise<void> {
   const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
   const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
 
-  fetch(`${supabaseUrl}/functions/v1/process-photos`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${serviceRoleKey}`,
-    },
-    body: JSON.stringify({ property_id: propertyId }),
-  }).catch((err) => console.error("Self-chain failed:", err));
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), 5000);
+
+  try {
+    await fetch(`${supabaseUrl}/functions/v1/process-photos`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${serviceRoleKey}`,
+      },
+      body: JSON.stringify({ property_id: propertyId }),
+      signal: controller.signal,
+    });
+    clearTimeout(timeout);
+  } catch (err) {
+    clearTimeout(timeout);
+    console.error("Self-chain failed:", err);
+  }
 }
 
 Deno.serve(async (req) => {
@@ -450,10 +461,13 @@ Deno.serve(async (req) => {
 
       // Phase 2: Enhance
       const prompt = buildEnhancementPrompt(analysis);
-      await updatePhotoStatus(supabase, photo.id, "enhancing", "Upravujem fotku...");
+      await updatePhotoStatus(supabase, photo.id, "enhancing", "Vylepšujem fotku...");
       const editedImageUrl = await enhancePhoto(photo.original_url, prompt, GEMINI_API_KEY);
 
       if (editedImageUrl) {
+        // Phase 3: Upload preparation
+        await updatePhotoStatus(supabase, photo.id, "uploading", "Nahrávam výsledok...");
+
         let base64Data = editedImageUrl.replace(/^data:image\/\w+;base64,/, "");
         let imageBytes = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0));
 
@@ -505,7 +519,7 @@ Deno.serve(async (req) => {
 
     if (count && count > 0) {
       console.log(`${count} more pending photos — chaining next invocation`);
-      chainNextPhoto(property_id);
+      await chainNextPhoto(property_id);
     } else {
       // All photos processed — finalize property status
       await finalizePropertyStatus(supabase, property_id);

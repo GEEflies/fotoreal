@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { AIProgressLoader } from '@/components/dashboard/AIProgressLoader';
@@ -117,7 +117,7 @@ export default function DashboardPropertyDetail() {
       if (photoData) {
         const hasPending = photoData.some((p: { ai_status: string }) => p.ai_status === 'pending');
         const hasActive = photoData.some((p: { ai_status: string }) =>
-          p.ai_status === 'analyzing' || p.ai_status === 'enhancing'
+          p.ai_status === 'analyzing' || p.ai_status === 'enhancing' || p.ai_status === 'uploading'
         );
         if (hasPending && !hasActive) {
           supabase.functions.invoke('process-photos', { body: { property_id: id } })
@@ -153,18 +153,53 @@ export default function DashboardPropertyDetail() {
   const doneCount = donePhotos.length;
   const totalCount = photos.length;
 
-  // Weighted progress: show intermediate states instead of only done/not-done
-  const getPhotoWeight = (status: string): number => {
-    switch (status) {
-      case 'analyzing': return 0.20;
-      case 'enhancing': return 0.50;
-      case 'done': return 1;
-      case 'error': return 1;
-      default: return 0; // pending
-    }
+  // Phase anchors (percentage) and expected durations (ms) for smooth interpolation
+  const PHASE_CONFIG: Record<string, { anchor: number; next: number; durationMs: number }> = {
+    pending:   { anchor: 0,   next: 15,  durationMs: 2000 },
+    analyzing: { anchor: 15,  next: 30,  durationMs: 15000 },
+    enhancing: { anchor: 30,  next: 85,  durationMs: 70000 },
+    uploading: { anchor: 85,  next: 100, durationMs: 5000 },
+    done:      { anchor: 100, next: 100, durationMs: 0 },
+    error:     { anchor: 100, next: 100, durationMs: 0 },
   };
-  const weightedProgress = photos.reduce((sum, p) => sum + getPhotoWeight(p.ai_status), 0);
-  const progressPercent = totalCount > 0 ? Math.round((weightedProgress / totalCount) * 100) : 0;
+
+  // Track when each photo entered its current status
+  const phaseTimestamps = useRef<Map<string, { status: string; enteredAt: number }>>(new Map());
+
+  // Update timestamps when photo statuses change
+  useEffect(() => {
+    for (const photo of photos) {
+      const entry = phaseTimestamps.current.get(photo.id);
+      if (!entry || entry.status !== photo.ai_status) {
+        phaseTimestamps.current.set(photo.id, { status: photo.ai_status, enteredAt: Date.now() });
+      }
+    }
+  }, [photos]);
+
+  // Tick every 200ms while processing for smooth progress animation
+  const [tick, setTick] = useState(0);
+  useEffect(() => {
+    if (property?.status !== 'processing') return;
+    const timer = setInterval(() => setTick(t => t + 1), 200);
+    return () => clearInterval(timer);
+  }, [property?.status]);
+
+  // Calculate interpolated progress per photo
+  const getInterpolatedProgress = (photo: Photo): number => {
+    const config = PHASE_CONFIG[photo.ai_status] || PHASE_CONFIG.pending;
+    if (config.durationMs === 0) return config.anchor;
+
+    const entry = phaseTimestamps.current.get(photo.id);
+    const elapsed = entry ? Date.now() - entry.enteredAt : 0;
+    const fraction = Math.min(elapsed / config.durationMs, 0.95); // cap at 95% to never overshoot
+    return config.anchor + fraction * (config.next - config.anchor);
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _tick = tick; // referenced to trigger recalculation
+  const progressPercent = totalCount > 0
+    ? Math.round(photos.reduce((sum, p) => sum + getInterpolatedProgress(p), 0) / totalCount)
+    : 0;
 
   if (isLoading) {
     return (
