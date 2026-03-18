@@ -1,61 +1,59 @@
 /**
  * Shared image URLs for before/after comparisons.
- * Served from public/landing/ — cached at edge by Vercel CDN.
+ * Optimized WebP format, 1200px max width, ~80-150KB each.
  */
 
-const BASE = "/landing";
-
 // Hero before/after
-export const HERO_BEFORE = `${BASE}/hero-images/wb-before.jpg`;
-export const HERO_AFTER = `${BASE}/hero-images/wb-after.jpg`;
+export const HERO_BEFORE = "/landing/hero-before.webp";
+export const HERO_AFTER = "/landing/hero-after.webp";
 
 // Feature before/after pairs
 export const FEATURE_IMAGES = {
   hdr: {
-    before: `${BASE}/hdr-merging/hdr-before.jpg`,
-    after: `${BASE}/hdr-merging/hdr-after.jpeg`,
+    before: "/landing/hdr-before.webp",
+    after: "/landing/hdr-after.webp",
   },
   windows: {
-    before: `${BASE}/window-pulling/wp-before.jpg`,
-    after: `${BASE}/window-pulling/wp-after.jpeg`,
+    before: "/landing/windows-before.webp",
+    after: "/landing/windows-after.webp",
   },
   sky: {
-    before: `${BASE}/sky-replacement/sky-before.jpeg`,
-    after: `${BASE}/sky-replacement/sky-after.jpeg`,
+    before: "/landing/sky-before.webp",
+    after: "/landing/sky-after.webp",
   },
   whiteBalance: {
-    before: `${BASE}/white-balance/wb-before.jpg`,
-    after: `${BASE}/white-balance/wb-after.jpeg`,
+    before: "/landing/wb-before.webp",
+    after: "/landing/wb-after.webp",
   },
   perspective: {
-    before: `${BASE}/perspective-correction/prsp-before.jpeg`,
-    after: `${BASE}/perspective-correction/prsp-after.jpeg`,
+    before: "/landing/perspective-before.webp",
+    after: "/landing/perspective-after.webp",
   },
   relighting: {
-    before: `${BASE}/relighting/religh-before.jpg`,
-    after: `${BASE}/relighting/religh-after.jpg`,
+    before: "/landing/relighting-before.webp",
+    after: "/landing/relighting-after.webp",
   },
   raw: {
-    before: `${BASE}/raw/raw-before.jpg`,
-    after: `${BASE}/raw/raw-after.jpg`,
+    before: "/landing/raw-before.webp",
+    after: "/landing/raw-after.webp",
   },
   privacy: {
-    before: `${BASE}/privacy/privacy-before.jpeg`,
-    after: `${BASE}/privacy/privacy-after.jpeg`,
+    before: "/landing/privacy-before.webp",
+    after: "/landing/privacy-after.webp",
   },
   colorCorrection: {
-    before: `${BASE}/color-correction/cc-before.jpg`,
-    after: `${BASE}/color-correction/cc-after.jpg`,
+    before: "/landing/cc-before.webp",
+    after: "/landing/cc-after.webp",
   },
 };
 
 // Additional comparison pairs
 export const AURIX_EDIT = {
-  before: `${BASE}/aurix-edit/original-edit.jpg`,
-  after: `${BASE}/aurix-edit/aurix-edit.jpg`,
+  before: "/landing/aurix-before.webp",
+  after: "/landing/aurix-after.webp",
 };
 
 export const HUMAN_EDIT = {
-  before: `${BASE}/human-edit/original-edit.jpg`,
-  after: `${BASE}/human-edit/human-edit.jpg`,
+  before: "/landing/human-before.webp",
+  after: "/landing/human-after.webp",
 };

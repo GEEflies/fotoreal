@@ -57,7 +57,7 @@ export function BeforeAfterSlider({
         className="absolute inset-0"
         style={{ clipPath: `inset(0 ${100 - position}% 0 0)` }}
       >
-        <img src={beforeSrc} alt={beforeLabel} className="w-full h-full object-cover" draggable={false} />
+        <img src={beforeSrc} alt={beforeLabel} className="w-full h-full object-cover" draggable={false} loading="lazy" />
       </div>
 
       {/* Divider line */}
