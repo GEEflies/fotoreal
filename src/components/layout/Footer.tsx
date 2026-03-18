@@ -1,5 +1,5 @@
 import { Link } from "react-router-dom";
-import LogoRealfoto from "@/components/LogoRealfoto";
+import logoRealfoto from "@/assets/logo-realfoto.svg";
 import { Mail, Phone, MapPin } from "lucide-react";
 
 export function Footer() {
@@ -12,7 +12,7 @@ export function Footer() {
           {/* Brand column */}
           <div className="col-span-2 sm:col-span-2 lg:col-span-1">
             <Link to="/" className="flex items-center gap-2 mb-4">
-              <LogoRealfoto className="h-9 w-auto" />
+              <img src={logoRealfoto} alt="RealFoto" className="h-9 w-auto" />
               <span className="text-lg font-bold text-background">RealFoto</span>
             </Link>
             <p className="text-sm text-background/60 leading-relaxed mb-5 max-w-xs">

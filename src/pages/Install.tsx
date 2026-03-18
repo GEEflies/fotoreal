@@ -3,7 +3,7 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
 import { Download, Share, Plus, CheckCircle2, Smartphone, ArrowLeft } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
-import LogoRealfoto from '@/components/LogoRealfoto';
+import logoRealfoto from '@/assets/logo-realfoto.svg';
 
 export default function Install() {
   const { deferredPrompt, isInstalled, isIOS, install } = useInstallPrompt();
@@ -22,7 +22,7 @@ export default function Install() {
 
         <div className="text-center space-y-3">
           <div className="flex justify-center">
-            <LogoRealfoto className="h-14 w-auto" />
+            <img src={logoRealfoto} alt="RealFoto" className="h-14 w-auto" />
           </div>
           <h1 className="text-2xl font-heading font-bold text-foreground">
             Nainštaluj si RealFoto

@@ -2,6 +2,7 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
+import { UserLayout } from '@/components/dashboard/UserLayout';
 import { CreditsBanner } from '@/components/dashboard/CreditsBanner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -151,11 +152,9 @@ export default function DashboardNewProperty() {
 
       supabase.functions.invoke('process-photos', {
         body: { property_id: property.id },
-      }).then(({ error }) => {
-        if (error) console.error('Edge function error:', error);
       });
 
-      toast({ title: 'Spracovávame vaše fotky', description: 'Výsledky budú hotové o pár minút.' });
+      toast({ title: 'Úspech!', description: 'Fotky sa spracovávajú automaticky.' });
       navigate(`/dashboard/properties/${property.id}`);
     } catch (error) {
       console.error('Error:', error);
@@ -166,10 +165,11 @@ export default function DashboardNewProperty() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6">
+    <UserLayout>
+       <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6">
         <div>
           <h1 className="text-lg sm:text-2xl font-heading font-bold text-foreground">Nová nehnuteľnosť</h1>
-          <p className="text-sm text-muted-foreground">Nahrajte fotky a o pár sekúnd sú hotové</p>
+          <p className="text-sm text-muted-foreground">Nahrajte fotky a AI ich automaticky spracuje</p>
         </div>
 
         {/* Credits banner */}
@@ -202,7 +202,7 @@ export default function DashboardNewProperty() {
               {photosOverLimit && (
                 <div className="flex items-center gap-2 p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-sm text-destructive">
                   <AlertCircle className="h-4 w-4 shrink-0" />
-                  <span>Máte viac fotiek ako kreditov — <a href="/dashboard/credits" className="underline font-medium">dokúpte si ďalšie</a></span>
+                  <span>Nahrali ste viac fotiek ako máte kreditov. <a href="/dashboard/credits" className="underline font-medium">Dokúpiť kredity</a></span>
                 </div>
               )}
 
@@ -288,5 +288,6 @@ export default function DashboardNewProperty() {
           </CardContent>
         </Card>
       </div>
+    </UserLayout>
   );
 }

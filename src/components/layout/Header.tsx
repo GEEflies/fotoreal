@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { Menu, ArrowRight, LogIn } from "lucide-react";
 import { useNavigate, Link, useLocation } from "react-router-dom";
-import LogoRealfoto from "@/components/LogoRealfoto";
+import logoRealfoto from "@/assets/logo-realfoto.svg";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 
@@ -44,7 +44,7 @@ export function Header() {
             }}
             className="flex items-center gap-2 group shrink-0"
           >
-            <LogoRealfoto className="h-10 sm:h-12 w-auto" />
+            <img src={logoRealfoto} alt="RealFoto" className="h-10 sm:h-12 w-auto" />
             <span className="text-lg sm:text-xl font-bold text-foreground group-hover:text-primary transition-colors">RealFoto</span>
           </a>
 

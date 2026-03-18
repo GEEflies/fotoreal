@@ -15,18 +15,10 @@ export default function PaymentSuccess() {
   const [hasClaimed, setHasClaimed] = useState(false);
 
   // Auto-claim purchases when user is authenticated
-  // Retries to handle race condition where webhook hasn't fired yet
   useEffect(() => {
     if (user && !hasClaimed) {
       setHasClaimed(true);
-      const tryClaim = async (attemptsLeft: number) => {
-        const count = await claimPurchases();
-        if (count === 0 && attemptsLeft > 0) {
-          await new Promise((r) => setTimeout(r, 3000));
-          return tryClaim(attemptsLeft - 1);
-        }
-      };
-      tryClaim(3);
+      claimPurchases();
     }
   }, [user, hasClaimed, claimPurchases]);
 
@@ -48,21 +40,21 @@ export default function PaymentSuccess() {
         </div>
 
         <h1 className="font-heading text-2xl sm:text-3xl font-extrabold text-foreground mb-3">
-          Super, máte to!
+          Platba úspešná!
         </h1>
 
         {isLoggedIn ? (
           <>
             <p className="text-muted-foreground text-sm sm:text-base mb-8">
-              Kredity sú na vašom účte a môžete ich hneď použiť.
-              Potvrdenie vám príde na email.
+              Ďakujeme za nákup. Vaše kredity boli pripísané na váš účet.
+              Na email vám príde potvrdenie objednávky.
             </p>
             <Button
               size="lg"
               onClick={() => navigate("/dashboard/credits")}
               className="w-full font-bold"
             >
-              Prejsť do aplikácie
+              Pokračovať do aplikácie
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </>
@@ -70,8 +62,8 @@ export default function PaymentSuccess() {
           <>
             <p className="text-muted-foreground text-sm sm:text-base mb-8">
               {photos
-                ? `Vaše kredity na ${photos} fotiek sú pripravené! Stačí sa zaregistrovať a hneď ich máte.`
-                : "Vaše kredity sú pripravené! Prihláste sa a hneď ich máte na účte."}
+                ? `Ďakujeme za nákup ${photos} fotiek! Zaregistrujte sa pre pripísanie kreditov na váš účet.`
+                : "Ďakujeme za nákup! Prihláste sa alebo sa zaregistrujte pre pripísanie kreditov na váš účet."}
             </p>
             <Button
               size="lg"

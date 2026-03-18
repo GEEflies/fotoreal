@@ -139,7 +139,7 @@ export default function AdminClients() {
                         <TableCell>{c.company_name || '—'}</TableCell>
                         <TableCell className="text-center">
                           <Badge variant={available > 0 ? 'default' : 'secondary'}>
-                            {available} gratis
+                            {available} voľných
                           </Badge>
                           <span className="text-xs text-muted-foreground ml-2">
                             ({c.free_credits}F + {c.purchased_credits}K − {c.total_used}U)

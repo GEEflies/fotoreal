@@ -18,7 +18,6 @@ import Features from "./pages/Features";
 import References from "./pages/References";
 import AboutUs from "./pages/AboutUs";
 import Blog from "./pages/Blog";
-import { UserLayout } from "./components/dashboard/UserLayout";
 import DashboardProperties from "./pages/dashboard/DashboardProperties";
 import DashboardNewProperty from "./pages/dashboard/DashboardNewProperty";
 import DashboardPropertyDetail from "./pages/dashboard/DashboardPropertyDetail";
@@ -73,14 +72,12 @@ const App = () => (
           <Route path="/login" element={<Login />} />
           <Route path="/install" element={<Install />} />
 
-          {/* Dashboard — shared layout, sidebar stays mounted */}
-          <Route path="/dashboard" element={<UserLayout />}>
-            <Route index element={<DashboardProperties />} />
-            <Route path="new" element={<DashboardNewProperty />} />
-            <Route path="properties/:id" element={<DashboardPropertyDetail />} />
-            <Route path="credits" element={<DashboardCredits />} />
-            <Route path="profile" element={<DashboardProfile />} />
-          </Route>
+          {/* Dashboard — always accessible */}
+          <Route path="/dashboard" element={<DashboardProperties />} />
+          <Route path="/dashboard/new" element={<DashboardNewProperty />} />
+          <Route path="/dashboard/properties/:id" element={<DashboardPropertyDetail />} />
+          <Route path="/dashboard/credits" element={<DashboardCredits />} />
+          <Route path="/dashboard/profile" element={<DashboardProfile />} />
 
           {/* Admin — blocked in PWA mode */}
           <Route path="/admin/login" element={<PWAGuard><AdminLogin /></PWAGuard>} />

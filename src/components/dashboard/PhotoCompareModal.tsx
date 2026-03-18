@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Dialog, DialogContent, DialogTitle } from '@/components/ui/dialog';
+import { Dialog, DialogContent } from '@/components/ui/dialog';
 import { Button } from '@/components/ui/button';
 import { BeforeAfterSlider } from '@/components/ui/BeforeAfterSlider';
 import { ChevronLeft, ChevronRight, X } from 'lucide-react';
@@ -33,7 +33,6 @@ export function PhotoCompareModal({ photos, initialIndex, open, onOpenChange }: 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-5xl w-[95vw] p-0 gap-0 bg-background/95 backdrop-blur-xl border-border overflow-hidden [&>button]:hidden">
-        <DialogTitle className="sr-only">Porovnanie fotiek</DialogTitle>
         {/* Top bar */}
         <div className="flex items-center justify-between px-4 py-3 border-b border-border">
           <span className="text-sm font-medium text-muted-foreground">

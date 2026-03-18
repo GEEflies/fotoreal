@@ -1,5 +1,4 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
-import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -16,13 +15,51 @@ const PRICE_MAP: Record<number, string> = {
   320: "price_1TC3m9C7GbaaYuOKX7hanY5p",
 };
 
+// Verify JWT signature locally using HMAC-SHA256 (no network call)
+async function verifyJwt(
+  token: string,
+  secret: string,
+): Promise<Record<string, unknown> | null> {
+  try {
+    const parts = token.split(".");
+    if (parts.length !== 3) return null;
+
+    const encoder = new TextEncoder();
+    const cryptoKey = await crypto.subtle.importKey(
+      "raw",
+      encoder.encode(secret),
+      { name: "HMAC", hash: "SHA-256" },
+      false,
+      ["verify"],
+    );
+
+    const signatureInput = encoder.encode(`${parts[0]}.${parts[1]}`);
+    const signatureBytes = Uint8Array.from(
+      atob(parts[2].replace(/-/g, "+").replace(/_/g, "/")),
+      (c) => c.charCodeAt(0),
+    );
+    const valid = await crypto.subtle.verify(
+      "HMAC",
+      cryptoKey,
+      signatureBytes,
+      signatureInput,
+    );
+    if (!valid) return null;
+
+    const payload = parts[1].replace(/-/g, "+").replace(/_/g, "/");
+    return JSON.parse(atob(payload));
+  } catch {
+    return null;
+  }
+}
+
 serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
   }
 
   try {
-    const { photos, origin, cancelPath = "/pre-fotografov#balicky" } = await req.json();
+    const { photos, origin } = await req.json();
 
     const priceId = PRICE_MAP[photos];
     if (!priceId) {
@@ -34,24 +71,23 @@ serve(async (req) => {
       throw new Error("Stripe not configured");
     }
 
-    // Extract user identity via Supabase Auth (supports both HS256 and ECC keys)
+    // Extract user identity from JWT locally (no network call)
     let userId: string | null = null;
     let userEmail: string | null = null;
     const authHeader = req.headers.get("authorization");
     if (authHeader) {
-      const supabase = createClient(
-        Deno.env.get("SUPABASE_URL")!,
-        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
-      );
       const token = authHeader.replace("Bearer ", "");
-      const { data: { user } } = await supabase.auth.getUser(token);
-      if (user) {
-        userId = user.id;
-        userEmail = user.email ?? null;
+      const jwtSecret = Deno.env.get("SUPABASE_JWT_SECRET");
+      if (jwtSecret) {
+        const payload = await verifyJwt(token, jwtSecret);
+        if (payload) {
+          if (typeof payload.sub === "string") userId = payload.sub;
+          if (typeof payload.email === "string") userEmail = payload.email;
+        }
       }
     }
 
-    console.log(`Checkout: userId=${userId}, userEmail=${userEmail}, authHeader=${authHeader ? "present" : "missing"}`);
+    console.log(`Checkout: userId=${userId}, userEmail=${userEmail}, jwtSecret=${Deno.env.get("SUPABASE_JWT_SECRET") ? "SET" : "NOT SET"}, authHeader=${authHeader ? "present" : "missing"}`);
 
     // Create Checkout Session via Stripe API
     const params = new URLSearchParams({
@@ -59,7 +95,7 @@ serve(async (req) => {
       "line_items[0][price]": priceId,
       "line_items[0][quantity]": "1",
       "success_url": `${origin}/platba-uspesna?session_id={CHECKOUT_SESSION_ID}&photos=${photos}`,
-      "cancel_url": `${origin}${cancelPath}`,
+      "cancel_url": `${origin}/pre-fotografov#balicky`,
       "metadata[photos]": String(photos),
       "locale": "sk",
       "payment_method_types[0]": "card",
