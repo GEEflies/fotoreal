@@ -11,6 +11,9 @@ import PaymentSuccess from "./pages/PaymentSuccess";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
 import Install from "./pages/Install";
+import Contact from "./pages/Contact";
+import HowItWorks from "./pages/HowItWorks";
+import Pricing from "./pages/Pricing";
 import DashboardProperties from "./pages/dashboard/DashboardProperties";
 import DashboardNewProperty from "./pages/dashboard/DashboardNewProperty";
 import DashboardPropertyDetail from "./pages/dashboard/DashboardPropertyDetail";
@@ -52,6 +55,9 @@ const App = () => (
           <Route path="/" element={<PWAGuard><Index /></PWAGuard>} />
           <Route path="/pre-fotografov" element={<PWAGuard><LandingA /></PWAGuard>} />
           <Route path="/bez-fotografa" element={<PWAGuard><LandingB /></PWAGuard>} />
+          <Route path="/ako-to-funguje" element={<PWAGuard><HowItWorks /></PWAGuard>} />
+          <Route path="/cennik" element={<PWAGuard><Pricing /></PWAGuard>} />
+          <Route path="/kontakt" element={<PWAGuard><Contact /></PWAGuard>} />
 
           {/* Always accessible */}
           <Route path="/platba-uspesna" element={<PaymentSuccess />} />
