@@ -222,51 +222,71 @@ async function applyWatermark(
 
 async function enhancePhoto(imageUrl: string, prompt: string, apiKey: string): Promise<string | null> {
   const image = await fetchImageData(imageUrl);
-  const response = await fetch(
-    `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-image-preview:generateContent?key=${apiKey}`,
-    {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        contents: [
+  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-image-preview:generateContent?key=${apiKey}`;
+  const body = JSON.stringify({
+    contents: [
+      {
+        role: "user",
+        parts: [
+          { text: prompt },
           {
-            role: "user",
-            parts: [
-              { text: prompt },
-              {
-                inline_data: {
-                  mime_type: image.mimeType,
-                  data: image.data,
-                },
-              },
-            ],
+            inline_data: {
+              mime_type: image.mimeType,
+              data: image.data,
+            },
           },
         ],
-        generationConfig: {
-          responseModalities: ["TEXT", "IMAGE"],
-        },
-      }),
-    }
-  );
-
-  if (!response.ok) {
-    const errText = await response.text();
-    throw new Error(`Generator failed [${response.status}]: ${errText}`);
-  }
-
-  const data = await response.json();
-  const part = data.candidates?.[0]?.content?.parts?.find((entry: Record<string, unknown>) => {
-    const inlineData = (entry.inlineData ?? entry.inline_data) as Record<string, unknown> | undefined;
-    return typeof inlineData?.data === "string";
+      },
+    ],
+    generationConfig: {
+      responseModalities: ["TEXT", "IMAGE"],
+      imageConfig: {
+        imageSize: "2K",
+      },
+    },
   });
 
-  const inlineData = (part?.inlineData ?? part?.inline_data) as Record<string, unknown> | undefined;
-  const base64 = typeof inlineData?.data === "string" ? inlineData.data : null;
-  const mimeType = typeof (inlineData?.mimeType ?? inlineData?.mime_type) === "string"
-    ? String(inlineData?.mimeType ?? inlineData?.mime_type)
-    : "image/png";
+  // Retry with exponential backoff for 429 rate limits
+  const maxRetries = 3;
+  const retryDelays = [3000, 6000, 12000];
+  let lastError: Error | null = null;
 
-  return base64 ? `data:${mimeType};base64,${base64}` : null;
+  for (let attempt = 0; attempt <= maxRetries; attempt++) {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body,
+    });
+
+    if (response.ok) {
+      const data = await response.json();
+      const part = data.candidates?.[0]?.content?.parts?.find((entry: Record<string, unknown>) => {
+        const inlineData = (entry.inlineData ?? entry.inline_data) as Record<string, unknown> | undefined;
+        return typeof inlineData?.data === "string";
+      });
+
+      const inlineData = (part?.inlineData ?? part?.inline_data) as Record<string, unknown> | undefined;
+      const base64 = typeof inlineData?.data === "string" ? inlineData.data : null;
+      const mimeType = typeof (inlineData?.mimeType ?? inlineData?.mime_type) === "string"
+        ? String(inlineData?.mimeType ?? inlineData?.mime_type)
+        : "image/png";
+
+      return base64 ? `data:${mimeType};base64,${base64}` : null;
+    }
+
+    const errText = await response.text();
+    lastError = new Error(`Generator failed [${response.status}]: ${errText}`);
+
+    if (response.status === 429 && attempt < maxRetries) {
+      console.log(`Rate limited (429), retrying in ${retryDelays[attempt]}ms (attempt ${attempt + 1}/${maxRetries})`);
+      await new Promise((r) => setTimeout(r, retryDelays[attempt]));
+      continue;
+    }
+
+    break;
+  }
+
+  throw lastError ?? new Error("Generator failed: unknown error");
 }
 
 function getFriendlyPhotoError(error: unknown): string {
@@ -394,7 +414,7 @@ Deno.serve(async (req) => {
             await supabase.rpc("increment_total_used", { _user_id: propOwner.user_id });
           }
         } else {
-          await updatePhotoStatus(supabase, photo.id, "done", "Hotovo");
+          await updatePhotoStatus(supabase, photo.id, "error", "Chyba: AI nedokázalo vygenerovať upravenú fotku");
         }
       } catch (photoError: unknown) {
         console.error(`Error processing photo ${photo.id}:`, photoError);
