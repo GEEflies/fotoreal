@@ -3,7 +3,7 @@ import { Footer } from "@/components/layout/Footer";
 import { FeaturesGrid } from "@/components/sections/FeaturesGrid";
 import { HowItWorksSection } from "@/components/sections/HowItWorksSection";
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Zap, Shield, Clock, Palette, Camera, Layers } from "lucide-react";
+import { ArrowRight, Zap, Shield, Clock, Sofa, Sparkles, Layers } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 const highlights = [
