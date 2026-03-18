@@ -227,26 +227,35 @@ export default function DashboardNewProperty() {
               </label>
 
               {previews.length > 0 && (
-                <div className="grid grid-cols-4 sm:grid-cols-5 gap-2">
-                  {previews.map((url, index) => (
-                    <div key={index} className="relative aspect-square rounded-lg overflow-hidden group bg-muted">
-                      {url ? (
-                        <img src={url} alt={`Foto ${index + 1}`} className="w-full h-full object-cover" />
-                      ) : (
-                        <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground">
-                          <Upload className="h-5 w-5 mb-1" />
-                          <span className="text-[10px] truncate px-1 max-w-full">{photos[index]?.name.split('.').pop()?.toUpperCase()}</span>
+                <div className="space-y-2">
+                  <ScrollArea className="max-h-[240px] rounded-lg">
+                    <div className="grid grid-cols-5 sm:grid-cols-6 gap-2 pr-2">
+                      {previews.map((url, index) => (
+                        <div key={index} className="relative aspect-square rounded-lg overflow-hidden group bg-muted">
+                          {url ? (
+                            <img src={url} alt={`Foto ${index + 1}`} className="w-full h-full object-cover" />
+                          ) : (
+                            <div className="w-full h-full flex flex-col items-center justify-center text-muted-foreground">
+                              <Upload className="h-5 w-5 mb-1" />
+                              <span className="text-[10px] truncate px-1 max-w-full">{photos[index]?.name.split('.').pop()?.toUpperCase()}</span>
+                            </div>
+                          )}
+                          <button
+                            type="button"
+                            onClick={() => removePhoto(index)}
+                            className="absolute top-1 right-1 p-1 bg-destructive text-destructive-foreground rounded-full opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
+                          >
+                            <X className="h-3 w-3" />
+                          </button>
                         </div>
-                      )}
-                      <button
-                        type="button"
-                        onClick={() => removePhoto(index)}
-                        className="absolute top-1 right-1 p-1 bg-destructive text-destructive-foreground rounded-full opacity-100 sm:opacity-0 sm:group-hover:opacity-100 transition-opacity"
-                      >
-                        <X className="h-3 w-3" />
-                      </button>
+                      ))}
                     </div>
-                  ))}
+                  </ScrollArea>
+                  {previews.length > 12 && (
+                    <p className="text-xs text-muted-foreground text-center">
+                      {previews.length} fotiek — scrollujte pre viac
+                    </p>
+                  )}
                 </div>
               )}
             </div>
