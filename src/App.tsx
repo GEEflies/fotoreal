@@ -55,6 +55,9 @@ const App = () => (
           <Route path="/" element={<PWAGuard><Index /></PWAGuard>} />
           <Route path="/pre-fotografov" element={<PWAGuard><LandingA /></PWAGuard>} />
           <Route path="/bez-fotografa" element={<PWAGuard><LandingB /></PWAGuard>} />
+          <Route path="/ako-to-funguje" element={<PWAGuard><HowItWorks /></PWAGuard>} />
+          <Route path="/cennik" element={<PWAGuard><Pricing /></PWAGuard>} />
+          <Route path="/kontakt" element={<PWAGuard><Contact /></PWAGuard>} />
 
           {/* Always accessible */}
           <Route path="/platba-uspesna" element={<PaymentSuccess />} />
