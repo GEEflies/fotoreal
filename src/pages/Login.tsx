@@ -50,9 +50,8 @@ export default function Login() {
 
   const handleGoogleLogin = async () => {
     setIsGoogleLoading(true);
-    if (redirectTo !== '/dashboard') {
-      sessionStorage.setItem('auth_redirect', redirectTo);
-    }
+    sessionStorage.setItem('auth_redirect', redirectTo);
+    sessionStorage.setItem('realfoto_just_logged_in', '1');
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {

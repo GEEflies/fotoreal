@@ -87,6 +87,8 @@ serve(async (req) => {
       }
     }
 
+    console.log(`Checkout: userId=${userId}, userEmail=${userEmail}, jwtSecret=${Deno.env.get("SUPABASE_JWT_SECRET") ? "SET" : "NOT SET"}, authHeader=${authHeader ? "present" : "missing"}`);
+
     // Create Checkout Session via Stripe API
     const params = new URLSearchParams({
       "mode": "payment",

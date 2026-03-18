@@ -22,7 +22,10 @@ export function useClaimPurchases() {
       });
 
       if (error) {
-        console.error('Failed to claim purchases:', error);
+        console.error('Failed to claim purchases:', error.message, error.details, error.hint);
+        if (error.message?.includes('function') || error.code === '42883') {
+          console.error('CRITICAL: claim_purchases_by_email function does not exist in database. Apply migration 20260317230000.');
+        }
         setIsLoading(false);
         return 0;
       }

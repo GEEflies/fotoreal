@@ -21,8 +21,13 @@ interface SidebarProperty {
   status: string;
 }
 
-function CreditWidget() {
-  const { credits } = useCredits();
+function CreditWidget({ refreshTrigger = 0 }: { refreshTrigger?: number }) {
+  const { credits, loadCredits } = useCredits();
+
+  useEffect(() => {
+    if (refreshTrigger > 0) loadCredits();
+  }, [refreshTrigger, loadCredits]);
+
   if (!credits) return null;
 
   const available = credits.available;
@@ -52,7 +57,7 @@ function CreditWidget() {
   );
 }
 
-function Sidebar({ currentPath, userEmail }: { currentPath: string; userEmail?: string }) {
+function Sidebar({ currentPath, userEmail, creditRefresh }: { currentPath: string; userEmail?: string; creditRefresh?: number }) {
   const { signOut } = useUserAuth();
   const navigate = useNavigate();
   const [properties, setProperties] = useState<SidebarProperty[]>([]);
@@ -100,7 +105,7 @@ function Sidebar({ currentPath, userEmail }: { currentPath: string; userEmail?: 
         <p className="text-xs text-muted-foreground">Spracovanie fotiek</p>
       </div>
 
-      <CreditWidget />
+      <CreditWidget refreshTrigger={creditRefresh} />
 
       <nav className="flex-1 px-4 space-y-1 overflow-y-auto">
         {/* Nová nehnuteľnosť - above the list */}
@@ -192,6 +197,7 @@ export function UserLayout({ children }: UserLayoutProps) {
   const navigate = useNavigate();
   const location = useLocation();
   const { claimPurchases } = useClaimPurchases();
+  const [creditRefresh, setCreditRefresh] = useState(0);
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -199,10 +205,12 @@ export function UserLayout({ children }: UserLayoutProps) {
     }
   }, [user, isLoading, navigate]);
 
-  // Auto-claim any unclaimed guest purchases when user enters the dashboard
+  // Auto-claim any unclaimed guest purchases, then refresh credits
   useEffect(() => {
     if (user) {
-      claimPurchases();
+      claimPurchases().then((count) => {
+        if (count && count > 0) setCreditRefresh(prev => prev + 1);
+      });
     }
   }, [user]);
 
@@ -228,14 +236,14 @@ export function UserLayout({ children }: UserLayoutProps) {
             <Button variant="ghost" size="icon"><Menu className="h-5 w-5" /></Button>
           </SheetTrigger>
           <SheetContent side="left" className="p-0 w-64">
-            <Sidebar currentPath={location.pathname} userEmail={user.email} />
+            <Sidebar currentPath={location.pathname} userEmail={user.email} creditRefresh={creditRefresh} />
           </SheetContent>
         </Sheet>
       </header>
 
       <div className="flex">
         <aside className="hidden lg:block w-64 bg-card border-r border-border h-screen fixed top-0 left-0">
-          <Sidebar currentPath={location.pathname} userEmail={user.email} />
+          <Sidebar currentPath={location.pathname} userEmail={user.email} creditRefresh={creditRefresh} />
         </aside>
         <main className="flex-1 p-4 lg:p-8 lg:ml-64 min-h-screen pt-20 lg:pt-8">
           {children}
