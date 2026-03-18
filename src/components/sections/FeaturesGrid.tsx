@@ -1,6 +1,6 @@
 import { useState } from "react";
 import {
-  Layers, Sun, Cloud, Palette, Move, Lightbulb, FileImage, Eye, Droplets, ChevronDown,
+  Layers, Sun, Cloud, Palette, Move, Lightbulb, FileImage, Eye, Droplets, ChevronDown, Sofa, Sparkles,
 } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { BeforeAfterSlider } from "@/components/ui/BeforeAfterSlider";
