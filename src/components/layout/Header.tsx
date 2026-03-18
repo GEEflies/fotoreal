@@ -1,14 +1,22 @@
 import { useState, useEffect } from "react";
 import { Menu, ArrowRight, LogIn } from "lucide-react";
-import { useNavigate } from "react-router-dom";
-import LogoRealfoto from "@/components/LogoRealfoto";
+import { useNavigate, Link, useLocation } from "react-router-dom";
+import logoRealfoto from "@/assets/logo-realfoto.svg";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+
+const navLinks = [
+  { label: "Funkcie", href: "/funkcie" },
+  { label: "Cenník", href: "/cennik" },
+  { label: "Referencie", href: "/referencie" },
+  { label: "Kontakt", href: "/kontakt" },
+];
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
   const navigate = useNavigate();
+  const location = useLocation();
 
   useEffect(() => {
     const handleScroll = () => setIsScrolled(window.scrollY > 20);
@@ -31,16 +39,34 @@ export function Header() {
             href="/"
             onClick={(e) => {
               e.preventDefault();
+              navigate("/");
               window.scrollTo({ top: 0, behavior: "smooth" });
             }}
-            className="flex items-center gap-2 group"
+            className="flex items-center gap-2 group shrink-0"
           >
-            <LogoRealfoto className="h-10 sm:h-12 w-auto" />
+            <img src={logoRealfoto} alt="RealFoto" className="h-10 sm:h-12 w-auto" />
             <span className="text-lg sm:text-xl font-bold text-foreground group-hover:text-primary transition-colors">RealFoto</span>
           </a>
 
+          {/* Desktop nav links — centered */}
+          <nav className="hidden lg:flex items-center gap-1 absolute left-1/2 -translate-x-1/2">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                to={link.href}
+                className={`px-3.5 py-2 text-sm font-medium transition-colors rounded-md ${
+                  location.pathname === link.href
+                    ? "text-primary bg-primary/5"
+                    : "text-muted-foreground hover:text-foreground hover:bg-accent/50"
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
+
           {/* Desktop buttons */}
-          <div className="hidden lg:flex items-center gap-3">
+          <div className="hidden lg:flex items-center gap-3 shrink-0">
             <Button
               variant="ghost"
               onClick={() => navigate('/login')}
@@ -67,7 +93,22 @@ export function Header() {
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px]">
-              <nav className="flex flex-col gap-3 mt-10">
+              <nav className="flex flex-col gap-1 mt-10">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    to={link.href}
+                    onClick={() => setIsOpen(false)}
+                    className={`px-3 py-2.5 text-sm font-medium rounded-md transition-colors ${
+                      location.pathname === link.href
+                        ? "text-primary bg-primary/5"
+                        : "text-foreground hover:bg-accent/50"
+                    }`}
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+                <div className="border-t border-border my-3" />
                 <Button
                   onClick={() => { setIsOpen(false); navigate('/login'); }}
                   className="w-full group font-bold"

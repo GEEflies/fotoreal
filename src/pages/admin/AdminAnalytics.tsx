@@ -1,254 +1,228 @@
-import { useEffect, useState } from 'react';
+import { useState, useEffect } from 'react';
 import { AdminLayout } from '@/components/admin/AdminLayout';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Button } from '@/components/ui/button';
 import { supabase } from '@/integrations/supabase/client';
-import { RefreshCw, Trash2 } from 'lucide-react';
-import { useToast } from '@/hooks/use-toast';
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
+import { Users, Image, TrendingUp, DollarSign, RefreshCw } from 'lucide-react';
+import { Button } from '@/components/ui/button';
 import {
-  AlertDialog,
-  AlertDialogAction,
-  AlertDialogCancel,
-  AlertDialogContent,
-  AlertDialogDescription,
-  AlertDialogFooter,
-  AlertDialogHeader,
-  AlertDialogTitle,
-} from '@/components/ui/alert-dialog';
+  Table, TableBody, TableCell, TableHead, TableHeader, TableRow,
+} from '@/components/ui/table';
+import { format } from 'date-fns';
+import { sk } from 'date-fns/locale';
 
-interface StepAnalytics {
-  step_number: number;
-  step_name: string;
-  unique_visitors: number;
-  next_step_visitors: number;
+// Stripe package pricing
+const CREDIT_PACKAGES = [
+  { credits: 20, price: 14 },
+  { credits: 40, price: 26 },
+  { credits: 80, price: 48 },
+  { credits: 160, price: 87 },
+  { credits: 320, price: 165 },
+];
+
+// Average cost per photo for AI processing (estimate)
+const COST_PER_PHOTO_EUR = 0.03;
+
+interface ClientRow {
+  user_id: string;
+  email: string;
+  user_created_at: string;
+  company_name: string | null;
+  free_credits: number;
+  purchased_credits: number;
+  total_used: number;
+  properties_count: number;
 }
 
-const STEP_NAMES: Record<number, string> = {
-  1: 'Kontakt',
-  2: 'Typ nehnuteľnosti',
-  3: 'Adresa',
-  4: 'Plocha',
-  5: 'Izby',
-  6: 'Poschodie & Výťah',
-  7: 'Stav',
-  8: 'Príslušenstvo',
-  9: 'Roky',
-  10: 'Kúrenie',
-  11: 'Fotky & Poznámky',
-};
-
-const SHORT_STEP_NAMES: Record<number, string> = {
-  1: 'Kontakt',
-  2: 'Typ',
-  3: 'Adresa',
-  4: 'Plocha',
-  5: 'Izby',
-  6: 'Posch./Výťah',
-  7: 'Stav',
-  8: 'Prísl.',
-  9: 'Roky',
-  10: 'Kúrenie',
-  11: 'Fotky',
-};
-
 export default function AdminAnalytics() {
-  const [analytics, setAnalytics] = useState<StepAnalytics[]>([]);
+  const [clients, setClients] = useState<ClientRow[]>([]);
+  const [totalPhotos, setTotalPhotos] = useState(0);
+  const [processedPhotos, setProcessedPhotos] = useState(0);
   const [isLoading, setIsLoading] = useState(true);
-  const [showReset, setShowReset] = useState(false);
-  const [isResetting, setIsResetting] = useState(false);
-  const { toast } = useToast();
 
   useEffect(() => {
-    fetchAnalytics();
+    loadData();
   }, []);
 
-  const fetchAnalytics = async () => {
+  const loadData = async () => {
     setIsLoading(true);
-    try {
-      const { data, error } = await supabase
-        .from('step_analytics')
-        .select('step_number, step_name, session_id');
 
-      if (error) throw error;
+    // Load clients
+    const { data: clientData } = await supabase.rpc('get_admin_user_list');
+    if (clientData) setClients(clientData as ClientRow[]);
 
-      // Count unique sessions per step
-      const stepCounts: Record<number, Set<string>> = {};
-      const stepNames: Record<number, string> = {};
-      
-      data?.forEach(row => {
-        if (!stepCounts[row.step_number]) {
-          stepCounts[row.step_number] = new Set();
-          stepNames[row.step_number] = row.step_name;
-        }
-        stepCounts[row.step_number].add(row.session_id);
-      });
+    // Load photo stats
+    const { count: total } = await supabase
+      .from('property_photos')
+      .select('*', { count: 'exact', head: true });
 
-      // Convert to array with all steps (1-11 only, no redirect)
-      const analyticsData: StepAnalytics[] = [];
-      for (let i = 1; i <= 11; i++) {
-        const currentVisitors = stepCounts[i]?.size || 0;
-        const nextVisitors = i < 11 ? (stepCounts[i + 1]?.size || 0) : 0;
-        analyticsData.push({
-          step_number: i,
-          step_name: stepNames[i] || STEP_NAMES[i] || `Krok ${i}`,
-          unique_visitors: currentVisitors,
-          next_step_visitors: nextVisitors,
-        });
-      }
+    const { count: processed } = await supabase
+      .from('property_photos')
+      .select('*', { count: 'exact', head: true })
+      .eq('ai_status', 'done');
 
-      setAnalytics(analyticsData);
-    } catch (error) {
-      console.error('Error fetching analytics:', error);
-      toast({
-        title: 'Chyba',
-        description: 'Nepodarilo sa načítať analytiku.',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsLoading(false);
-    }
+    setTotalPhotos(total ?? 0);
+    setProcessedPhotos(processed ?? 0);
+    setIsLoading(false);
   };
 
-  const handleReset = async () => {
-    setIsResetting(true);
-    try {
-      const { error } = await supabase
-        .from('step_analytics')
-        .delete()
-        .neq('id', '00000000-0000-0000-0000-000000000000');
+  // Calculate revenue estimate from purchased credits
+  const totalPurchasedCredits = clients.reduce((s, c) => s + c.purchased_credits, 0);
+  const totalUsedCredits = clients.reduce((s, c) => s + c.total_used, 0);
+  const totalFreeCredits = clients.reduce((s, c) => s + c.free_credits, 0);
 
-      if (error) throw error;
+  // Estimate revenue: use weighted average price per credit from packages
+  const avgPricePerCredit = CREDIT_PACKAGES.reduce((s, p) => s + p.price / p.credits, 0) / CREDIT_PACKAGES.length;
+  const estimatedRevenue = Math.round(totalPurchasedCredits * avgPricePerCredit * 100) / 100;
 
-      toast({
-        title: 'Analytika resetovaná',
-        description: 'Všetky dáta boli vymazané.',
-      });
-      fetchAnalytics();
-    } catch (error) {
-      console.error('Error resetting analytics:', error);
-      toast({
-        title: 'Chyba',
-        description: 'Nepodarilo sa resetovať analytiku.',
-        variant: 'destructive',
-      });
-    } finally {
-      setIsResetting(false);
-      setShowReset(false);
-    }
-  };
+  // Costs
+  const totalCosts = Math.round(processedPhotos * COST_PER_PHOTO_EUR * 100) / 100;
+  const estimatedProfit = Math.round((estimatedRevenue - totalCosts) * 100) / 100;
 
-  const getConversionRate = (current: number, previous: number) => {
-    if (previous === 0) return 0;
-    return Math.round((current / previous) * 100);
-  };
+  // Top clients by usage
+  const topClients = [...clients]
+    .filter(c => c.total_used > 0)
+    .sort((a, b) => b.total_used - a.total_used)
+    .slice(0, 10);
 
   return (
     <AdminLayout>
-      <div className="space-y-4">
-        <div className="flex items-center justify-between gap-2">
-          <div className="min-w-0">
-            <h1 className="text-xl md:text-2xl font-heading font-bold text-foreground">Analytika</h1>
-            <p className="text-sm text-muted-foreground">Konverzný funnel</p>
-          </div>
-          <div className="flex gap-2 shrink-0">
-            <Button variant="outline" size="icon" onClick={fetchAnalytics} disabled={isLoading} className="h-9 w-9">
-              <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
-            </Button>
-            <Button variant="destructive" size="icon" onClick={() => setShowReset(true)} className="h-9 w-9">
-              <Trash2 className="h-4 w-4" />
-            </Button>
-          </div>
+      <div className="space-y-6">
+        <div className="flex items-center justify-between">
+          <h1 className="text-2xl font-heading font-bold text-foreground">Analytika</h1>
+          <Button variant="outline" size="icon" onClick={loadData} disabled={isLoading}>
+            <RefreshCw className={`h-4 w-4 ${isLoading ? 'animate-spin' : ''}`} />
+          </Button>
         </div>
 
-        {/* Compact Table */}
+        {/* Stats cards */}
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">Klienti</CardTitle>
+              <Users className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{clients.length}</div>
+              <p className="text-xs text-muted-foreground mt-1">
+                {clients.filter(c => c.purchased_credits > 0).length} platiacich
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">Fotky</CardTitle>
+              <Image className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{processedPhotos}</div>
+              <p className="text-xs text-muted-foreground mt-1">
+                z {totalPhotos} nahratých
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">Náklady</CardTitle>
+              <DollarSign className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{totalCosts} €</div>
+              <p className="text-xs text-muted-foreground mt-1">
+                ~{COST_PER_PHOTO_EUR} € / fotka
+              </p>
+            </CardContent>
+          </Card>
+
+          <Card>
+            <CardHeader className="flex flex-row items-center justify-between pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">Revenue</CardTitle>
+              <TrendingUp className="h-4 w-4 text-muted-foreground" />
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{estimatedRevenue} €</div>
+              <p className="text-xs text-muted-foreground mt-1">
+                Profit: <span className={estimatedProfit >= 0 ? 'text-green-600' : 'text-destructive'}>{estimatedProfit} €</span>
+              </p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Credit overview */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-4">
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">Bezplatné kredity</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{totalFreeCredits}</div>
+              <p className="text-xs text-muted-foreground">rozdané celkovo</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">Zakúpené kredity</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{totalPurchasedCredits}</div>
+              <p className="text-xs text-muted-foreground">celkovo</p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardHeader className="pb-2">
+              <CardTitle className="text-sm font-medium text-muted-foreground">Použité kredity</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <div className="text-2xl font-bold">{totalUsedCredits}</div>
+              <p className="text-xs text-muted-foreground">celkovo</p>
+            </CardContent>
+          </Card>
+        </div>
+
+        {/* Top clients */}
         <Card>
-          <CardHeader className="py-3 px-3">
-            <CardTitle className="text-base">Funnel</CardTitle>
+          <CardHeader>
+            <CardTitle className="text-base">Top klienti podľa použitia</CardTitle>
           </CardHeader>
           <CardContent className="p-0">
-            {isLoading ? (
-              <div className="text-center py-8 text-muted-foreground">Načítavam...</div>
-            ) : (
-              <div className="overflow-x-auto">
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr className="border-b border-border bg-muted/30">
-                      <th className="text-left py-2 px-3 font-medium text-muted-foreground text-xs">Krok</th>
-                      <th className="text-right py-2 px-2 font-medium text-muted-foreground text-xs">
-                        <span className="hidden sm:inline">Unikátni</span>
-                        <span className="sm:hidden">Unik.</span>
-                      </th>
-                      <th className="text-right py-2 px-2 font-medium text-muted-foreground text-xs">
-                        <span className="hidden sm:inline">Ďalší</span>
-                        <span className="sm:hidden">→</span>
-                      </th>
-                      <th className="text-right py-2 px-3 font-medium text-muted-foreground text-xs">%</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {analytics.map((step, index) => {
-                      const conversionRate = getConversionRate(step.next_step_visitors, step.unique_visitors);
-                      const isLastStep = index === analytics.length - 1;
-
-                      return (
-                        <tr key={step.step_number} className="border-b border-border">
-                          <td className="py-2 px-3">
-                            <div className="flex items-center gap-1.5">
-                              <span className="font-medium text-foreground w-4 text-center">{step.step_number}</span>
-                              <span className="hidden sm:inline text-muted-foreground">{step.step_name}</span>
-                              <span className="sm:hidden text-muted-foreground text-xs">{SHORT_STEP_NAMES[step.step_number]}</span>
-                            </div>
-                          </td>
-                          <td className="py-2 px-2 text-right font-medium tabular-nums">
-                            {step.unique_visitors}
-                          </td>
-                          <td className="py-2 px-2 text-right text-muted-foreground tabular-nums">
-                            {isLastStep ? '-' : step.next_step_visitors}
-                          </td>
-                          <td className="py-2 px-3 text-right tabular-nums">
-                            {isLastStep ? (
-                              <span className="text-muted-foreground">-</span>
-                            ) : (
-                              <span className={
-                                conversionRate >= 70 ? 'text-green-600 font-medium' : 
-                                conversionRate >= 40 ? 'text-orange-600 font-medium' : 
-                                'text-red-600 font-medium'
-                              }>
-                                {conversionRate}%
-                              </span>
-                            )}
-                          </td>
-                        </tr>
-                      );
-                    })}
-                  </tbody>
-                </table>
-              </div>
-            )}
+            <Table>
+              <TableHeader>
+                <TableRow>
+                  <TableHead>Email</TableHead>
+                  <TableHead>Firma</TableHead>
+                  <TableHead className="text-center">Použité</TableHead>
+                  <TableHead className="text-center">Zakúpené</TableHead>
+                  <TableHead className="text-center">Nehnuteľnosti</TableHead>
+                  <TableHead>Registrácia</TableHead>
+                </TableRow>
+              </TableHeader>
+              <TableBody>
+                {topClients.length === 0 ? (
+                  <TableRow>
+                    <TableCell colSpan={6} className="text-center py-8 text-muted-foreground">
+                      Žiadni aktívni klienti
+                    </TableCell>
+                  </TableRow>
+                ) : (
+                  topClients.map(c => (
+                    <TableRow key={c.user_id}>
+                      <TableCell className="font-medium">{c.email}</TableCell>
+                      <TableCell>{c.company_name || '—'}</TableCell>
+                      <TableCell className="text-center font-medium">{c.total_used}</TableCell>
+                      <TableCell className="text-center">{c.purchased_credits}</TableCell>
+                      <TableCell className="text-center">{c.properties_count}</TableCell>
+                      <TableCell className="text-sm text-muted-foreground">
+                        {format(new Date(c.user_created_at), 'd. MMM yyyy', { locale: sk })}
+                      </TableCell>
+                    </TableRow>
+                  ))
+                )}
+              </TableBody>
+            </Table>
           </CardContent>
         </Card>
       </div>
-
-      <AlertDialog open={showReset} onOpenChange={setShowReset}>
-        <AlertDialogContent className="max-w-[90vw] sm:max-w-lg">
-          <AlertDialogHeader>
-            <AlertDialogTitle>Resetovať analytiku?</AlertDialogTitle>
-            <AlertDialogDescription>
-              Všetky dáta budú vymazané.
-            </AlertDialogDescription>
-          </AlertDialogHeader>
-          <AlertDialogFooter>
-            <AlertDialogCancel className="h-10">Zrušiť</AlertDialogCancel>
-            <AlertDialogAction 
-              onClick={handleReset} 
-              className="h-10 bg-destructive text-destructive-foreground hover:bg-destructive/90"
-              disabled={isResetting}
-            >
-              {isResetting ? 'Mazanie...' : 'Resetovať'}
-            </AlertDialogAction>
-          </AlertDialogFooter>
-        </AlertDialogContent>
-      </AlertDialog>
     </AdminLayout>
   );
 }

@@ -32,13 +32,13 @@ export function CreditsBanner({ available, isCompact }: CreditsBannerProps) {
 
   return (
     <Card className={isEmpty ? 'border-destructive/50 bg-destructive/5' : isLow ? 'border-warning/50 bg-warning/5' : 'border-primary/20 bg-primary/5'}>
-      <CardContent className="p-4 flex items-center justify-between">
+      <CardContent className="p-3 sm:p-4 flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:justify-between">
         <div className="flex items-center gap-3">
-          <div className={`p-2 rounded-lg ${isEmpty ? 'bg-destructive/10' : isLow ? 'bg-warning/10' : 'bg-primary/10'}`}>
+          <div className={`p-2 rounded-lg shrink-0 ${isEmpty ? 'bg-destructive/10' : isLow ? 'bg-warning/10' : 'bg-primary/10'}`}>
             <Sparkles className={`h-5 w-5 ${isEmpty ? 'text-destructive' : isLow ? 'text-warning' : 'text-primary'}`} />
           </div>
           <div>
-            <p className="font-medium text-foreground">
+            <p className="font-medium text-sm sm:text-base text-foreground">
               {isEmpty ? 'Nemáte žiadne kredity' : `${available} ${available === 1 ? 'fotka' : available < 5 ? 'fotky' : 'fotiek'} k dispozícii`}
             </p>
             <p className="text-xs text-muted-foreground">
@@ -46,8 +46,8 @@ export function CreditsBanner({ available, isCompact }: CreditsBannerProps) {
             </p>
           </div>
         </div>
-        <Link to="/dashboard/credits">
-          <Button size="sm" className={isEmpty ? 'bg-success hover:bg-success/90 text-success-foreground' : ''}>
+        <Link to="/dashboard/credits" className="w-full sm:w-auto shrink-0">
+          <Button size="sm" className={`w-full sm:w-auto ${isEmpty ? 'bg-success hover:bg-success/90 text-success-foreground' : ''}`}>
             <ShoppingCart className="h-4 w-4 mr-1.5" />
             Dokúpiť kredity
           </Button>

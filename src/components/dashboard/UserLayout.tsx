@@ -2,14 +2,12 @@ import { ReactNode, useEffect, useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useUserAuth } from '@/hooks/use-user-auth';
 import { useCredits } from '@/hooks/use-credits';
-import { useClaimPurchases } from '@/hooks/use-claim-purchases';
 import { supabase } from '@/integrations/supabase/client';
-import { Building2, Plus, LogOut, Home, Menu, Sparkles, ShoppingCart, ChevronDown, User } from 'lucide-react';
+import { Building2, Plus, LogOut, Home, Menu, Sparkles, ShoppingCart, ChevronDown, User, Smartphone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
-import { getStoredAvatar } from '@/components/AvatarSelector';
 
 interface UserLayoutProps {
   children: ReactNode;
@@ -21,13 +19,8 @@ interface SidebarProperty {
   status: string;
 }
 
-function CreditWidget({ refreshTrigger = 0 }: { refreshTrigger?: number }) {
-  const { credits, loadCredits } = useCredits();
-
-  useEffect(() => {
-    if (refreshTrigger > 0) loadCredits();
-  }, [refreshTrigger, loadCredits]);
-
+function CreditWidget() {
+  const { credits } = useCredits();
   if (!credits) return null;
 
   const available = credits.available;
@@ -57,7 +50,7 @@ function CreditWidget({ refreshTrigger = 0 }: { refreshTrigger?: number }) {
   );
 }
 
-function Sidebar({ currentPath, userEmail, creditRefresh }: { currentPath: string; userEmail?: string; creditRefresh?: number }) {
+function Sidebar({ currentPath, userEmail }: { currentPath: string; userEmail?: string }) {
   const { signOut } = useUserAuth();
   const navigate = useNavigate();
   const [properties, setProperties] = useState<SidebarProperty[]>([]);
@@ -85,10 +78,8 @@ function Sidebar({ currentPath, userEmail, creditRefresh }: { currentPath: strin
   }, []);
 
   const handleSignOut = async () => {
-    const avatar = getStoredAvatar();
-    const landing = avatar === 'photographer' ? '/pre-fotografov' : avatar === 'no-photographer' ? '/bez-fotografa' : '/';
     await signOut();
-    navigate(landing);
+    navigate('/login');
   };
 
   const statusDot: Record<string, string> = {
@@ -105,7 +96,7 @@ function Sidebar({ currentPath, userEmail, creditRefresh }: { currentPath: strin
         <p className="text-xs text-muted-foreground">Spracovanie fotiek</p>
       </div>
 
-      <CreditWidget refreshTrigger={creditRefresh} />
+      <CreditWidget />
 
       <nav className="flex-1 px-4 space-y-1 overflow-y-auto">
         {/* Nová nehnuteľnosť - above the list */}
@@ -168,7 +159,14 @@ function Sidebar({ currentPath, userEmail, creditRefresh }: { currentPath: strin
         )}
       </nav>
 
-      <div className="p-3 border-t border-border">
+      <div className="p-3 border-t border-border space-y-2">
+        <Link
+          to="/install"
+          className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+        >
+          <Smartphone className="h-4 w-4" />
+          Stiahnuť appku
+        </Link>
         <div className="flex items-center gap-2 rounded-xl bg-muted/60">
           <Link
             to="/dashboard/profile"
@@ -196,23 +194,12 @@ export function UserLayout({ children }: UserLayoutProps) {
   const { user, isLoading } = useUserAuth();
   const navigate = useNavigate();
   const location = useLocation();
-  const { claimPurchases } = useClaimPurchases();
-  const [creditRefresh, setCreditRefresh] = useState(0);
 
   useEffect(() => {
     if (!isLoading && !user) {
       navigate('/login');
     }
   }, [user, isLoading, navigate]);
-
-  // Auto-claim any unclaimed guest purchases, then refresh credits
-  useEffect(() => {
-    if (user) {
-      claimPurchases().then((count) => {
-        if (count && count > 0) setCreditRefresh(prev => prev + 1);
-      });
-    }
-  }, [user]);
 
   if (isLoading) {
     return (
@@ -235,15 +222,15 @@ export function UserLayout({ children }: UserLayoutProps) {
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon"><Menu className="h-5 w-5" /></Button>
           </SheetTrigger>
-          <SheetContent side="left" className="p-0 w-64">
-            <Sidebar currentPath={location.pathname} userEmail={user.email} creditRefresh={creditRefresh} />
+          <SheetContent side="left" className="p-0 w-[85vw] max-w-80">
+            <Sidebar currentPath={location.pathname} userEmail={user.email} />
           </SheetContent>
         </Sheet>
       </header>
 
       <div className="flex">
         <aside className="hidden lg:block w-64 bg-card border-r border-border h-screen fixed top-0 left-0">
-          <Sidebar currentPath={location.pathname} userEmail={user.email} creditRefresh={creditRefresh} />
+          <Sidebar currentPath={location.pathname} userEmail={user.email} />
         </aside>
         <main className="flex-1 p-4 lg:p-8 lg:ml-64 min-h-screen pt-20 lg:pt-8">
           {children}
