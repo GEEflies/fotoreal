@@ -100,10 +100,33 @@ export default function DashboardPropertyDetail() {
     };
   }, [id]);
 
-  // Fallback polling every 5s while processing — bulletproof even if Realtime drops
+  // Fallback polling every 5s while processing — bulletproof even if Realtime drops.
+  // Also detects stalled processing (chain breakage) and re-triggers the edge function.
   useEffect(() => {
     if (!id || property?.status !== 'processing') return;
-    const interval = setInterval(loadData, 5000);
+
+    const poll = async () => {
+      const [{ data: prop }, { data: photoData }] = await Promise.all([
+        supabase.from('properties').select('*').eq('id', id).single(),
+        supabase.from('property_photos').select('*').eq('property_id', id).order('created_at'),
+      ]);
+      if (prop) setProperty(prev => prev ? { ...prev, ...prop as unknown as Property } : null);
+      if (photoData) setPhotos(photoData as unknown as Photo[]);
+
+      // Re-trigger if processing stalled (pending photos but none actively processing)
+      if (photoData) {
+        const hasPending = photoData.some((p: { ai_status: string }) => p.ai_status === 'pending');
+        const hasActive = photoData.some((p: { ai_status: string }) =>
+          p.ai_status === 'analyzing' || p.ai_status === 'enhancing'
+        );
+        if (hasPending && !hasActive) {
+          supabase.functions.invoke('process-photos', { body: { property_id: id } })
+            .then(({ error }) => { if (error) console.error('Re-trigger error:', error); });
+        }
+      }
+    };
+
+    const interval = setInterval(poll, 5000);
     return () => clearInterval(interval);
   }, [id, property?.status]);
 
