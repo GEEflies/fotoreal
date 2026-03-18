@@ -62,7 +62,7 @@ export default function DashboardCredits() {
               <div>
                 <p className="text-sm text-muted-foreground">Váš zostatok</p>
                 <div className="flex items-baseline gap-2">
-                  <span className="text-4xl font-heading font-bold text-foreground">{credits.available}</span>
+                  <span className="text-3xl sm:text-4xl font-heading font-bold text-foreground">{credits.available}</span>
                   <span className="text-muted-foreground">fotiek</span>
                 </div>
                 <p className="text-xs text-muted-foreground mt-1">
