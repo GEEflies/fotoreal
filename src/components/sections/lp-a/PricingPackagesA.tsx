@@ -1,15 +1,18 @@
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { ChevronDown, Sparkles, Loader2 } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 import { PACKAGES } from "@/lib/packages";
 
 export function PricingPackagesA() {
   const [selected, setSelected] = useState(2);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const busyRef = useRef(false);
   const { ref, isVisible } = useScrollAnimation({ threshold: 0.1 });
+  const { toast } = useToast();
 
   const pkg = PACKAGES[selected];
   const photographerLow = pkg.properties * 100;
@@ -18,15 +21,10 @@ export function PricingPackagesA() {
   const savingsPercent = Math.round(((photographerMid - pkg.price) / photographerMid) * 100);
 
   const handleCheckout = async () => {
-    if (loading) return;
+    if (busyRef.current) return;
+    busyRef.current = true;
     setLoading(true);
     try {
-      // Refresh session for authenticated users; guests proceed without it
-      const { data: { session } } = await supabase.auth.getSession();
-      if (session) {
-        await supabase.auth.refreshSession();
-      }
-
       const { data, error } = await supabase.functions.invoke("create-checkout", {
         body: { photos: pkg.photos, origin: window.location.origin },
       });
@@ -36,6 +34,14 @@ export function PricingPackagesA() {
       }
     } catch (e: any) {
       console.error("Checkout error:", e);
+      toast({
+        variant: "destructive",
+        title: "Chyba pri platbe",
+        description: e?.status === 429 || e?.message?.includes("429")
+          ? "Príliš veľa pokusov. Skúste to znova o minútu."
+          : "Nepodarilo sa vytvoriť platbu. Skúste to znova.",
+      });
+      busyRef.current = false;
       setLoading(false);
     }
   };

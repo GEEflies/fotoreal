@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { UserLayout } from '@/components/dashboard/UserLayout';
 import { useCredits } from '@/hooks/use-credits';
 import { Card, CardContent } from '@/components/ui/card';
@@ -6,6 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Sparkles, Loader2, ChevronDown } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
 import { supabase } from '@/integrations/supabase/client';
+import { useToast } from '@/hooks/use-toast';
 import { PACKAGES, propLabel } from '@/lib/packages';
 
 export default function DashboardCredits() {
@@ -13,19 +14,21 @@ export default function DashboardCredits() {
   const [selected, setSelected] = useState(2);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const busyRef = useRef(false);
+  const { toast } = useToast();
 
   const pkg = PACKAGES[selected];
   const photographerLow = pkg.properties * 100;
   const photographerHigh = pkg.properties * 300;
 
   const handleCheckout = async () => {
-    if (loading) return;
+    if (busyRef.current) return;
+    busyRef.current = true;
     setLoading(true);
     try {
-      // Ensure we have a fresh session token before calling the edge function
+      // Ensure we have a valid session; redirect to login if expired
       const { data: { session }, error: sessionError } = await supabase.auth.getSession();
       if (sessionError || !session) {
-        // Session expired or missing — force a refresh attempt
         const { error: refreshError } = await supabase.auth.refreshSession();
         if (refreshError) {
           window.location.href = "/login";
@@ -42,6 +45,14 @@ export default function DashboardCredits() {
       }
     } catch (e: any) {
       console.error("Checkout error:", e);
+      toast({
+        variant: "destructive",
+        title: "Chyba pri platbe",
+        description: e?.status === 429 || e?.message?.includes("429")
+          ? "Príliš veľa pokusov. Skúste to znova o minútu."
+          : "Nepodarilo sa vytvoriť platbu. Skúste to znova.",
+      });
+      busyRef.current = false;
       setLoading(false);
     }
   };
