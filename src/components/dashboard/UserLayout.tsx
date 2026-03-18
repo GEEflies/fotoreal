@@ -200,18 +200,7 @@ export function UserLayout() {
     }
   }, [user, isLoading, navigate]);
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-muted">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto" />
-          <p className="mt-2 text-sm text-muted-foreground">Načítavam...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!user) return null;
+  if (!isLoading && !user) return null;
 
   return (
     <div className="min-h-screen bg-muted">
@@ -222,17 +211,23 @@ export function UserLayout() {
             <Button variant="ghost" size="icon"><Menu className="h-5 w-5" /></Button>
           </SheetTrigger>
           <SheetContent side="left" className="p-0 w-[85vw] max-w-80">
-            <Sidebar currentPath={location.pathname} userEmail={user.email} />
+            <Sidebar currentPath={location.pathname} userEmail={user?.email} />
           </SheetContent>
         </Sheet>
       </header>
 
       <div className="flex">
         <aside className="hidden lg:block w-64 bg-card border-r border-border h-screen fixed top-0 left-0">
-          <Sidebar currentPath={location.pathname} userEmail={user.email} />
+          <Sidebar currentPath={location.pathname} userEmail={user?.email} />
         </aside>
         <main className="flex-1 p-4 lg:p-8 lg:ml-64 min-h-screen pt-20 lg:pt-8">
-          <Outlet />
+          {isLoading ? (
+            <div className="flex items-center justify-center py-16">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
+            </div>
+          ) : (
+            <Outlet />
+          )}
         </main>
       </div>
     </div>
