@@ -2,13 +2,15 @@ import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { useIsPWA } from "@/hooks/use-pwa";
 import Index from "./pages/Index";
 import LandingA from "./pages/LandingA";
 import LandingB from "./pages/LandingB";
 import PaymentSuccess from "./pages/PaymentSuccess";
 import NotFound from "./pages/NotFound";
 import Login from "./pages/Login";
+import Install from "./pages/Install";
 import DashboardProperties from "./pages/dashboard/DashboardProperties";
 import DashboardNewProperty from "./pages/dashboard/DashboardNewProperty";
 import DashboardPropertyDetail from "./pages/dashboard/DashboardPropertyDetail";
@@ -29,9 +31,15 @@ import {
   OutreachReplies,
   OutreachStats,
 } from "./pages/admin/outreach";
-import { Navigate } from "react-router-dom";
 
 const queryClient = new QueryClient();
+
+/** Redirects to /login when running as installed PWA */
+function PWAGuard({ children }: { children: React.ReactNode }) {
+  const isPWA = useIsPWA();
+  if (isPWA) return <Navigate to="/login" replace />;
+  return <>{children}</>;
+}
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
@@ -40,28 +48,36 @@ const App = () => (
       <Sonner />
       <BrowserRouter>
         <Routes>
-          <Route path="/" element={<Index />} />
-          <Route path="/pre-fotografov" element={<LandingA />} />
-          <Route path="/bez-fotografa" element={<LandingB />} />
+          {/* Static / marketing pages — blocked in PWA mode */}
+          <Route path="/" element={<PWAGuard><Index /></PWAGuard>} />
+          <Route path="/pre-fotografov" element={<PWAGuard><LandingA /></PWAGuard>} />
+          <Route path="/bez-fotografa" element={<PWAGuard><LandingB /></PWAGuard>} />
+
+          {/* Always accessible */}
           <Route path="/platba-uspesna" element={<PaymentSuccess />} />
           <Route path="/login" element={<Login />} />
+          <Route path="/install" element={<Install />} />
+
+          {/* Dashboard — always accessible */}
           <Route path="/dashboard" element={<DashboardProperties />} />
           <Route path="/dashboard/new" element={<DashboardNewProperty />} />
           <Route path="/dashboard/properties/:id" element={<DashboardPropertyDetail />} />
           <Route path="/dashboard/credits" element={<DashboardCredits />} />
           <Route path="/dashboard/profile" element={<DashboardProfile />} />
-          <Route path="/admin/login" element={<AdminLogin />} />
-          <Route path="/admin" element={<Navigate to="/admin/submissions" replace />} />
-          <Route path="/admin/submissions" element={<AdminSubmissions />} />
-          <Route path="/admin/submissions/:id" element={<AdminSubmissionDetail />} />
-          <Route path="/admin/clients" element={<AdminClients />} />
-          <Route path="/admin/clients/:userId" element={<AdminClientDetail />} />
-          <Route path="/admin/analytics" element={<AdminAnalytics />} />
-          <Route path="/admin/outreach/leads" element={<OutreachLeads />} />
-          <Route path="/admin/outreach/inboxes" element={<OutreachInboxes />} />
-          <Route path="/admin/outreach/campaigns" element={<OutreachCampaigns />} />
-          <Route path="/admin/outreach/replies" element={<OutreachReplies />} />
-          <Route path="/admin/outreach/stats" element={<OutreachStats />} />
+
+          {/* Admin — blocked in PWA mode */}
+          <Route path="/admin/login" element={<PWAGuard><AdminLogin /></PWAGuard>} />
+          <Route path="/admin" element={<PWAGuard><Navigate to="/admin/submissions" replace /></PWAGuard>} />
+          <Route path="/admin/submissions" element={<PWAGuard><AdminSubmissions /></PWAGuard>} />
+          <Route path="/admin/submissions/:id" element={<PWAGuard><AdminSubmissionDetail /></PWAGuard>} />
+          <Route path="/admin/clients" element={<PWAGuard><AdminClients /></PWAGuard>} />
+          <Route path="/admin/clients/:userId" element={<PWAGuard><AdminClientDetail /></PWAGuard>} />
+          <Route path="/admin/analytics" element={<PWAGuard><AdminAnalytics /></PWAGuard>} />
+          <Route path="/admin/outreach/leads" element={<PWAGuard><OutreachLeads /></PWAGuard>} />
+          <Route path="/admin/outreach/inboxes" element={<PWAGuard><OutreachInboxes /></PWAGuard>} />
+          <Route path="/admin/outreach/campaigns" element={<PWAGuard><OutreachCampaigns /></PWAGuard>} />
+          <Route path="/admin/outreach/replies" element={<PWAGuard><OutreachReplies /></PWAGuard>} />
+          <Route path="/admin/outreach/stats" element={<PWAGuard><OutreachStats /></PWAGuard>} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

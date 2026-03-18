@@ -1,3 +1,5 @@
+import { Smartphone } from "lucide-react";
+import { Link } from "react-router-dom";
 import logoRealfoto from "@/assets/logo-realfoto.svg";
 
 export function Footer() {
@@ -13,6 +15,10 @@ export function Footer() {
             <span>© {new Date().getFullYear()} RealFoto</span>
             <a href="#" className="hover:text-background transition-colors">Ochrana súkromia</a>
             <a href="#" className="hover:text-background transition-colors">Podmienky</a>
+            <Link to="/install" className="hover:text-background transition-colors inline-flex items-center gap-1">
+              <Smartphone className="h-3 w-3" />
+              Appka
+            </Link>
           </div>
         </div>
       </div>

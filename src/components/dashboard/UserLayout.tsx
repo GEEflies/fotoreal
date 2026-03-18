@@ -222,7 +222,7 @@ export function UserLayout({ children }: UserLayoutProps) {
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon"><Menu className="h-5 w-5" /></Button>
           </SheetTrigger>
-          <SheetContent side="left" className="p-0 w-64">
+          <SheetContent side="left" className="p-0 w-[85vw] max-w-80">
             <Sidebar currentPath={location.pathname} userEmail={user.email} />
           </SheetContent>
         </Sheet>
