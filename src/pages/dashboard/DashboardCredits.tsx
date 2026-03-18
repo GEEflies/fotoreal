@@ -58,7 +58,7 @@ export default function DashboardCredits() {
           <Skeleton className="h-24 rounded-lg" />
         ) : credits && (
           <Card className="border-primary/20 bg-gradient-to-r from-primary/5 to-accent/20">
-            <CardContent className="p-6 flex items-center justify-between">
+            <CardContent className="p-4 sm:p-6 flex items-center justify-between">
               <div>
                 <p className="text-sm text-muted-foreground">Váš zostatok</p>
                 <div className="flex items-baseline gap-2">
