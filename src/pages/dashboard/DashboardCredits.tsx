@@ -80,7 +80,7 @@ export default function DashboardCredits() {
         <div>
           <h2 className="text-lg font-heading font-bold text-foreground mb-4">Dokúpiť kredity</h2>
 
-          <div className="rounded-2xl border-2 border-primary/20 bg-card shadow-lg overflow-visible">
+          <div className="rounded-2xl border-2 border-primary/20 bg-card shadow-lg overflow-visible -mx-1 sm:mx-0">
             {/* Dropdown selector */}
             <div className="px-3 sm:px-5 pt-3 sm:pt-5 pb-0">
               <p className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wide">
