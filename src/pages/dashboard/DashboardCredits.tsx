@@ -47,7 +47,7 @@ export default function DashboardCredits() {
 
   return (
     <UserLayout>
-      <div className="max-w-lg mx-auto space-y-8">
+      <div className="max-w-lg mx-auto space-y-5 sm:space-y-8">
         <div>
           <h1 className="text-2xl font-heading font-bold text-foreground">Kredity</h1>
           <p className="text-muted-foreground">1 kredit = 1 AI-spracovaná fotka</p>
