@@ -221,13 +221,7 @@ export function UserLayout() {
           <Sidebar currentPath={location.pathname} userEmail={user?.email} />
         </aside>
         <main className="flex-1 p-4 lg:p-8 lg:ml-64 min-h-screen pt-20 lg:pt-8">
-          {isLoading ? (
-            <div className="flex items-center justify-center py-16">
-              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary" />
-            </div>
-          ) : (
-            <Outlet />
-          )}
+          <Outlet />
         </main>
       </div>
     </div>
