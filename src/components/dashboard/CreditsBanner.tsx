@@ -39,10 +39,10 @@ export function CreditsBanner({ available, isCompact }: CreditsBannerProps) {
           </div>
           <div>
             <p className="font-medium text-sm sm:text-base text-foreground">
-              {isEmpty ? 'Nemáte žiadne kredity' : `${available} ${available === 1 ? 'fotka' : available < 5 ? 'fotky' : 'fotiek'} k dispozícii`}
+              {isEmpty ? 'Minuli ste všetky kredity' : `${available} ${available === 1 ? 'fotka' : available < 5 ? 'fotky' : 'fotiek'} k dispozícii`}
             </p>
             <p className="text-xs text-muted-foreground">
-              {isEmpty ? 'Dokúpte si kredity na spracovanie fotiek' : isLow ? 'Málo kreditov — dokúpte si ďalšie' : '1 kredit = 1 spracovaná fotka'}
+              {isEmpty ? 'Dokúpte si ďalšie a pokračujte' : isLow ? 'Zostáva málo — doplňte si kredity' : '1 kredit = 1 spracovaná fotka'}
             </p>
           </div>
         </div>

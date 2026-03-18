@@ -62,7 +62,7 @@ export default function DashboardCredits() {
     <div className="max-w-lg mx-auto space-y-4 sm:space-y-8">
         <div>
           <h1 className="text-xl sm:text-2xl font-heading font-bold text-foreground">Kredity</h1>
-          <p className="text-sm text-muted-foreground">1 kredit = 1 AI-spracovaná fotka</p>
+          <p className="text-sm text-muted-foreground">1 kredit = 1 profesionálna fotka</p>
         </div>
 
         {/* Current balance */}
@@ -204,7 +204,7 @@ export default function DashboardCredits() {
               </Button>
 
               <p className="text-[9px] sm:text-xs text-muted-foreground text-center">
-                Kredity nevypršia · Bezpečná platba cez Stripe · Faktúra emailom
+                Kredity nevypršia · Bezpečná platba · Faktúra na email
               </p>
             </div>
           </div>

@@ -35,8 +35,8 @@ export function useClaimPurchases() {
 
       if (count > 0) {
         toast({
-          title: 'Kredity pripísané!',
-          description: 'Kredity z vášho nákupu boli pripísané na váš účet.',
+          title: 'Kredity sú na účte!',
+          description: 'Môžete ich hneď použiť.',
         });
       }
 

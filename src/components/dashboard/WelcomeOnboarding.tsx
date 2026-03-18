@@ -77,7 +77,7 @@ const steps = [
     key: 'welcome',
     icon: Camera,
     title: 'Vitajte v RealFoto!',
-    subtitle: 'Váš profesionálny nástroj na úpravu\nfotografií nehnuteľností',
+    subtitle: 'Profesionálne fotky nehnuteľností\nna pár kliknutí',
     badge: null,
   },
   {
@@ -90,21 +90,21 @@ const steps = [
       {
         icon: Upload,
         title: 'Nahrajte fotky',
-        desc: 'Jednoducho nahrajte fotky vašej nehnuteľnosti',
+        desc: 'Stačí nahrať fotky priamo z mobilu alebo počítača',
         color: 'text-blue-500',
         bg: 'bg-blue-500/10',
       },
       {
         icon: Sparkles,
         title: 'AI spracovanie',
-        desc: 'Naša AI vylepší vaše fotky za pár sekúnd',
+        desc: 'AI upraví svetlo, farby, perspektívu aj oblohu',
         color: 'text-amber-500',
         bg: 'bg-amber-500/10',
       },
       {
         icon: Download,
         title: 'Stiahnite výsledky',
-        desc: 'Získajte profesionálne fotky pripravené na použitie',
+        desc: 'Hotové fotky stiahnete jedným kliknutím',
         color: 'text-emerald-500',
         bg: 'bg-emerald-500/10',
       },
@@ -113,8 +113,8 @@ const steps = [
   {
     key: 'start',
     icon: Rocket,
-    title: 'Máte 5 fotiek zadarmo!',
-    subtitle: 'Žiadna kreditná karta nie je potrebná.\nZačnite ešte dnes.',
+    title: '5 fotiek máte na nás!',
+    subtitle: 'Žiadna karta, žiadny záväzok.\nVyskúšajte hneď.',
     badge: 'BONUS',
   },
 ];

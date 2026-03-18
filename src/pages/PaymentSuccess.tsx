@@ -48,21 +48,21 @@ export default function PaymentSuccess() {
         </div>
 
         <h1 className="font-heading text-2xl sm:text-3xl font-extrabold text-foreground mb-3">
-          Platba úspešná!
+          Super, máte to!
         </h1>
 
         {isLoggedIn ? (
           <>
             <p className="text-muted-foreground text-sm sm:text-base mb-8">
-              Ďakujeme za nákup. Vaše kredity boli pripísané na váš účet.
-              Na email vám príde potvrdenie objednávky.
+              Kredity sú na vašom účte a môžete ich hneď použiť.
+              Potvrdenie vám príde na email.
             </p>
             <Button
               size="lg"
               onClick={() => navigate("/dashboard/credits")}
               className="w-full font-bold"
             >
-              Pokračovať do aplikácie
+              Prejsť do aplikácie
               <ArrowRight className="ml-2 h-4 w-4" />
             </Button>
           </>
@@ -70,8 +70,8 @@ export default function PaymentSuccess() {
           <>
             <p className="text-muted-foreground text-sm sm:text-base mb-8">
               {photos
-                ? `Ďakujeme za nákup ${photos} fotiek! Zaregistrujte sa pre pripísanie kreditov na váš účet.`
-                : "Ďakujeme za nákup! Prihláste sa alebo sa zaregistrujte pre pripísanie kreditov na váš účet."}
+                ? `Vaše kredity na ${photos} fotiek sú pripravené! Stačí sa zaregistrovať a hneď ich máte.`
+                : "Vaše kredity sú pripravené! Prihláste sa a hneď ich máte na účte."}
             </p>
             <Button
               size="lg"

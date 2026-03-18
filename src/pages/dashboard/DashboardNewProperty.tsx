@@ -153,7 +153,7 @@ export default function DashboardNewProperty() {
         body: { property_id: property.id },
       });
 
-      toast({ title: 'Úspech!', description: 'Fotky sa spracovávajú automaticky.' });
+      toast({ title: 'Fotky sú v práci!', description: 'AI ich práve spracováva, výsledky uvidíte o chvíľu.' });
       navigate(`/dashboard/properties/${property.id}`);
     } catch (error) {
       console.error('Error:', error);
@@ -167,7 +167,7 @@ export default function DashboardNewProperty() {
     <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6">
         <div>
           <h1 className="text-lg sm:text-2xl font-heading font-bold text-foreground">Nová nehnuteľnosť</h1>
-          <p className="text-sm text-muted-foreground">Nahrajte fotky a AI ich automaticky spracuje</p>
+          <p className="text-sm text-muted-foreground">Nahrajte fotky a o pár sekúnd sú hotové</p>
         </div>
 
         {/* Credits banner */}
@@ -200,7 +200,7 @@ export default function DashboardNewProperty() {
               {photosOverLimit && (
                 <div className="flex items-center gap-2 p-3 rounded-lg bg-destructive/10 border border-destructive/20 text-sm text-destructive">
                   <AlertCircle className="h-4 w-4 shrink-0" />
-                  <span>Nahrali ste viac fotiek ako máte kreditov. <a href="/dashboard/credits" className="underline font-medium">Dokúpiť kredity</a></span>
+                  <span>Máte viac fotiek ako kreditov — <a href="/dashboard/credits" className="underline font-medium">dokúpte si ďalšie</a></span>
                 </div>
               )}
 
