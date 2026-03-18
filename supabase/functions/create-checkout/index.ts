@@ -22,7 +22,7 @@ serve(async (req) => {
   }
 
   try {
-    const { photos, origin } = await req.json();
+    const { photos, origin, cancelPath = "/pre-fotografov#balicky" } = await req.json();
 
     const priceId = PRICE_MAP[photos];
     if (!priceId) {
