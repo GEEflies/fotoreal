@@ -59,7 +59,7 @@ serve(async (req) => {
       "line_items[0][price]": priceId,
       "line_items[0][quantity]": "1",
       "success_url": `${origin}/platba-uspesna?session_id={CHECKOUT_SESSION_ID}&photos=${photos}`,
-      "cancel_url": `${origin}/pre-fotografov#balicky`,
+      "cancel_url": `${origin}${cancelPath}`,
       "metadata[photos]": String(photos),
       "locale": "sk",
       "payment_method_types[0]": "card",

@@ -40,7 +40,7 @@ export default function DashboardCredits() {
       }
 
       const { data, error } = await supabase.functions.invoke("create-checkout", {
-        body: { photos: pkg.photos, origin: window.location.origin },
+        body: { photos: pkg.photos, origin: window.location.origin, cancelPath: '/dashboard/credits' },
       });
       if (error) throw error;
       if (data?.url) {
