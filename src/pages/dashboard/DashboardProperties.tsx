@@ -5,7 +5,6 @@ import { PropertyCard } from '@/components/dashboard/PropertyCard';
 import { WelcomeOnboarding, useWelcomeState } from '@/components/dashboard/WelcomeOnboarding';
 import { Button } from '@/components/ui/button';
 import { Plus, Building2 } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
 
 interface Property {
   id: string;
@@ -77,7 +76,7 @@ export default function DashboardProperties() {
         {isLoading ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {[1, 2, 3].map((i) => (
-              <Skeleton key={i} className="h-64 rounded-lg" />
+              <div key={i} className="h-64 rounded-lg bg-card border border-border animate-pulse" />
             ))}
           </div>
         ) : properties.length === 0 ? (

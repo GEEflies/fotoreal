@@ -209,16 +209,6 @@ export default function DashboardProfile() {
     setLogoUrl(null);
   };
 
-  if (isLoading) {
-    return (
-      <>
-        <div className="flex items-center justify-center py-16">
-          <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
-        </div>
-      </>
-    );
-  }
-
   return (
     <>
       <div className="max-w-2xl mx-auto space-y-6">
@@ -226,6 +216,13 @@ export default function DashboardProfile() {
           <h1 className="text-2xl font-heading font-bold text-foreground">Profil</h1>
           <p className="text-muted-foreground">Fakturačné údaje a nastavenie vodoznaku</p>
         </div>
+
+        {isLoading ? (
+          <div className="flex items-center justify-center py-16">
+            <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
+          </div>
+        ) : (
+        <>
 
         {/* Billing Info */}
         <Card>
@@ -377,6 +374,8 @@ export default function DashboardProfile() {
             </>
           )}
         </div>
+        </>
+        )}
       </div>
     </>
   );

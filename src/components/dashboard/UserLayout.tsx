@@ -8,6 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
+import LogoRealfoto from '@/components/LogoRealfoto';
 
 interface SidebarProperty {
   id: string;
@@ -91,8 +92,13 @@ function Sidebar({ currentPath, userEmail }: { currentPath: string; userEmail?: 
   return (
     <div className="flex flex-col h-full">
       <div className="p-4 border-b border-border">
-        <h1 className="text-lg font-heading font-bold text-foreground">RealFoto</h1>
-        <p className="text-xs text-muted-foreground">Spracovanie fotiek</p>
+        <div className="flex items-center gap-2">
+          <LogoRealfoto className="h-8 w-8" />
+          <div>
+            <h1 className="text-lg font-heading font-bold text-foreground leading-tight">RealFoto</h1>
+            <p className="text-xs text-muted-foreground">Spracovanie fotiek</p>
+          </div>
+        </div>
       </div>
 
       <CreditWidget />
@@ -205,7 +211,10 @@ export function UserLayout() {
   return (
     <div className="min-h-screen bg-muted">
       <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-card border-b border-border p-4 flex items-center justify-between">
-        <h1 className="text-lg font-heading font-bold">RealFoto</h1>
+        <div className="flex items-center gap-2">
+          <LogoRealfoto className="h-7 w-7" />
+          <span className="text-lg font-heading font-bold">RealFoto</span>
+        </div>
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon"><Menu className="h-5 w-5" /></Button>

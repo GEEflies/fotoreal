@@ -6,7 +6,6 @@ import { PhotoCompareModal } from '@/components/dashboard/PhotoCompareModal';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
 import { ArrowLeft, Download, DownloadCloud } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -128,11 +127,15 @@ export default function DashboardPropertyDetail() {
   if (isLoading) {
     return (
       <>
-        <div className="space-y-4">
-          <Skeleton className="h-8 w-64" />
-          <Skeleton className="h-4 w-96" />
+        <div className="space-y-6">
+          <div>
+            <Link to="/dashboard" className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-2">
+              <ArrowLeft className="h-4 w-4" /> Späť na nehnuteľnosti
+            </Link>
+            <div className="h-8 w-48 bg-muted rounded animate-pulse" />
+          </div>
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-            {[1, 2, 3, 4, 5, 6].map(i => <Skeleton key={i} className="aspect-square rounded-lg" />)}
+            {[1, 2, 3, 4, 5, 6].map(i => <div key={i} className="aspect-square rounded-lg bg-card border border-border animate-pulse" />)}
           </div>
         </div>
       </>
