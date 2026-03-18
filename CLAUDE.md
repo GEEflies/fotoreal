@@ -35,3 +35,9 @@ This repo is shared with a partner using **Lovable**, which auto-pushes to `main
 - 5 packages: 20/40/80/160/320 photos
 - Prices: 14/26/48/87/165 EUR
 - Webhook endpoint configured at Supabase edge function
+
+## Logo usage (IMPORTANT)
+
+- **Never** use `<img src={logo}>` for the RealFoto logo — it causes a flash/reload on navigation
+- **Always** use the inline `<LogoRealfoto>` React component from `@/components/LogoRealfoto`
+- This ensures the logo is bundled in JS and renders instantly with zero flicker

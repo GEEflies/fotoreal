@@ -10,7 +10,7 @@ import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Zap, LogIn, UserPlus, KeyRound, Eye, EyeOff, ArrowLeft, Mail } from 'lucide-react';
 import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
-import logoRealfoto from '@/assets/logo-realfoto.svg';
+import LogoRealfoto from '@/components/LogoRealfoto';
 import { getStoredAvatar } from '@/components/AvatarSelector';
 import { translateError } from '@/lib/translate-error';
 
@@ -287,7 +287,7 @@ export default function Login() {
       <header className="w-full border-b border-border bg-background">
         <div className="max-w-7xl mx-auto flex h-16 items-center justify-between px-4">
           <a href={landingPage} onClick={(e) => { e.preventDefault(); navigate(landingPage); }} className="flex items-center gap-2">
-            <img src={logoRealfoto} alt="RealFoto" className="h-10 w-10" />
+            <LogoRealfoto className="h-10 w-10" />
             <span className="text-lg font-bold text-foreground">RealFoto</span>
           </a>
           <Button variant="ghost" size="sm" onClick={() => navigate(landingPage)}>

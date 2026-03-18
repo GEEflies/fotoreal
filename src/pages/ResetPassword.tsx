@@ -7,7 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { Loader2, Eye, EyeOff, ArrowLeft } from 'lucide-react';
-import logoRealfoto from '@/assets/logo-realfoto.svg';
+import LogoRealfoto from '@/components/LogoRealfoto';
 import { translateError } from '@/lib/translate-error';
 
 type PageState = 'loading' | 'form' | 'success' | 'error';
@@ -70,11 +70,11 @@ export default function ResetPassword() {
 
   return (
     <div className="min-h-screen flex flex-col bg-muted">
-      <header className="w-full border-b border-border bg-background/95 backdrop-blur-md">
+      <header className="w-full border-b border-border bg-background">
         <div className="max-w-7xl mx-auto flex h-16 items-center justify-between px-4">
-          <a href="/" onClick={(e) => { e.preventDefault(); navigate('/'); }} className="flex items-center gap-2 group">
-            <img src={logoRealfoto} alt="RealFoto" className="h-10 w-auto" />
-            <span className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">RealFoto</span>
+          <a href="/" onClick={(e) => { e.preventDefault(); navigate('/'); }} className="flex items-center gap-2">
+            <LogoRealfoto className="h-10 w-10" />
+            <span className="text-lg font-bold text-foreground">RealFoto</span>
           </a>
           <Button variant="ghost" size="sm" onClick={() => navigate('/login')}>
             <ArrowLeft className="h-4 w-4 mr-1" />
