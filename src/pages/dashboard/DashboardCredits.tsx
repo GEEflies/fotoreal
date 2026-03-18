@@ -80,9 +80,9 @@ export default function DashboardCredits() {
               </div>
               <p className="text-[11px] text-muted-foreground mt-0.5">
                 {isLoading ? (
-                  <span className="animate-pulse">– voľných + – zakúpených</span>
+                  <span className="animate-pulse">– gratis + – zakúpených</span>
                 ) : credits ? (
-                  <>{credits.free_credits - Math.min(credits.total_used, credits.free_credits)} voľných + {credits.purchased_credits - Math.max(0, credits.total_used - credits.free_credits)} zakúpených</>
+                  <>{credits.free_credits - Math.min(credits.total_used, credits.free_credits)} gratis + {credits.purchased_credits - Math.max(0, credits.total_used - credits.free_credits)} zakúpených</>
                 ) : null}
               </p>
             </div>
