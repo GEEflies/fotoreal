@@ -47,30 +47,30 @@ export default function DashboardCredits() {
 
   return (
     <UserLayout>
-      <div className="max-w-lg mx-auto space-y-5 sm:space-y-8">
+      <div className="max-w-lg mx-auto space-y-4 sm:space-y-8">
         <div>
-          <h1 className="text-2xl font-heading font-bold text-foreground">Kredity</h1>
-          <p className="text-muted-foreground">1 kredit = 1 AI-spracovaná fotka</p>
+          <h1 className="text-xl sm:text-2xl font-heading font-bold text-foreground">Kredity</h1>
+          <p className="text-sm text-muted-foreground">1 kredit = 1 AI-spracovaná fotka</p>
         </div>
 
         {/* Current balance */}
         {isLoading ? (
-          <Skeleton className="h-24 rounded-lg" />
+          <Skeleton className="h-20 rounded-lg" />
         ) : credits && (
           <Card className="border-primary/20 bg-gradient-to-r from-primary/5 to-accent/20">
-            <CardContent className="p-4 sm:p-6 flex items-center justify-between">
+            <CardContent className="p-3 sm:p-6 flex items-center justify-between">
               <div>
-                <p className="text-sm text-muted-foreground">Váš zostatok</p>
-                <div className="flex items-baseline gap-2">
-                  <span className="text-3xl sm:text-4xl font-heading font-bold text-foreground">{credits.available}</span>
-                  <span className="text-muted-foreground">fotiek</span>
+                <p className="text-xs sm:text-sm text-muted-foreground">Váš zostatok</p>
+                <div className="flex items-baseline gap-1.5">
+                  <span className="text-2xl sm:text-4xl font-heading font-bold text-foreground">{credits.available}</span>
+                  <span className="text-sm text-muted-foreground">fotiek</span>
                 </div>
-                <p className="text-xs text-muted-foreground mt-1">
+                <p className="text-[11px] text-muted-foreground mt-0.5">
                   {credits.free_credits - Math.min(credits.total_used, credits.free_credits)} voľných + {credits.purchased_credits - Math.max(0, credits.total_used - credits.free_credits)} zakúpených
                 </p>
               </div>
-              <div className="p-3 sm:p-4 rounded-full bg-primary/10 shrink-0">
-                <Sparkles className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
+              <div className="p-2.5 sm:p-4 rounded-full bg-primary/10 shrink-0">
+                <Sparkles className="h-5 w-5 sm:h-8 sm:w-8 text-primary" />
               </div>
             </CardContent>
           </Card>
@@ -78,45 +78,45 @@ export default function DashboardCredits() {
 
         {/* LP-style pricing widget */}
         <div>
-          <h2 className="text-lg font-heading font-bold text-foreground mb-4">Dokúpiť kredity</h2>
+          <h2 className="text-base sm:text-lg font-heading font-bold text-foreground mb-3 sm:mb-4">Dokúpiť kredity</h2>
 
-          <div className="rounded-2xl border-2 border-primary/20 bg-card shadow-lg overflow-visible -mx-1 sm:mx-0">
+          <div className="rounded-xl sm:rounded-2xl border-2 border-primary/20 bg-card shadow-lg overflow-visible">
             {/* Dropdown selector */}
             <div className="px-3 sm:px-5 pt-3 sm:pt-5 pb-0">
-              <p className="text-xs font-medium text-muted-foreground mb-2 uppercase tracking-wide">
+              <p className="text-[10px] sm:text-xs font-medium text-muted-foreground mb-1.5 sm:mb-2 uppercase tracking-wide">
                 Vybrať balíček
               </p>
               <div className="relative">
                 <button
                   onClick={() => setOpen(!open)}
-                  className="w-full p-3 sm:p-4 rounded-xl border border-border bg-background hover:border-primary/40 transition-colors text-left"
+                  className="w-full p-2.5 sm:p-4 rounded-lg sm:rounded-xl border border-border bg-background hover:border-primary/40 transition-colors text-left"
                 >
                   <div className="flex items-center justify-between gap-2">
-                    <div className="flex items-center gap-2 min-w-0">
-                      <span className="font-heading text-2xl font-extrabold text-foreground shrink-0">
+                    <div className="flex items-center gap-1.5 min-w-0">
+                      <span className="font-heading text-xl sm:text-2xl font-extrabold text-foreground shrink-0">
                         {pkg.photos}
                       </span>
-                      <span className="text-muted-foreground text-sm shrink-0">fotiek</span>
+                      <span className="text-muted-foreground text-xs sm:text-sm shrink-0">fotiek</span>
                       {pkg.discount > 0 && (
-                        <span className="text-xs font-bold text-success bg-success/10 px-1.5 py-0.5 rounded-full shrink-0">
+                        <span className="text-[10px] sm:text-xs font-bold text-success bg-success/10 px-1 sm:px-1.5 py-0.5 rounded-full shrink-0">
                           -{pkg.discount}%
                         </span>
                       )}
                     </div>
                     <div className="flex items-center gap-1 shrink-0">
-                      <span className="font-heading text-xl font-bold text-foreground">
+                      <span className="font-heading text-lg sm:text-xl font-bold text-foreground">
                         {pkg.price} €
                       </span>
                       <ChevronDown
-                        className={`h-5 w-5 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`}
+                        className={`h-4 w-4 sm:h-5 sm:w-5 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`}
                       />
                     </div>
                   </div>
-                  <div className="flex items-center justify-between mt-1">
-                    <span className="text-muted-foreground text-xs">
+                  <div className="flex items-center justify-between mt-0.5">
+                    <span className="text-muted-foreground text-[11px] sm:text-xs">
                       ~{pkg.properties} {propLabel(pkg.properties)}
                     </span>
-                    <span className="text-xs font-semibold text-primary">({pkg.ppp.toFixed(2)} € / ks)</span>
+                    <span className="text-[11px] sm:text-xs font-semibold text-primary">({pkg.ppp.toFixed(2)} € / ks)</span>
                   </div>
                 </button>
 
@@ -129,29 +129,29 @@ export default function DashboardCredits() {
                           setSelected(i);
                           setOpen(false);
                         }}
-                        className={`w-full px-3 sm:px-4 py-3 text-left transition-colors hover:bg-accent/50 ${
+                        className={`w-full px-3 py-2.5 text-left transition-colors hover:bg-accent/50 ${
                           i === selected ? "bg-primary/5" : ""
                         } ${i < PACKAGES.length - 1 ? "border-b border-border/50" : ""}`}
                       >
                         <div className="flex items-center justify-between gap-2">
-                          <div className="flex items-center gap-2 min-w-0">
-                            <span className="font-heading text-lg font-bold text-foreground shrink-0">
+                          <div className="flex items-center gap-1.5 min-w-0">
+                            <span className="font-heading text-base sm:text-lg font-bold text-foreground shrink-0">
                               {p.photos}
                             </span>
-                            <span className="text-muted-foreground text-sm shrink-0">fotiek</span>
+                            <span className="text-muted-foreground text-xs sm:text-sm shrink-0">fotiek</span>
                             {p.discount > 0 && (
-                              <span className="text-xs font-bold text-success bg-success/10 px-1.5 py-0.5 rounded-full shrink-0">
+                              <span className="text-[10px] sm:text-xs font-bold text-success bg-success/10 px-1 sm:px-1.5 py-0.5 rounded-full shrink-0">
                                 -{p.discount}%
                               </span>
                             )}
                           </div>
-                          <span className="font-bold text-foreground shrink-0">{p.price} €</span>
+                          <span className="font-bold text-sm sm:text-base text-foreground shrink-0">{p.price} €</span>
                         </div>
                         <div className="flex items-center justify-between mt-0.5">
-                          <span className="text-muted-foreground text-xs">
+                          <span className="text-muted-foreground text-[11px] sm:text-xs">
                             ~{p.properties} {propLabel(p.properties)}
                           </span>
-                          <span className="text-xs font-semibold text-primary">({p.ppp.toFixed(2)} € / ks)</span>
+                          <span className="text-[11px] sm:text-xs font-semibold text-primary">({p.ppp.toFixed(2)} € / ks)</span>
                         </div>
                       </button>
                     ))}
@@ -161,12 +161,12 @@ export default function DashboardCredits() {
             </div>
 
             {/* Savings + CTA */}
-            <div className="p-3 sm:p-5 space-y-3 sm:space-y-4">
-              <div className="rounded-lg sm:rounded-xl bg-success/5 border border-success/20 px-3 py-3 sm:px-4 sm:py-3 text-center">
-                <span className="text-xs sm:text-sm text-muted-foreground">
+            <div className="p-3 sm:p-5 space-y-2.5 sm:space-y-4">
+              <div className="rounded-lg bg-success/5 border border-success/20 px-2.5 py-2 sm:px-4 sm:py-3 text-center">
+                <span className="text-[11px] sm:text-sm text-muted-foreground">
                   Fotograf ~{pkg.properties} {propLabel(pkg.properties)}:{" "}
                 </span>
-                <span className="text-xs sm:text-sm text-destructive font-semibold line-through">
+                <span className="text-[11px] sm:text-sm text-destructive font-semibold line-through">
                   {photographerLow}–{photographerHigh} €
                 </span>
               </div>
@@ -175,19 +175,19 @@ export default function DashboardCredits() {
                 size="lg"
                 onClick={handleCheckout}
                 disabled={loading}
-                className="w-full font-bold text-sm sm:text-base bg-success hover:bg-success/90 text-success-foreground shadow-[0_4px_20px_-4px_hsl(var(--success)/0.4)] group"
+                className="w-full font-bold text-xs sm:text-base h-10 sm:h-11 bg-success hover:bg-success/90 text-success-foreground shadow-[0_4px_20px_-4px_hsl(var(--success)/0.4)]"
               >
                 {loading ? (
-                  <Loader2 className="mr-2 h-4 w-4 sm:h-5 sm:w-5 animate-spin" />
+                  <Loader2 className="mr-1.5 h-4 w-4 animate-spin" />
                 ) : (
-                  <Sparkles className="mr-2 h-4 w-4 sm:h-5 sm:w-5" />
+                  <Sparkles className="mr-1.5 h-4 w-4" />
                 )}
                 {loading
                   ? "Presmerovanie..."
                   : `Kúpiť fotky pre ${pkg.properties} ${propLabel(pkg.properties)} za ${pkg.price} €`}
               </Button>
 
-              <p className="text-[10px] sm:text-xs text-muted-foreground text-center">
+              <p className="text-[9px] sm:text-xs text-muted-foreground text-center">
                 Kredity nevypršia · Bezpečná platba cez Stripe · Faktúra emailom
               </p>
             </div>
