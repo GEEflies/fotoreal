@@ -45,6 +45,14 @@ export const FEATURE_IMAGES = {
     before: "/landing/cc-before.webp",
     after: "/landing/cc-after.webp",
   },
+  staging: {
+    before: "/landing/staging-before.webp",
+    after: "/landing/staging-after.webp",
+  },
+  quality: {
+    before: "/landing/quality-before.webp",
+    after: "/landing/quality-after.webp",
+  },
 };
 
 // Additional comparison pairs

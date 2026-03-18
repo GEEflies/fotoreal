@@ -23,14 +23,14 @@ const highlights = [
     description: "Na rozdiel od fotografa, RealFoto je k dispozícii kedykoľvek — cez víkendy, sviatky aj o polnoci.",
   },
   {
-    icon: Palette,
-    title: "Konzistentná kvalita",
-    description: "Každá fotka má rovnaký štandard. Žiadne výkyvy kvality medzi rôznymi fotografmi.",
+    icon: Sofa,
+    title: "Automatický staging",
+    description: "Virtuálne zariadenie prázdnych miestností. Nábytok a dekorácie pridané pomocou AI.",
   },
   {
-    icon: Camera,
-    title: "RAW podpora",
-    description: "Nahrajte RAW súbory priamo pre maximálne zachovanie detailov a kvality spracovania.",
+    icon: Sparkles,
+    title: "Zlepšenie kvality",
+    description: "Automatické zvýšenie rozlíšenia, ostrosti a celkovej kvality fotky z mobilu.",
   },
   {
     icon: Layers,

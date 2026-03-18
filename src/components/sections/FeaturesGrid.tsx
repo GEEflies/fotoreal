@@ -70,6 +70,20 @@ const features = [
     before: FEATURE_IMAGES.colorCorrection.before,
     after: FEATURE_IMAGES.colorCorrection.after,
   },
+  {
+    icon: Sofa,
+    title: "Automatický Staging",
+    desc: "Virtuálne zariadenie prázdnych miestností. Nábytok, dekorácie a doplnky pridané pomocou AI.",
+    before: FEATURE_IMAGES.staging.before,
+    after: FEATURE_IMAGES.staging.after,
+  },
+  {
+    icon: Sparkles,
+    title: "Zlepšenie Kvality",
+    desc: "Automatické zvýšenie rozlíšenia, ostrosti a celkovej kvality fotky. Z mobilnej fotky profesionálna.",
+    before: FEATURE_IMAGES.quality.before,
+    after: FEATURE_IMAGES.quality.after,
+  },
 ];
 
 const MOBILE_VISIBLE = 3;
