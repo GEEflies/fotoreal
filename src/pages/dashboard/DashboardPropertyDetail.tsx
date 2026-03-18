@@ -100,6 +100,13 @@ export default function DashboardPropertyDetail() {
     };
   }, [id]);
 
+  // Fallback polling every 5s while processing — bulletproof even if Realtime drops
+  useEffect(() => {
+    if (!id || property?.status !== 'processing') return;
+    const interval = setInterval(loadData, 5000);
+    return () => clearInterval(interval);
+  }, [id, property?.status]);
+
   const loadData = async () => {
     if (!id) return;
     const [{ data: prop }, { data: photoData }] = await Promise.all([
@@ -122,7 +129,19 @@ export default function DashboardPropertyDetail() {
   const donePhotos = photos.filter(p => p.ai_status === 'done' && p.processed_url);
   const doneCount = donePhotos.length;
   const totalCount = photos.length;
-  const progressPercent = totalCount > 0 ? Math.round((doneCount / totalCount) * 100) : 0;
+
+  // Weighted progress: show intermediate states instead of only done/not-done
+  const getPhotoWeight = (status: string): number => {
+    switch (status) {
+      case 'analyzing': return 0.20;
+      case 'enhancing': return 0.50;
+      case 'done': return 1;
+      case 'error': return 1;
+      default: return 0; // pending
+    }
+  };
+  const weightedProgress = photos.reduce((sum, p) => sum + getPhotoWeight(p.ai_status), 0);
+  const progressPercent = totalCount > 0 ? Math.round((weightedProgress / totalCount) * 100) : 0;
 
   if (isLoading) {
     return (

@@ -151,6 +151,8 @@ export default function DashboardNewProperty() {
 
       supabase.functions.invoke('process-photos', {
         body: { property_id: property.id },
+      }).then(({ error }) => {
+        if (error) console.error('Edge function error:', error);
       });
 
       toast({ title: 'Fotky sú v práci!', description: 'AI ich práve spracováva, výsledky uvidíte o chvíľu.' });

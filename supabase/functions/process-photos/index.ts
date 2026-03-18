@@ -1,5 +1,8 @@
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
-import { Image } from "https://deno.land/x/imagescript@1.3.0/mod.ts";
+
+// NOTE: ImageScript is dynamically imported inside applyWatermark() to avoid
+// loading its WASM module at boot time — prevents 546 crashes when watermarking
+// is not needed (most users don't have a logo configured).
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -70,6 +73,26 @@ async function updatePhotoStatus(
   const update: Record<string, unknown> = { ai_status: status, ai_step_label: label };
   if (processedUrl) update.processed_url = processedUrl;
   await supabase.from("property_photos").update(update).eq("id", photoId);
+}
+
+async function finalizePropertyStatus(
+  supabase: ReturnType<typeof createClient>,
+  propertyId: string
+) {
+  const { data: allPhotos } = await supabase
+    .from("property_photos")
+    .select("ai_status")
+    .eq("property_id", propertyId);
+
+  const hasPending = allPhotos?.some(
+    (p: { ai_status: string }) =>
+      p.ai_status !== "done" && p.ai_status !== "error"
+  ) ?? false;
+  const hasErrors = allPhotos?.some(
+    (p: { ai_status: string }) => p.ai_status === "error"
+  ) ?? false;
+  const finalStatus = hasPending ? "processing" : hasErrors ? "error" : "done";
+  await supabase.from("properties").update({ status: finalStatus }).eq("id", propertyId);
 }
 
 async function fetchImageData(url: string): Promise<{ data: string; mimeType: string }> {
@@ -175,6 +198,9 @@ async function applyWatermark(
   logoUrl: string,
   position: string
 ): Promise<Uint8Array> {
+  // Dynamic import — only loads the WASM module when watermarking is actually needed
+  const { Image } = await import("https://deno.land/x/imagescript@1.3.0/mod.ts");
+
   // Decode the base image
   const baseImage = await Image.decode(imageBytes);
 
@@ -333,6 +359,24 @@ function getFriendlyPhotoError(error: unknown): string {
   return `Chyba: ${compactMessage || "Nepodarilo sa spracovať fotku"}`;
 }
 
+/**
+ * Self-invoke this function to process the next pending photo.
+ * Fire-and-forget — errors are logged but don't block the current response.
+ */
+function chainNextPhoto(propertyId: string) {
+  const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
+  const serviceRoleKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+
+  fetch(`${supabaseUrl}/functions/v1/process-photos`, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${serviceRoleKey}`,
+    },
+    body: JSON.stringify({ property_id: propertyId }),
+  }).catch((err) => console.error("Self-chain failed:", err));
+}
+
 Deno.serve(async (req) => {
   if (req.method === "OPTIONS") {
     return new Response(null, { headers: corsHeaders });
@@ -351,6 +395,29 @@ Deno.serve(async (req) => {
     );
 
     await supabase.from("properties").update({ status: "processing" }).eq("id", property_id);
+
+    // Atomically claim the next pending photo (prevents race conditions)
+    const { data: claimed, error: claimError } = await supabase.rpc(
+      "claim_next_pending_photo",
+      { _property_id: property_id }
+    );
+
+    if (claimError) {
+      console.error("Claim RPC error:", claimError);
+      throw claimError;
+    }
+
+    // No pending photos — finalize property status and return
+    if (!claimed || claimed.length === 0) {
+      await finalizePropertyStatus(supabase, property_id);
+      return new Response(
+        JSON.stringify({ success: true, message: "No photos to process" }),
+        { headers: { ...corsHeaders, "Content-Type": "application/json" } }
+      );
+    }
+
+    const photo = claimed[0];
+    console.log(`Processing photo ${photo.id} for property ${property_id}`);
 
     // Get user's profile for watermark settings
     const { data: propOwner } = await supabase
@@ -375,91 +442,77 @@ Deno.serve(async (req) => {
       }
     }
 
-    const { data: photos, error: photosError } = await supabase
+    // Process this single photo
+    try {
+      // Phase 1: Analyze (status already set to 'analyzing' by claim RPC)
+      const analysis = await analyzePhoto(photo.original_url, GEMINI_API_KEY);
+      console.log(`Photo ${photo.id} analysis:`, JSON.stringify(analysis));
+
+      // Phase 2: Enhance
+      const prompt = buildEnhancementPrompt(analysis);
+      await updatePhotoStatus(supabase, photo.id, "enhancing", "Upravujem fotku...");
+      const editedImageUrl = await enhancePhoto(photo.original_url, prompt, GEMINI_API_KEY);
+
+      if (editedImageUrl) {
+        let base64Data = editedImageUrl.replace(/^data:image\/\w+;base64,/, "");
+        let imageBytes = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0));
+
+        // Phase 3: Watermark (non-AI, optional)
+        if (logoUrl) {
+          try {
+            await updatePhotoStatus(supabase, photo.id, "enhancing", "Pridávam vodoznak...");
+            imageBytes = await applyWatermark(imageBytes, logoUrl, watermarkPosition);
+          } catch (wmError) {
+            console.error(`Watermark error for photo ${photo.id}:`, wmError);
+            // Continue without watermark - don't fail the whole photo
+          }
+        }
+
+        const filePath = `processed/${property_id}/${photo.id}.png`;
+
+        const { error: uploadError } = await supabase.storage
+          .from("property-photos")
+          .upload(filePath, imageBytes, { contentType: "image/png", upsert: true });
+
+        if (!uploadError) {
+          const { data: urlData } = supabase.storage
+            .from("property-photos")
+            .getPublicUrl(filePath);
+          await updatePhotoStatus(supabase, photo.id, "done", "Hotovo", urlData.publicUrl);
+        } else {
+          console.error(`Upload error for photo ${photo.id}:`, uploadError);
+          await updatePhotoStatus(supabase, photo.id, "done", "Hotovo", editedImageUrl);
+        }
+
+        // Deduct credit after success
+        if (propOwner?.user_id) {
+          await supabase.rpc("increment_total_used", { _user_id: propOwner.user_id });
+        }
+      } else {
+        await updatePhotoStatus(supabase, photo.id, "error", "Chyba: AI nedokázalo vygenerovať upravenú fotku");
+      }
+    } catch (photoError: unknown) {
+      console.error(`Error processing photo ${photo.id}:`, photoError);
+      await updatePhotoStatus(supabase, photo.id, "error", getFriendlyPhotoError(photoError));
+    }
+
+    // Check if there are more pending photos and self-chain
+    const { count } = await supabase
       .from("property_photos")
-      .select("*")
+      .select("id", { count: "exact", head: true })
       .eq("property_id", property_id)
       .eq("ai_status", "pending");
 
-    if (photosError) throw photosError;
-    if (!photos || photos.length === 0) {
-      await supabase.from("properties").update({ status: "done" }).eq("id", property_id);
-      return new Response(JSON.stringify({ success: true, message: "No photos to process" }), {
-        headers: { ...corsHeaders, "Content-Type": "application/json" },
-      });
+    if (count && count > 0) {
+      console.log(`${count} more pending photos — chaining next invocation`);
+      chainNextPhoto(property_id);
+    } else {
+      // All photos processed — finalize property status
+      await finalizePropertyStatus(supabase, property_id);
     }
-
-    for (const photo of photos) {
-      try {
-        // Phase 1: Analyze
-        await updatePhotoStatus(supabase, photo.id, "analyzing", "Analyzujem fotku...");
-        const analysis = await analyzePhoto(photo.original_url, GEMINI_API_KEY);
-        console.log(`Photo ${photo.id} analysis:`, JSON.stringify(analysis));
-
-        // Phase 2: Enhance
-        const prompt = buildEnhancementPrompt(analysis);
-        await updatePhotoStatus(supabase, photo.id, "enhancing", "Upravujem fotku...");
-        const editedImageUrl = await enhancePhoto(photo.original_url, prompt, GEMINI_API_KEY);
-
-        if (editedImageUrl) {
-          let base64Data = editedImageUrl.replace(/^data:image\/\w+;base64,/, "");
-          let imageBytes = Uint8Array.from(atob(base64Data), (c) => c.charCodeAt(0));
-
-          // Phase 3: Watermark (non-AI)
-          if (logoUrl) {
-            try {
-              await updatePhotoStatus(supabase, photo.id, "enhancing", "Pridávam vodoznak...");
-              imageBytes = await applyWatermark(imageBytes, logoUrl, watermarkPosition);
-            } catch (wmError) {
-              console.error(`Watermark error for photo ${photo.id}:`, wmError);
-              // Continue without watermark - don't fail the whole photo
-            }
-          }
-
-          const filePath = `processed/${property_id}/${photo.id}.png`;
-
-          const { error: uploadError } = await supabase.storage
-            .from("property-photos")
-            .upload(filePath, imageBytes, { contentType: "image/png", upsert: true });
-
-          if (!uploadError) {
-            const { data: urlData } = supabase.storage
-              .from("property-photos")
-              .getPublicUrl(filePath);
-            await updatePhotoStatus(supabase, photo.id, "done", "Hotovo", urlData.publicUrl);
-          } else {
-            console.error(`Upload error for photo ${photo.id}:`, uploadError);
-            await updatePhotoStatus(supabase, photo.id, "done", "Hotovo", editedImageUrl);
-          }
-
-          // Deduct credit after success
-          if (propOwner?.user_id) {
-            await supabase.rpc("increment_total_used", { _user_id: propOwner.user_id });
-          }
-        } else {
-          await updatePhotoStatus(supabase, photo.id, "error", "Chyba: AI nedokázalo vygenerovať upravenú fotku");
-        }
-      } catch (photoError: unknown) {
-        console.error(`Error processing photo ${photo.id}:`, photoError);
-        const message = photoError instanceof Error ? photoError.message : String(photoError);
-        const isRateLimit = message.includes("[429]") || message.includes("[402]");
-        await updatePhotoStatus(supabase, photo.id, "error", getFriendlyPhotoError(photoError));
-        if (isRateLimit) break;
-      }
-    }
-
-    const { data: finalPhotos } = await supabase
-      .from("property_photos")
-      .select("ai_status")
-      .eq("property_id", property_id);
-
-    const hasPending = finalPhotos?.some((photo) => photo.ai_status !== "done" && photo.ai_status !== "error") ?? false;
-    const hasErrors = finalPhotos?.some((photo) => photo.ai_status === "error") ?? false;
-    const finalStatus = hasPending ? "processing" : hasErrors ? "error" : "done";
-    await supabase.from("properties").update({ status: finalStatus }).eq("id", property_id);
 
     return new Response(
-      JSON.stringify({ success: true, message: `Processed ${photos.length} photos` }),
+      JSON.stringify({ success: true, message: `Processed photo ${photo.id}` }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (error: unknown) {
