@@ -3,7 +3,7 @@ import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useUserAuth } from '@/hooks/use-user-auth';
 import { useCredits } from '@/hooks/use-credits';
 import { supabase } from '@/integrations/supabase/client';
-import { Building2, Plus, LogOut, Home, Menu, Sparkles, ShoppingCart, ChevronDown, User } from 'lucide-react';
+import { Building2, Plus, LogOut, Home, Menu, Sparkles, ShoppingCart, ChevronDown, User, Smartphone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Progress } from '@/components/ui/progress';
@@ -159,7 +159,14 @@ function Sidebar({ currentPath, userEmail }: { currentPath: string; userEmail?: 
         )}
       </nav>
 
-      <div className="p-3 border-t border-border">
+      <div className="p-3 border-t border-border space-y-2">
+        <Link
+          to="/install"
+          className="flex items-center gap-2.5 px-3 py-2 rounded-lg text-sm font-medium text-muted-foreground hover:bg-muted hover:text-foreground transition-colors"
+        >
+          <Smartphone className="h-4 w-4" />
+          Stiahnuť appku
+        </Link>
         <div className="flex items-center gap-2 rounded-xl bg-muted/60">
           <Link
             to="/dashboard/profile"
@@ -215,7 +222,7 @@ export function UserLayout({ children }: UserLayoutProps) {
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon"><Menu className="h-5 w-5" /></Button>
           </SheetTrigger>
-          <SheetContent side="left" className="p-0 w-64">
+          <SheetContent side="left" className="p-0 w-[85vw] max-w-80">
             <Sidebar currentPath={location.pathname} userEmail={user.email} />
           </SheetContent>
         </Sheet>
