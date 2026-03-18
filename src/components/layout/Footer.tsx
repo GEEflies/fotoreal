@@ -7,7 +7,6 @@ export function Footer() {
 
   return (
     <footer className="bg-foreground text-background">
-      {/* Main footer */}
       <div className="section-container py-12 sm:py-16">
         <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-4 gap-8 lg:gap-12">
           {/* Brand column */}
@@ -51,28 +50,29 @@ export function Footer() {
             </div>
           </div>
 
-          {/* Navigation */}
+          {/* Produkt */}
           <div>
-            <h3 className="text-sm font-bold text-background mb-4">Navigácia</h3>
+            <h3 className="text-sm font-bold text-background mb-4">Produkt</h3>
             <ul className="space-y-2.5">
-              <li><Link to="/ako-to-funguje" className="text-sm text-background/60 hover:text-background transition-colors">Ako to funguje</Link></li>
+              <li><Link to="/funkcie" className="text-sm text-background/60 hover:text-background transition-colors">Funkcie</Link></li>
               <li><Link to="/cennik" className="text-sm text-background/60 hover:text-background transition-colors">Cenník</Link></li>
-              <li><Link to="/kontakt" className="text-sm text-background/60 hover:text-background transition-colors">Kontakt</Link></li>
-              <li><Link to="/login" className="text-sm text-background/60 hover:text-background transition-colors">Prihlásiť sa</Link></li>
+              <li><Link to="/referencie" className="text-sm text-background/60 hover:text-background transition-colors">Referencie</Link></li>
+              <li><Link to="/blog" className="text-sm text-background/60 hover:text-background transition-colors">Blog</Link></li>
             </ul>
           </div>
 
-          {/* Legal */}
+          {/* Firma */}
           <div>
-            <h3 className="text-sm font-bold text-background mb-4">Právne info</h3>
+            <h3 className="text-sm font-bold text-background mb-4">Firma</h3>
             <ul className="space-y-2.5">
+              <li><Link to="/o-nas" className="text-sm text-background/60 hover:text-background transition-colors">O nás</Link></li>
+              <li><Link to="/kontakt" className="text-sm text-background/60 hover:text-background transition-colors">Kontakt</Link></li>
               <li><a href="#" className="text-sm text-background/60 hover:text-background transition-colors">Ochrana súkromia</a></li>
               <li><a href="#" className="text-sm text-background/60 hover:text-background transition-colors">Obchodné podmienky</a></li>
-              <li><a href="#" className="text-sm text-background/60 hover:text-background transition-colors">Cookies</a></li>
             </ul>
           </div>
 
-          {/* Contact */}
+          {/* Kontakt */}
           <div>
             <h3 className="text-sm font-bold text-background mb-4">Kontakt</h3>
             <ul className="space-y-3">

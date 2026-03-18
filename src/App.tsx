@@ -14,6 +14,10 @@ import Install from "./pages/Install";
 import Contact from "./pages/Contact";
 import HowItWorks from "./pages/HowItWorks";
 import Pricing from "./pages/Pricing";
+import Features from "./pages/Features";
+import References from "./pages/References";
+import AboutUs from "./pages/AboutUs";
+import Blog from "./pages/Blog";
 import DashboardProperties from "./pages/dashboard/DashboardProperties";
 import DashboardNewProperty from "./pages/dashboard/DashboardNewProperty";
 import DashboardPropertyDetail from "./pages/dashboard/DashboardPropertyDetail";
@@ -58,6 +62,10 @@ const App = () => (
           <Route path="/ako-to-funguje" element={<PWAGuard><HowItWorks /></PWAGuard>} />
           <Route path="/cennik" element={<PWAGuard><Pricing /></PWAGuard>} />
           <Route path="/kontakt" element={<PWAGuard><Contact /></PWAGuard>} />
+          <Route path="/funkcie" element={<PWAGuard><Features /></PWAGuard>} />
+          <Route path="/referencie" element={<PWAGuard><References /></PWAGuard>} />
+          <Route path="/o-nas" element={<PWAGuard><AboutUs /></PWAGuard>} />
+          <Route path="/blog" element={<PWAGuard><Blog /></PWAGuard>} />
 
           {/* Always accessible */}
           <Route path="/platba-uspesna" element={<PaymentSuccess />} />
