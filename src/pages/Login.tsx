@@ -428,6 +428,22 @@ export default function Login() {
                     Prihláste sa
                   </button>
                 </p>
+
+                {divider('demo')}
+
+                <Button
+                  onClick={handleDemoLogin}
+                  disabled={isDemoLoading}
+                  variant="ghost"
+                  className="w-full text-muted-foreground"
+                >
+                  {isDemoLoading ? (
+                    <Loader2 className="h-4 w-4 animate-spin mr-2" />
+                  ) : (
+                    <Zap className="h-4 w-4 mr-2" />
+                  )}
+                  Demo prihlásenie (vývojári)
+                </Button>
               </>
             )}
 
