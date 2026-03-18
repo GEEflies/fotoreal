@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useUserAuth } from '@/hooks/use-user-auth';
 import { supabase } from '@/integrations/supabase/client';
@@ -40,6 +40,25 @@ export default function Login() {
 
   const landingPage = getStoredAvatar() === 'photographer' ? '/pre-fotografov' : getStoredAvatar() === 'no-photographer' ? '/bez-fotografa' : '/';
 
+  // If the user already has a session (e.g. returning from Google OAuth), redirect immediately
+  useEffect(() => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      (_event, session) => {
+        if (session) {
+          sessionStorage.setItem('realfoto_just_logged_in', '1');
+          navigate(redirectTo, { replace: true });
+        }
+      }
+    );
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      if (session) {
+        sessionStorage.setItem('realfoto_just_logged_in', '1');
+        navigate(redirectTo, { replace: true });
+      }
+    });
+    return () => subscription.unsubscribe();
+  }, [navigate, redirectTo]);
+
   const switchStep = (newStep: AuthStep) => {
     setStep(newStep);
     setFormError(null);
@@ -48,14 +67,15 @@ export default function Login() {
     setOtpCode('');
   };
 
+  // After Google OAuth, redirect back to /login with the original redirect param
+  // so the session-detection effect below can forward to /dashboard (or wherever).
   const handleGoogleLogin = async () => {
     setIsGoogleLoading(true);
-    sessionStorage.setItem('auth_redirect', redirectTo);
-    sessionStorage.setItem('realfoto_just_logged_in', '1');
+    const callbackUrl = `${window.location.origin}/login?redirect=${encodeURIComponent(redirectTo)}`;
     const { error } = await supabase.auth.signInWithOAuth({
       provider: 'google',
       options: {
-        redirectTo: window.location.origin,
+        redirectTo: callbackUrl,
       },
     });
     setIsGoogleLoading(false);
