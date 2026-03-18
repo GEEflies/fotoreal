@@ -213,7 +213,7 @@ export default function Login() {
       case 'signup':
         return isPaidUser
           ? `Pre prístup k vašim ${purchasedPhotos} fotkám sa zaregistrujte`
-          : 'Vytvorte si účet';
+          : 'Vyskúšajte 5 fotiek zadarmo';
       case 'reset-password':
         return 'Zabudnuté heslo';
       case 'check-email':
@@ -221,7 +221,7 @@ export default function Login() {
       default:
         return isPaidUser
           ? `Pre prístup k vašim ${purchasedPhotos} fotkám sa prihláste`
-          : 'Vyskúšajte 5 fotiek zadarmo';
+          : 'Prihlásiť sa';
     }
   };
 
