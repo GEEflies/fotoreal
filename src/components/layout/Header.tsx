@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Menu, ArrowRight, LogIn, Smartphone } from "lucide-react";
+import { Menu, ArrowRight, LogIn } from "lucide-react";
 import { useNavigate, Link } from "react-router-dom";
 import logoRealfoto from "@/assets/logo-realfoto.svg";
 import { Button } from "@/components/ui/button";
@@ -63,15 +63,6 @@ export function Header() {
           <div className="hidden lg:flex items-center gap-3">
             <Button
               variant="ghost"
-              onClick={() => navigate('/install')}
-              className="font-medium text-sm"
-              size="sm"
-            >
-              <Smartphone className="h-4 w-4 mr-1.5" />
-              Stiahnuť appku
-            </Button>
-            <Button
-              variant="ghost"
               onClick={() => navigate('/login')}
               className="font-medium"
             >
@@ -122,14 +113,6 @@ export function Header() {
                 >
                   <LogIn className="h-4 w-4 mr-2" />
                   Prihlásiť sa
-                </Button>
-                <Button
-                  variant="outline"
-                  onClick={() => { setIsOpen(false); navigate('/install'); }}
-                  className="w-full font-medium"
-                >
-                  <Smartphone className="h-4 w-4 mr-2" />
-                  Stiahnuť appku
                 </Button>
               </nav>
             </SheetContent>
