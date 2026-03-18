@@ -284,11 +284,11 @@ export default function Login() {
 
   return (
     <div className="min-h-screen flex flex-col bg-muted">
-      <header className="w-full border-b border-border bg-background/95 backdrop-blur-md">
+      <header className="w-full border-b border-border bg-background">
         <div className="max-w-7xl mx-auto flex h-16 items-center justify-between px-4">
-          <a href={landingPage} onClick={(e) => { e.preventDefault(); navigate(landingPage); }} className="flex items-center gap-2 group">
-            <img src={logoRealfoto} alt="RealFoto" className="h-10 w-auto" />
-            <span className="text-lg font-bold text-foreground group-hover:text-primary transition-colors">RealFoto</span>
+          <a href={landingPage} onClick={(e) => { e.preventDefault(); navigate(landingPage); }} className="flex items-center gap-2">
+            <img src={logoRealfoto} alt="RealFoto" className="h-10 w-10" />
+            <span className="text-lg font-bold text-foreground">RealFoto</span>
           </a>
           <Button variant="ghost" size="sm" onClick={() => navigate(landingPage)}>
             <ArrowLeft className="h-4 w-4 mr-1" />
