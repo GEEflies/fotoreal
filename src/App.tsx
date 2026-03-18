@@ -62,6 +62,10 @@ const App = () => (
           <Route path="/ako-to-funguje" element={<PWAGuard><HowItWorks /></PWAGuard>} />
           <Route path="/cennik" element={<PWAGuard><Pricing /></PWAGuard>} />
           <Route path="/kontakt" element={<PWAGuard><Contact /></PWAGuard>} />
+          <Route path="/funkcie" element={<PWAGuard><Features /></PWAGuard>} />
+          <Route path="/referencie" element={<PWAGuard><References /></PWAGuard>} />
+          <Route path="/o-nas" element={<PWAGuard><AboutUs /></PWAGuard>} />
+          <Route path="/blog" element={<PWAGuard><Blog /></PWAGuard>} />
 
           {/* Always accessible */}
           <Route path="/platba-uspesna" element={<PaymentSuccess />} />
