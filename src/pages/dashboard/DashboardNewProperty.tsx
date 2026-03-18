@@ -166,10 +166,10 @@ export default function DashboardNewProperty() {
 
   return (
     <UserLayout>
-      <div className="max-w-2xl mx-auto space-y-6">
+       <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6">
         <div>
-          <h1 className="text-2xl font-heading font-bold text-foreground">Nová nehnuteľnosť</h1>
-          <p className="text-muted-foreground">Nahrajte fotky a AI ich automaticky spracuje</p>
+          <h1 className="text-lg sm:text-2xl font-heading font-bold text-foreground">Nová nehnuteľnosť</h1>
+          <p className="text-sm text-muted-foreground">Nahrajte fotky a AI ich automaticky spracuje</p>
         </div>
 
         {/* Credits banner */}
@@ -178,10 +178,7 @@ export default function DashboardNewProperty() {
         )}
 
         <Card>
-          <CardHeader>
-            <CardTitle>Detaily</CardTitle>
-          </CardHeader>
-          <CardContent className="space-y-6">
+          <CardContent className="pt-5 space-y-5">
             <div className="space-y-2">
               <Label htmlFor="name">Názov nehnuteľnosti</Label>
               <Input
