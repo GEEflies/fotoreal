@@ -9,6 +9,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/com
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { useToast } from '@/hooks/use-toast';
 import { Loader2, Zap, LogIn, UserPlus, KeyRound, Eye, EyeOff, ArrowLeft, Mail } from 'lucide-react';
+import { InputOTP, InputOTPGroup, InputOTPSlot } from '@/components/ui/input-otp';
 import logoRealfoto from '@/assets/logo-realfoto.svg';
 import { getStoredAvatar } from '@/components/AvatarSelector';
 import { translateError } from '@/lib/translate-error';
@@ -20,6 +21,7 @@ export default function Login() {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
+  const [otpCode, setOtpCode] = useState('');
   const [step, setStep] = useState<AuthStep>('signup');
   const [checkEmailReason, setCheckEmailReason] = useState<'signup' | 'reset'>('signup');
   const [formError, setFormError] = useState<string | null>(null);
@@ -43,6 +45,7 @@ export default function Login() {
     setFormError(null);
     setPassword('');
     setConfirmPassword('');
+    setOtpCode('');
   };
 
   const handleGoogleLogin = async () => {
@@ -135,6 +138,35 @@ export default function Login() {
       } else {
         setCheckEmailReason('reset');
         setStep('check-email');
+      }
+    } catch {
+      setFormError('Nastala neočakávaná chyba. Skúste to znova.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleOtpVerify = async () => {
+    if (otpCode.length < 6) return;
+    setFormError(null);
+    setIsLoading(true);
+    try {
+      const { error } = await supabase.auth.verifyOtp({
+        email: email.trim(),
+        token: otpCode,
+        type: 'signup',
+      });
+      if (error) {
+        setFormError(translateError(error.message));
+      } else {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          await supabase.from('user_roles').upsert(
+            { user_id: user.id, role: 'user' as const },
+            { onConflict: 'user_id,role' }
+          );
+        }
+        navigate(redirectTo);
       }
     } catch {
       setFormError('Nastala neočakávaná chyba. Skúste to znova.');
