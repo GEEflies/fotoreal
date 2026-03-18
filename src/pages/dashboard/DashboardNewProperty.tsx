@@ -155,7 +155,7 @@ export default function DashboardNewProperty() {
         if (error) console.error('Edge function error:', error);
       });
 
-      toast({ title: 'Fotky sú v práci!', description: 'AI ich práve spracováva, výsledky uvidíte o chvíľu.' });
+      toast({ title: 'Spracovávame vaše fotky', description: 'Výsledky budú hotové o pár minút.' });
       navigate(`/dashboard/properties/${property.id}`);
     } catch (error) {
       console.error('Error:', error);
