@@ -69,8 +69,8 @@ export default function DashboardCredits() {
                   {credits.free_credits - Math.min(credits.total_used, credits.free_credits)} voľných + {credits.purchased_credits - Math.max(0, credits.total_used - credits.free_credits)} zakúpených
                 </p>
               </div>
-              <div className="p-4 rounded-full bg-primary/10">
-                <Sparkles className="h-8 w-8 text-primary" />
+              <div className="p-3 sm:p-4 rounded-full bg-primary/10 shrink-0">
+                <Sparkles className="h-6 w-6 sm:h-8 sm:w-8 text-primary" />
               </div>
             </CardContent>
           </Card>
