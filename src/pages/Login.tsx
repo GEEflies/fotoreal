@@ -87,6 +87,7 @@ export default function Login() {
             { onConflict: 'user_id,role' }
           );
         }
+        sessionStorage.setItem('realfoto_just_logged_in', '1');
         navigate(redirectTo);
       }
     } catch {
@@ -166,6 +167,7 @@ export default function Login() {
             { onConflict: 'user_id,role' }
           );
         }
+        sessionStorage.setItem('realfoto_just_logged_in', '1');
         navigate(redirectTo);
       }
     } catch {
@@ -182,6 +184,7 @@ export default function Login() {
     if (error) {
       toast({ title: 'Chyba', description: translateError(error.message), variant: 'destructive' });
     } else {
+      sessionStorage.setItem('realfoto_just_logged_in', '1');
       navigate(redirectTo);
     }
   };
