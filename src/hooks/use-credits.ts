@@ -22,14 +22,24 @@ export function useCredits() {
       .eq('user_id', user.id)
       .maybeSingle();
 
-    // Auto-create credits row for new users
+    // Auto-create credits row for new users (fallback if DB trigger hasn't fired yet)
     if (!data && !error) {
       const { data: newData } = await supabase
         .from('user_credits')
-        .insert({ user_id: user.id })
+        .upsert({ user_id: user.id }, { onConflict: 'user_id' })
         .select('*')
         .single();
       data = newData;
+
+      // Last-resort re-query if upsert returned nothing
+      if (!data) {
+        const { data: retried } = await supabase
+          .from('user_credits')
+          .select('*')
+          .eq('user_id', user.id)
+          .maybeSingle();
+        data = retried;
+      }
     }
 
     if (data) {
@@ -53,7 +63,7 @@ export function useCredits() {
       channel = supabase
         .channel('credits-realtime')
         .on('postgres_changes',
-          { event: 'UPDATE', schema: 'public', table: 'user_credits', filter: `user_id=eq.${user.id}` },
+          { event: '*', schema: 'public', table: 'user_credits', filter: `user_id=eq.${user.id}` },
           () => { loadCredits(); }
         )
         .subscribe();
