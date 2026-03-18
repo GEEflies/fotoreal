@@ -1,5 +1,4 @@
 import { useState, useRef } from 'react';
-import { UserLayout } from '@/components/dashboard/UserLayout';
 import { useCredits } from '@/hooks/use-credits';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -58,8 +57,7 @@ export default function DashboardCredits() {
   };
 
   return (
-    <UserLayout>
-      <div className="max-w-lg mx-auto space-y-4 sm:space-y-8">
+    <div className="max-w-lg mx-auto space-y-4 sm:space-y-8">
         <div>
           <h1 className="text-xl sm:text-2xl font-heading font-bold text-foreground">Kredity</h1>
           <p className="text-sm text-muted-foreground">1 kredit = 1 AI-spracovaná fotka</p>
@@ -206,6 +204,5 @@ export default function DashboardCredits() {
           </div>
         </div>
       </div>
-    </UserLayout>
   );
 }

@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { UserLayout } from '@/components/dashboard/UserLayout';
 import { PropertyCard } from '@/components/dashboard/PropertyCard';
 import { WelcomeOnboarding, useWelcomeState } from '@/components/dashboard/WelcomeOnboarding';
 import { Button } from '@/components/ui/button';
@@ -58,7 +57,7 @@ export default function DashboardProperties() {
   };
 
   return (
-    <UserLayout>
+    <>
       {showOnboarding && <WelcomeOnboarding onComplete={completeOnboarding} />}
       <div className="space-y-6">
 
@@ -107,6 +106,6 @@ export default function DashboardProperties() {
           </div>
         )}
       </div>
-    </UserLayout>
+    </>
   );
 }

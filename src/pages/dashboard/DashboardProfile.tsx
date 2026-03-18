@@ -1,6 +1,5 @@
 import { useEffect, useState, useCallback, useRef } from 'react';
 import { supabase } from '@/integrations/supabase/client';
-import { UserLayout } from '@/components/dashboard/UserLayout';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -212,16 +211,16 @@ export default function DashboardProfile() {
 
   if (isLoading) {
     return (
-      <UserLayout>
+      <>
         <div className="flex items-center justify-center py-16">
           <Loader2 className="h-6 w-6 animate-spin text-muted-foreground" />
         </div>
-      </UserLayout>
+      </>
     );
   }
 
   return (
-    <UserLayout>
+    <>
       <div className="max-w-2xl mx-auto space-y-6">
         <div>
           <h1 className="text-2xl font-heading font-bold text-foreground">Profil</h1>
@@ -379,6 +378,6 @@ export default function DashboardProfile() {
           )}
         </div>
       </div>
-    </UserLayout>
+    </>
   );
 }

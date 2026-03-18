@@ -2,7 +2,6 @@ import { useState, useCallback, useEffect, useRef } from 'react';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { UserLayout } from '@/components/dashboard/UserLayout';
 import { CreditsBanner } from '@/components/dashboard/CreditsBanner';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -165,8 +164,7 @@ export default function DashboardNewProperty() {
   };
 
   return (
-    <UserLayout>
-       <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6">
+    <div className="max-w-2xl mx-auto space-y-4 sm:space-y-6">
         <div>
           <h1 className="text-lg sm:text-2xl font-heading font-bold text-foreground">Nová nehnuteľnosť</h1>
           <p className="text-sm text-muted-foreground">Nahrajte fotky a AI ich automaticky spracuje</p>
@@ -288,6 +286,5 @@ export default function DashboardNewProperty() {
           </CardContent>
         </Card>
       </div>
-    </UserLayout>
   );
 }

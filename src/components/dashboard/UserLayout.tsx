@@ -1,5 +1,5 @@
-import { ReactNode, useEffect, useState } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, useLocation, Link, Outlet } from 'react-router-dom';
 import { useUserAuth } from '@/hooks/use-user-auth';
 import { useCredits } from '@/hooks/use-credits';
 import { supabase } from '@/integrations/supabase/client';
@@ -8,10 +8,6 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
-
-interface UserLayoutProps {
-  children: ReactNode;
-}
 
 interface SidebarProperty {
   id: string;
@@ -190,7 +186,7 @@ function Sidebar({ currentPath, userEmail }: { currentPath: string; userEmail?: 
   );
 }
 
-export function UserLayout({ children }: UserLayoutProps) {
+export function UserLayout() {
   const { user, isLoading } = useUserAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -233,7 +229,7 @@ export function UserLayout({ children }: UserLayoutProps) {
           <Sidebar currentPath={location.pathname} userEmail={user.email} />
         </aside>
         <main className="flex-1 p-4 lg:p-8 lg:ml-64 min-h-screen pt-20 lg:pt-8">
-          {children}
+          <Outlet />
         </main>
       </div>
     </div>

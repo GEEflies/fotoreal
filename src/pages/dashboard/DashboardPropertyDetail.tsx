@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { UserLayout } from '@/components/dashboard/UserLayout';
 import { AIProgressLoader } from '@/components/dashboard/AIProgressLoader';
 import { PhotoCompareModal } from '@/components/dashboard/PhotoCompareModal';
 import { Badge } from '@/components/ui/badge';
@@ -128,7 +127,7 @@ export default function DashboardPropertyDetail() {
 
   if (isLoading) {
     return (
-      <UserLayout>
+      <>
         <div className="space-y-4">
           <Skeleton className="h-8 w-64" />
           <Skeleton className="h-4 w-96" />
@@ -136,25 +135,25 @@ export default function DashboardPropertyDetail() {
             {[1, 2, 3, 4, 5, 6].map(i => <Skeleton key={i} className="aspect-square rounded-lg" />)}
           </div>
         </div>
-      </UserLayout>
+      </>
     );
   }
 
   if (!property) {
     return (
-      <UserLayout>
+      <>
         <div className="text-center py-16">
           <p className="text-muted-foreground">Nehnuteľnosť sa nenašla.</p>
           <Link to="/dashboard"><Button variant="outline" className="mt-4">Späť</Button></Link>
         </div>
-      </UserLayout>
+      </>
     );
   }
 
   const statusInfo = statusLabels[property.status] || statusLabels.uploading;
 
   return (
-    <UserLayout>
+    <>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-start justify-between flex-wrap gap-4">
@@ -259,6 +258,6 @@ export default function DashboardPropertyDetail() {
         open={compareIndex !== null}
         onOpenChange={(open) => { if (!open) setCompareIndex(null); }}
       />
-    </UserLayout>
+    </>
   );
 }
