@@ -1,4 +1,5 @@
 import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
+import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
@@ -14,44 +15,6 @@ const PRICE_MAP: Record<number, string> = {
   160: "price_1TC3m8C7GbaaYuOKfg3Lzr0d",
   320: "price_1TC3m9C7GbaaYuOKX7hanY5p",
 };
-
-// Verify JWT signature locally using HMAC-SHA256 (no network call)
-async function verifyJwt(
-  token: string,
-  secret: string,
-): Promise<Record<string, unknown> | null> {
-  try {
-    const parts = token.split(".");
-    if (parts.length !== 3) return null;
-
-    const encoder = new TextEncoder();
-    const cryptoKey = await crypto.subtle.importKey(
-      "raw",
-      encoder.encode(secret),
-      { name: "HMAC", hash: "SHA-256" },
-      false,
-      ["verify"],
-    );
-
-    const signatureInput = encoder.encode(`${parts[0]}.${parts[1]}`);
-    const signatureBytes = Uint8Array.from(
-      atob(parts[2].replace(/-/g, "+").replace(/_/g, "/")),
-      (c) => c.charCodeAt(0),
-    );
-    const valid = await crypto.subtle.verify(
-      "HMAC",
-      cryptoKey,
-      signatureBytes,
-      signatureInput,
-    );
-    if (!valid) return null;
-
-    const payload = parts[1].replace(/-/g, "+").replace(/_/g, "/");
-    return JSON.parse(atob(payload));
-  } catch {
-    return null;
-  }
-}
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
@@ -71,23 +34,24 @@ serve(async (req) => {
       throw new Error("Stripe not configured");
     }
 
-    // Extract user identity from JWT locally (no network call)
+    // Extract user identity via Supabase Auth (supports both HS256 and ECC keys)
     let userId: string | null = null;
     let userEmail: string | null = null;
     const authHeader = req.headers.get("authorization");
     if (authHeader) {
+      const supabase = createClient(
+        Deno.env.get("SUPABASE_URL")!,
+        Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!,
+      );
       const token = authHeader.replace("Bearer ", "");
-      const jwtSecret = Deno.env.get("SUPABASE_JWT_SECRET");
-      if (jwtSecret) {
-        const payload = await verifyJwt(token, jwtSecret);
-        if (payload) {
-          if (typeof payload.sub === "string") userId = payload.sub;
-          if (typeof payload.email === "string") userEmail = payload.email;
-        }
+      const { data: { user } } = await supabase.auth.getUser(token);
+      if (user) {
+        userId = user.id;
+        userEmail = user.email ?? null;
       }
     }
 
-    console.log(`Checkout: userId=${userId}, userEmail=${userEmail}, jwtSecret=${Deno.env.get("SUPABASE_JWT_SECRET") ? "SET" : "NOT SET"}, authHeader=${authHeader ? "present" : "missing"}`);
+    console.log(`Checkout: userId=${userId}, userEmail=${userEmail}, authHeader=${authHeader ? "present" : "missing"}`);
 
     // Create Checkout Session via Stripe API
     const params = new URLSearchParams({
