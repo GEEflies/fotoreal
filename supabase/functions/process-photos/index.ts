@@ -222,8 +222,14 @@ async function applyWatermark(
 
 async function enhancePhoto(imageUrl: string, prompt: string, apiKey: string): Promise<string | null> {
   const image = await fetchImageData(imageUrl);
-  const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-3-pro-image-preview:generateContent?key=${apiKey}`;
-  const body = JSON.stringify({
+
+  // Fallback chain: Pro first, then Nano Banana 2
+  const models = [
+    "gemini-3-pro-image-preview",
+    "gemini-3.1-flash-image-preview",
+  ];
+
+  const requestBody = JSON.stringify({
     contents: [
       {
         role: "user",
@@ -246,47 +252,64 @@ async function enhancePhoto(imageUrl: string, prompt: string, apiKey: string): P
     },
   });
 
-  // Retry with exponential backoff for 429 rate limits
-  const maxRetries = 3;
-  const retryDelays = [3000, 6000, 12000];
   let lastError: Error | null = null;
 
-  for (let attempt = 0; attempt <= maxRetries; attempt++) {
-    const response = await fetch(url, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body,
-    });
+  for (const model of models) {
+    const url = `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${apiKey}`;
 
-    if (response.ok) {
-      const data = await response.json();
-      const part = data.candidates?.[0]?.content?.parts?.find((entry: Record<string, unknown>) => {
-        const inlineData = (entry.inlineData ?? entry.inline_data) as Record<string, unknown> | undefined;
-        return typeof inlineData?.data === "string";
+    // Retry with exponential backoff for 429 rate limits
+    const maxRetries = 2;
+    const retryDelays = [3000, 6000];
+
+    for (let attempt = 0; attempt <= maxRetries; attempt++) {
+      const response = await fetch(url, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: requestBody,
       });
 
-      const inlineData = (part?.inlineData ?? part?.inline_data) as Record<string, unknown> | undefined;
-      const base64 = typeof inlineData?.data === "string" ? inlineData.data : null;
-      const mimeType = typeof (inlineData?.mimeType ?? inlineData?.mime_type) === "string"
-        ? String(inlineData?.mimeType ?? inlineData?.mime_type)
-        : "image/png";
+      if (response.ok) {
+        const data = await response.json();
+        const part = data.candidates?.[0]?.content?.parts?.find((entry: Record<string, unknown>) => {
+          const inlineData = (entry.inlineData ?? entry.inline_data) as Record<string, unknown> | undefined;
+          return typeof inlineData?.data === "string";
+        });
 
-      return base64 ? `data:${mimeType};base64,${base64}` : null;
+        const inlineData = (part?.inlineData ?? part?.inline_data) as Record<string, unknown> | undefined;
+        const base64 = typeof inlineData?.data === "string" ? inlineData.data : null;
+        const mimeType = typeof (inlineData?.mimeType ?? inlineData?.mime_type) === "string"
+          ? String(inlineData?.mimeType ?? inlineData?.mime_type)
+          : "image/png";
+
+        if (base64) {
+          console.log(`Enhanced with model: ${model}`);
+          return `data:${mimeType};base64,${base64}`;
+        }
+        return null;
+      }
+
+      const errText = await response.text();
+      lastError = new Error(`Generator failed [${response.status}]: ${errText}`);
+
+      // Retry on 429 (rate limit)
+      if (response.status === 429 && attempt < maxRetries) {
+        console.log(`Rate limited (429) on ${model}, retrying in ${retryDelays[attempt]}ms`);
+        await new Promise((r) => setTimeout(r, retryDelays[attempt]));
+        continue;
+      }
+
+      // Fall through to next model on 503 (overloaded)
+      if (response.status === 503) {
+        console.log(`Model ${model} unavailable (503), trying next model...`);
+        break;
+      }
+
+      // Any other error — don't retry, don't fallback
+      throw lastError;
     }
-
-    const errText = await response.text();
-    lastError = new Error(`Generator failed [${response.status}]: ${errText}`);
-
-    if (response.status === 429 && attempt < maxRetries) {
-      console.log(`Rate limited (429), retrying in ${retryDelays[attempt]}ms (attempt ${attempt + 1}/${maxRetries})`);
-      await new Promise((r) => setTimeout(r, retryDelays[attempt]));
-      continue;
-    }
-
-    break;
   }
 
-  throw lastError ?? new Error("Generator failed: unknown error");
+  throw lastError ?? new Error("All models unavailable");
 }
 
 function getFriendlyPhotoError(error: unknown): string {
