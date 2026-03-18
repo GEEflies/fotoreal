@@ -15,10 +15,18 @@ export default function PaymentSuccess() {
   const [hasClaimed, setHasClaimed] = useState(false);
 
   // Auto-claim purchases when user is authenticated
+  // Retries to handle race condition where webhook hasn't fired yet
   useEffect(() => {
     if (user && !hasClaimed) {
       setHasClaimed(true);
-      claimPurchases();
+      const tryClaim = async (attemptsLeft: number) => {
+        const count = await claimPurchases();
+        if (count === 0 && attemptsLeft > 0) {
+          await new Promise((r) => setTimeout(r, 3000));
+          return tryClaim(attemptsLeft - 1);
+        }
+      };
+      tryClaim(3);
     }
   }, [user, hasClaimed, claimPurchases]);
 

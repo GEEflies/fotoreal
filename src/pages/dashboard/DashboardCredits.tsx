@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 import { useCredits } from '@/hooks/use-credits';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
@@ -9,7 +9,10 @@ import { useToast } from '@/hooks/use-toast';
 import { PACKAGES, propLabel } from '@/lib/packages';
 
 export default function DashboardCredits() {
-  const { credits, isLoading } = useCredits();
+  const { credits, isLoading, loadCredits } = useCredits();
+
+  // Refresh credits on mount (e.g. returning from payment)
+  useEffect(() => { loadCredits(); }, [loadCredits]);
   const [selected, setSelected] = useState(2);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
