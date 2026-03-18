@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { UserLayout } from '@/components/dashboard/UserLayout';
 import { PropertyCard } from '@/components/dashboard/PropertyCard';
+import { WelcomeOnboarding, useWelcomeState } from '@/components/dashboard/WelcomeOnboarding';
 import { Button } from '@/components/ui/button';
 import { Plus, Building2 } from 'lucide-react';
 import { Skeleton } from '@/components/ui/skeleton';
@@ -19,6 +20,7 @@ interface Property {
 export default function DashboardProperties() {
   const [properties, setProperties] = useState<Property[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const { showOnboarding, completeOnboarding } = useWelcomeState();
 
   useEffect(() => {
     loadProperties();
@@ -57,6 +59,7 @@ export default function DashboardProperties() {
 
   return (
     <UserLayout>
+      {showOnboarding && <WelcomeOnboarding onComplete={completeOnboarding} />}
       <div className="space-y-6">
 
         <div className="flex items-center justify-between">

@@ -215,7 +215,7 @@ export function WelcomeOnboarding({ onComplete }: WelcomeOnboardingProps) {
           <div className="px-6 pt-8 pb-6 sm:px-8 sm:pt-10 sm:pb-8">
             <div
               className={cn(
-                'transition-all duration-250 ease-out',
+                'transition-all duration-300 ease-out',
                 isAnimating
                   ? direction === 'forward'
                     ? 'opacity-0 -translate-x-4'
