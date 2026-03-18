@@ -1,9 +1,15 @@
 import { useState, useEffect } from "react";
 import { Menu, ArrowRight, LogIn, Smartphone } from "lucide-react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import logoRealfoto from "@/assets/logo-realfoto.svg";
 import { Button } from "@/components/ui/button";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
+
+const navLinks = [
+  { label: "Ako to funguje", href: "/ako-to-funguje" },
+  { label: "Cenník", href: "/cennik" },
+  { label: "Kontakt", href: "/kontakt" },
+];
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false);
@@ -31,6 +37,7 @@ export function Header() {
             href="/"
             onClick={(e) => {
               e.preventDefault();
+              navigate("/");
               window.scrollTo({ top: 0, behavior: "smooth" });
             }}
             className="flex items-center gap-2 group"
@@ -38,6 +45,19 @@ export function Header() {
             <img src={logoRealfoto} alt="RealFoto" className="h-10 sm:h-12 w-auto" />
             <span className="text-lg sm:text-xl font-bold text-foreground group-hover:text-primary transition-colors">RealFoto</span>
           </a>
+
+          {/* Desktop nav links */}
+          <nav className="hidden lg:flex items-center gap-1">
+            {navLinks.map((link) => (
+              <Link
+                key={link.href}
+                to={link.href}
+                className="px-3 py-2 text-sm font-medium text-muted-foreground hover:text-foreground transition-colors rounded-md hover:bg-accent/50"
+              >
+                {link.label}
+              </Link>
+            ))}
+          </nav>
 
           {/* Desktop buttons */}
           <div className="hidden lg:flex items-center gap-3">
@@ -76,7 +96,18 @@ export function Header() {
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[300px]">
-              <nav className="flex flex-col gap-3 mt-10">
+              <nav className="flex flex-col gap-1 mt-10">
+                {navLinks.map((link) => (
+                  <Link
+                    key={link.href}
+                    to={link.href}
+                    onClick={() => setIsOpen(false)}
+                    className="px-3 py-2.5 text-sm font-medium text-foreground hover:bg-accent/50 rounded-md transition-colors"
+                  >
+                    {link.label}
+                  </Link>
+                ))}
+                <div className="border-t border-border my-3" />
                 <Button
                   onClick={() => { setIsOpen(false); navigate('/login'); }}
                   className="w-full group font-bold"
