@@ -99,7 +99,8 @@ export function useCredits() {
       total_used: prev.total_used + count,
       available: prev.available - count,
     } : null);
-    
+    window.dispatchEvent(new Event('credits-changed'));
+
     return true;
   }, [credits]);
 

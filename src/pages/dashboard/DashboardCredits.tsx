@@ -10,8 +10,10 @@ import { PACKAGES, propLabel } from '@/lib/packages';
 export default function DashboardCredits() {
   const { credits, isLoading, loadCredits } = useCredits();
 
-  // Refresh credits on mount (e.g. returning from payment)
-  useEffect(() => { loadCredits(); }, [loadCredits]);
+  // Refresh credits on mount (e.g. returning from payment) and sync sidebar
+  useEffect(() => {
+    loadCredits().then(() => window.dispatchEvent(new Event('credits-changed')));
+  }, [loadCredits]);
   const [selected, setSelected] = useState(2);
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);

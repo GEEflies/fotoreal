@@ -38,6 +38,7 @@ export function useClaimPurchases() {
           title: 'Kredity sú na účte!',
           description: 'Môžete ich hneď použiť.',
         });
+        window.dispatchEvent(new Event('credits-changed'));
       }
 
       setIsLoading(false);

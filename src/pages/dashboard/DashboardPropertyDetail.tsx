@@ -114,7 +114,21 @@ export default function DashboardPropertyDetail() {
         supabase.from('property_photos').select('*').eq('property_id', id).order('created_at'),
       ]);
       if (prop) setProperty(prev => prev ? { ...prev, ...prop as unknown as Property } : null);
-      if (photoData) setPhotos(photoData as unknown as Photo[]);
+      if (photoData) {
+        setPhotos(prev => {
+          // If any photo just changed to "done" via polling, refresh credits
+          for (const p of photoData as unknown as Photo[]) {
+            if (p.ai_status === 'done') {
+              const old = prev.find(op => op.id === p.id);
+              if (old && old.ai_status !== 'done') {
+                window.dispatchEvent(new Event('credits-changed'));
+                break;
+              }
+            }
+          }
+          return photoData as unknown as Photo[];
+        });
+      }
 
       // Re-trigger if processing stalled (pending photos but none actively processing)
       if (photoData) {
