@@ -91,32 +91,32 @@ export default function DashboardCredits() {
                   onClick={() => setOpen(!open)}
                   className="w-full p-3 sm:p-4 rounded-xl border border-border bg-background hover:border-primary/40 transition-colors text-left"
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
-                      <span className="font-heading text-2xl font-extrabold text-foreground">
+                  <div className="flex items-center justify-between gap-2">
+                    <div className="flex items-center gap-2 min-w-0">
+                      <span className="font-heading text-2xl font-extrabold text-foreground shrink-0">
                         {pkg.photos}
                       </span>
-                      <span className="text-muted-foreground text-sm">fotiek</span>
+                      <span className="text-muted-foreground text-sm shrink-0">fotiek</span>
                       {pkg.discount > 0 && (
-                        <span className="text-xs font-bold text-success bg-success/10 px-2 py-0.5 rounded-full">
+                        <span className="text-xs font-bold text-success bg-success/10 px-1.5 py-0.5 rounded-full shrink-0">
                           -{pkg.discount}%
                         </span>
                       )}
-                      <span className="text-muted-foreground text-sm ml-1">
-                        ~{pkg.properties} {propLabel(pkg.properties)}
+                    </div>
+                    <div className="flex items-center gap-1 shrink-0">
+                      <span className="font-heading text-xl font-bold text-foreground">
+                        {pkg.price} €
                       </span>
+                      <ChevronDown
+                        className={`h-5 w-5 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`}
+                      />
                     </div>
-                    <div className="text-right">
-                      <div className="flex items-center gap-1">
-                        <span className="font-heading text-xl font-bold text-foreground">
-                          {pkg.price} €
-                        </span>
-                        <ChevronDown
-                          className={`h-5 w-5 text-muted-foreground transition-transform ${open ? "rotate-180" : ""}`}
-                        />
-                      </div>
-                      <span className="text-sm font-semibold text-primary">({pkg.ppp.toFixed(2)} € / ks)</span>
-                    </div>
+                  </div>
+                  <div className="flex items-center justify-between mt-1">
+                    <span className="text-muted-foreground text-xs">
+                      ~{pkg.properties} {propLabel(pkg.properties)}
+                    </span>
+                    <span className="text-xs font-semibold text-primary">({pkg.ppp.toFixed(2)} € / ks)</span>
                   </div>
                 </button>
 
@@ -129,29 +129,29 @@ export default function DashboardCredits() {
                           setSelected(i);
                           setOpen(false);
                         }}
-                        className={`w-full px-4 py-3 text-left transition-colors hover:bg-accent/50 ${
+                        className={`w-full px-3 sm:px-4 py-3 text-left transition-colors hover:bg-accent/50 ${
                           i === selected ? "bg-primary/5" : ""
                         } ${i < PACKAGES.length - 1 ? "border-b border-border/50" : ""}`}
                       >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
-                            <span className="font-heading text-lg font-bold text-foreground">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-2 min-w-0">
+                            <span className="font-heading text-lg font-bold text-foreground shrink-0">
                               {p.photos}
                             </span>
-                            <span className="text-muted-foreground text-sm">fotiek</span>
+                            <span className="text-muted-foreground text-sm shrink-0">fotiek</span>
                             {p.discount > 0 && (
-                              <span className="text-xs font-bold text-success bg-success/10 px-2 py-0.5 rounded-full">
+                              <span className="text-xs font-bold text-success bg-success/10 px-1.5 py-0.5 rounded-full shrink-0">
                                 -{p.discount}%
                               </span>
                             )}
-                            <span className="text-muted-foreground text-sm ml-1">
-                              ~{p.properties} {propLabel(p.properties)}
-                            </span>
                           </div>
-                          <div className="text-right">
-                            <span className="font-bold text-foreground">{p.price} €</span>
-                            <p className="text-sm font-semibold text-primary">({p.ppp.toFixed(2)} € / ks)</p>
-                          </div>
+                          <span className="font-bold text-foreground shrink-0">{p.price} €</span>
+                        </div>
+                        <div className="flex items-center justify-between mt-0.5">
+                          <span className="text-muted-foreground text-xs">
+                            ~{p.properties} {propLabel(p.properties)}
+                          </span>
+                          <span className="text-xs font-semibold text-primary">({p.ppp.toFixed(2)} € / ks)</span>
                         </div>
                       </button>
                     ))}
