@@ -43,7 +43,24 @@ export function useCredits() {
     setIsLoading(false);
   }, []);
 
-  useEffect(() => { loadCredits(); }, [loadCredits]);
+  useEffect(() => {
+    loadCredits();
+
+    // Auto-refresh when credits change in DB (photo processing, purchases, etc.)
+    let channel: ReturnType<typeof supabase.channel> | undefined;
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user) return;
+      channel = supabase
+        .channel('credits-realtime')
+        .on('postgres_changes',
+          { event: 'UPDATE', schema: 'public', table: 'user_credits', filter: `user_id=eq.${user.id}` },
+          () => { loadCredits(); }
+        )
+        .subscribe();
+    });
+
+    return () => { if (channel) supabase.removeChannel(channel); };
+  }, [loadCredits]);
 
   const useCreditsForPhotos = useCallback(async (count: number): Promise<boolean> => {
     if (!credits || credits.available < count) return false;
