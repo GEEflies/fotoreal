@@ -34,7 +34,6 @@ export function BeforeAfterSlider({
 
   const handlePointerMove = useCallback((e: React.PointerEvent) => {
     if (!isDragging.current) return;
-    e.preventDefault();
     updatePosition(e.clientX);
   }, [updatePosition]);
 
@@ -42,22 +41,13 @@ export function BeforeAfterSlider({
     isDragging.current = false;
   }, []);
 
-  // Prevent vertical scrolling while dragging the slider on touch devices
-  const handleTouchMove = useCallback((e: React.TouchEvent) => {
-    if (isDragging.current) {
-      e.preventDefault();
-    }
-  }, []);
-
   return (
     <div
       ref={containerRef}
       className={`relative overflow-hidden rounded-xl select-none cursor-col-resize ${className}`}
-      style={{ touchAction: "none" }}
       onPointerDown={handlePointerDown}
       onPointerMove={handlePointerMove}
       onPointerUp={handlePointerUp}
-      onTouchMove={handleTouchMove}
     >
       {/* After (full) */}
       <img src={afterSrc} alt={afterLabel} className="w-full h-full object-cover block" draggable={false} loading="lazy" />

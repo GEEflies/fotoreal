@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 import { UserLayout } from '@/components/dashboard/UserLayout';
 import { AIProgressLoader } from '@/components/dashboard/AIProgressLoader';
 import { PhotoCompareModal } from '@/components/dashboard/PhotoCompareModal';

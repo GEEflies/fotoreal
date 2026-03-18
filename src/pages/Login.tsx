@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useSearchParams } from 'react-router-dom';
 import { useUserAuth } from '@/hooks/use-user-auth';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -213,7 +213,7 @@ export default function Login() {
       case 'signup':
         return isPaidUser
           ? `Pre prístup k vašim ${purchasedPhotos} fotkám sa zaregistrujte`
-          : 'Vyskúšajte 5 fotiek zadarmo';
+          : 'Vytvorte si účet';
       case 'reset-password':
         return 'Zabudnuté heslo';
       case 'check-email':
@@ -221,7 +221,7 @@ export default function Login() {
       default:
         return isPaidUser
           ? `Pre prístup k vašim ${purchasedPhotos} fotkám sa prihláste`
-          : 'Prihlásiť sa';
+          : 'Vyskúšajte 5 fotiek zadarmo';
     }
   };
 

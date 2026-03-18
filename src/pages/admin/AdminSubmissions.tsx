@@ -5,7 +5,7 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 import { Trash2, Search, ChevronLeft, ChevronRight, Users, CheckCircle, CalendarDays, Clock, Phone } from 'lucide-react';
 import { format, startOfWeek, startOfDay } from 'date-fns';
 import { sk } from 'date-fns/locale';

@@ -12,10 +12,6 @@ dist
 dist-ssr
 *.local
 
-# Keep only bun.lock — Lovable uses bun
-package-lock.json
-bun.lockb
-
 # Environment variables (local only — set in Vercel dashboard for production)
 .env
 .env.local

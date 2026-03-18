@@ -2,7 +2,7 @@ import { ReactNode, useEffect, useState } from 'react';
 import { useNavigate, useLocation, Link } from 'react-router-dom';
 import { useUserAuth } from '@/hooks/use-user-auth';
 import { useCredits } from '@/hooks/use-credits';
-import { supabase } from '@/lib/supabase';
+import { supabase } from '@/integrations/supabase/client';
 import { Building2, Plus, LogOut, Home, Menu, Sparkles, ShoppingCart, ChevronDown, User, Smartphone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
@@ -21,10 +21,10 @@ interface SidebarProperty {
 
 function CreditWidget() {
   const { credits } = useCredits();
-  const loaded = !!credits;
+  if (!credits) return null;
 
-  const available = credits?.available ?? 0;
-  const total = credits ? credits.free_credits + credits.purchased_credits : 0;
+  const available = credits.available;
+  const total = credits.free_credits + credits.purchased_credits;
   const pct = total > 0 ? Math.round((available / total) * 100) : 0;
   const isLow = available <= 2;
   const isEmpty = available <= 0;
@@ -32,13 +32,13 @@ function CreditWidget() {
   return (
     <div className="mx-4 my-3 rounded-xl border border-border bg-muted/50 p-3 space-y-2.5">
       <div className="flex items-center gap-2">
-        <Sparkles className={cn("h-4 w-4 transition-colors duration-500", !loaded ? "text-muted-foreground/40" : isEmpty ? "text-destructive" : isLow ? "text-warning" : "text-primary")} />
-        <span className={cn("font-semibold text-sm transition-opacity duration-500", loaded ? "opacity-100" : "opacity-0")}>{available}</span>
+        <Sparkles className={cn("h-4 w-4", isEmpty ? "text-destructive" : isLow ? "text-warning" : "text-primary")} />
+        <span className="font-semibold text-sm text-foreground">{available}</span>
         <span className="text-xs text-muted-foreground">fotiek</span>
       </div>
       <Progress
-        value={loaded ? pct : 0}
-        className={cn("h-1.5 transition-all duration-700", isEmpty ? "[&>div]:bg-destructive" : isLow ? "[&>div]:bg-warning" : "")}
+        value={pct}
+        className={cn("h-1.5", isEmpty ? "[&>div]:bg-destructive" : isLow ? "[&>div]:bg-warning" : "")}
       />
       <Link to="/dashboard/credits" className="block">
         <Button size="sm" className="w-full bg-success hover:bg-success/90 text-success-foreground text-xs h-8">

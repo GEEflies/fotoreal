@@ -2,7 +2,7 @@ import { useState, useRef } from "react";
 import { ChevronDown, Sparkles, Loader2 } from "lucide-react";
 import { useScrollAnimation } from "@/hooks/use-scroll-animation";
 import { Button } from "@/components/ui/button";
-import { supabase } from "@/lib/supabase";
+import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { PACKAGES } from "@/lib/packages";
 
