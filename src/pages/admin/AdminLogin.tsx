@@ -124,7 +124,7 @@ export default function AdminLogin() {
               setError(null);
               setIsSubmitting(true);
               try {
-                const { error } = await signIn(ADMIN_EMAIL, 'admin123456');
+                const { error } = await signIn(ADMIN_EMAIL, 'adminadmin');
                 if (error) setError('Demo prihlásenie zlyhalo.');
               } catch {
                 setError('Nastala neočakávaná chyba.');
