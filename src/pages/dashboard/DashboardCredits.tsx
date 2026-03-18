@@ -3,7 +3,6 @@ import { useCredits } from '@/hooks/use-credits';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Sparkles, Loader2, ChevronDown } from 'lucide-react';
-import { Skeleton } from '@/components/ui/skeleton';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
 import { PACKAGES, propLabel } from '@/lib/packages';
@@ -67,27 +66,31 @@ export default function DashboardCredits() {
         </div>
 
         {/* Current balance */}
-        {isLoading ? (
-          <Skeleton className="h-20 rounded-lg" />
-        ) : credits && (
-          <Card className="border-primary/20 bg-gradient-to-r from-primary/5 to-accent/20">
-            <CardContent className="p-3 sm:p-6 flex items-center justify-between">
-              <div>
-                <p className="text-xs sm:text-sm text-muted-foreground">Váš zostatok</p>
-                <div className="flex items-baseline gap-1.5">
-                  <span className="text-2xl sm:text-4xl font-heading font-bold text-foreground">{credits.available}</span>
-                  <span className="text-sm text-muted-foreground">fotiek</span>
-                </div>
-                <p className="text-[11px] text-muted-foreground mt-0.5">
-                  {credits.free_credits - Math.min(credits.total_used, credits.free_credits)} voľných + {credits.purchased_credits - Math.max(0, credits.total_used - credits.free_credits)} zakúpených
-                </p>
+        <Card className="border-primary/20 bg-gradient-to-r from-primary/5 to-accent/20">
+          <CardContent className="p-3 sm:p-6 flex items-center justify-between">
+            <div>
+              <p className="text-xs sm:text-sm text-muted-foreground">Váš zostatok</p>
+              <div className="flex items-baseline gap-1.5">
+                {isLoading ? (
+                  <span className="text-2xl sm:text-4xl font-heading font-bold text-muted-foreground animate-pulse">–</span>
+                ) : (
+                  <span className="text-2xl sm:text-4xl font-heading font-bold text-foreground">{credits?.available ?? 0}</span>
+                )}
+                <span className="text-sm text-muted-foreground">fotiek</span>
               </div>
-              <div className="p-2.5 sm:p-4 rounded-full bg-primary/10 shrink-0">
-                <Sparkles className="h-5 w-5 sm:h-8 sm:w-8 text-primary" />
-              </div>
-            </CardContent>
-          </Card>
-        )}
+              <p className="text-[11px] text-muted-foreground mt-0.5">
+                {isLoading ? (
+                  <span className="animate-pulse">– voľných + – zakúpených</span>
+                ) : credits ? (
+                  <>{credits.free_credits - Math.min(credits.total_used, credits.free_credits)} voľných + {credits.purchased_credits - Math.max(0, credits.total_used - credits.free_credits)} zakúpených</>
+                ) : null}
+              </p>
+            </div>
+            <div className="p-2.5 sm:p-4 rounded-full bg-primary/10 shrink-0">
+              <Sparkles className="h-5 w-5 sm:h-8 sm:w-8 text-primary" />
+            </div>
+          </CardContent>
+        </Card>
 
         {/* LP-style pricing widget */}
         <div>
