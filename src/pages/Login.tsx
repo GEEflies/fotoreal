@@ -67,51 +67,19 @@ export default function Login() {
     setOtpCode('');
   };
 
-  // Use Google Identity Services popup to get an ID token,
-  // then sign in via Supabase's signInWithIdToken — no redirect through Supabase.
-  const handleGoogleLogin = () => {
+  const handleGoogleLogin = async () => {
     setIsGoogleLoading(true);
-
-    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
-    if (!clientId || typeof google === 'undefined') {
-      setIsGoogleLoading(false);
-      toast({ title: 'Chyba prihlásenia', description: 'Google prihlásenie nie je dostupné.', variant: 'destructive' });
-      return;
-    }
-
-    google.accounts.id.initialize({
-      client_id: clientId,
-      callback: async (response: GoogleCredentialResponse) => {
-        const { error } = await supabase.auth.signInWithIdToken({
-          provider: 'google',
-          token: response.credential,
-        });
-        setIsGoogleLoading(false);
-        if (error) {
-          toast({ title: 'Chyba prihlásenia', description: translateError(error.message), variant: 'destructive' });
-        }
-        // onAuthStateChange listener handles navigation on success
+    const callbackUrl = `${window.location.origin}/login?redirect=${encodeURIComponent(redirectTo)}`;
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: 'google',
+      options: {
+        redirectTo: callbackUrl,
       },
-      cancel_on_tap_outside: true,
     });
-
-    google.accounts.id.prompt((notification) => {
-      if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-        setIsGoogleLoading(false);
-        // Fallback: if popup can't show (e.g. blocked), fall back to redirect flow
-        if (notification.isNotDisplayed()) {
-          supabase.auth.signInWithOAuth({
-            provider: 'google',
-            options: {
-              redirectTo: `${window.location.origin}/login?redirect=${encodeURIComponent(redirectTo)}`,
-            },
-          });
-        }
-      }
-      if (notification.isDismissedMoment()) {
-        setIsGoogleLoading(false);
-      }
-    });
+    setIsGoogleLoading(false);
+    if (error) {
+      toast({ title: 'Chyba prihlásenia', description: translateError(error.message), variant: 'destructive' });
+    }
   };
 
   const handleLogin = async (e: React.FormEvent) => {
