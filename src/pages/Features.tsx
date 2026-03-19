@@ -5,6 +5,7 @@ import { HowItWorksSection } from "@/components/sections/HowItWorksSection";
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Zap, Shield, Clock, Sofa, Sparkles, Layers } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { SEO } from "@/components/SEO";
 
 const highlights = [
   {
@@ -44,6 +45,11 @@ export default function Features() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <SEO
+        title="Funkcie"
+        description="HDR spájanie, výmena oblohy, korekcia perspektívy, rozmazanie tvárí a ŠPZ, virtuálny staging. Všetko automaticky pomocou AI."
+        path="/funkcie"
+      />
       <Header />
       <main className="flex-1 pt-20 sm:pt-24">
         {/* Hero */}

@@ -1,0 +1,59 @@
+name: Blog automation
+
+on:
+  # Run weekly on Monday at 9:00 UTC (10:00 CET)
+  schedule:
+    - cron: "0 9 * * 1"
+  # Allow manual trigger
+  workflow_dispatch:
+    inputs:
+      topic:
+        description: "Topic hint for the blog post (optional, leave empty for auto)"
+        required: false
+        type: string
+
+permissions:
+  contents: write
+
+env:
+  ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
+jobs:
+  generate-post:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      - name: Generate blog post
+        run: node scripts/generate-blog-post.mjs "${{ github.event.inputs.topic || '' }}"
+
+      - name: Update sitemap with new post
+        run: node scripts/update-sitemap.mjs
+
+      - name: Check for new content
+        id: check
+        run: |
+          if git diff --quiet && git diff --cached --quiet; then
+            echo "changed=false" >> $GITHUB_OUTPUT
+          else
+            echo "changed=true" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Commit and push
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          SLUG=$(ls -t src/content/blog/*.json | head -1 | xargs basename .json)
+          git add src/content/blog/ public/sitemap.xml
+          git commit -m "blog: add new post — $SLUG"
+          git pull --rebase origin main
+          git push origin main

@@ -19,6 +19,7 @@ import Features from "./pages/Features";
 import References from "./pages/References";
 import AboutUs from "./pages/AboutUs";
 import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
 import { UserLayout } from "./components/dashboard/UserLayout";
 import DashboardProperties from "./pages/dashboard/DashboardProperties";
 import DashboardNewProperty from "./pages/dashboard/DashboardNewProperty";
@@ -84,6 +85,7 @@ const App = () => (
           <Route path="/referencie" element={<PWAGuard><References /></PWAGuard>} />
           <Route path="/o-nas" element={<PWAGuard><AboutUs /></PWAGuard>} />
           <Route path="/blog" element={<PWAGuard><Blog /></PWAGuard>} />
+          <Route path="/blog/:slug" element={<PWAGuard><BlogPost /></PWAGuard>} />
 
           {/* Always accessible */}
           <Route path="/platba-uspesna" element={<PaymentSuccess />} />

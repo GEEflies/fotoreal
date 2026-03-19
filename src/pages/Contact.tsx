@@ -9,6 +9,7 @@ import { Label } from "@/components/ui/label";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { z } from "zod";
+import { SEO } from "@/components/SEO";
 
 const contactSchema = z.object({
   name: z.string().trim().min(1, "Meno je povinné").max(100),
@@ -56,6 +57,11 @@ export default function Contact() {
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <SEO
+        title="Kontakt"
+        description="Kontaktujte nás emailom na info@realfoto.sk alebo telefonicky na +421 911 911 288. Sme tu pre vás."
+        path="/kontakt"
+      />
       <Header />
       <main className="flex-1 pt-20 sm:pt-24">
         <div className="section-container py-12 sm:py-20">

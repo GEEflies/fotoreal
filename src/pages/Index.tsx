@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { AvatarSelector, storeAvatar, type AvatarType } from "@/components/AvatarSelector";
 import { supabase } from "@/integrations/supabase/client";
+import { SEO } from "@/components/SEO";
 
 const Index = () => {
   const navigate = useNavigate();
@@ -44,6 +45,32 @@ const Index = () => {
 
   return (
     <div className="min-h-screen">
+      <SEO
+        path="/"
+        jsonLd={[
+          {
+            "@context": "https://schema.org",
+            "@type": "Organization",
+            name: "RealFoto",
+            url: "https://realfoto.sk",
+            logo: "https://realfoto.sk/favicon.png",
+            email: "info@realfoto.sk",
+            telephone: "+421911911288",
+            address: {
+              "@type": "PostalAddress",
+              addressLocality: "Bratislava",
+              addressCountry: "SK",
+            },
+            sameAs: ["https://twitter.com/RealFoto"],
+          },
+          {
+            "@context": "https://schema.org",
+            "@type": "WebSite",
+            name: "RealFoto",
+            url: "https://realfoto.sk",
+          },
+        ]}
+      />
       <AvatarSelector onSelect={handleSelect} />
     </div>
   );

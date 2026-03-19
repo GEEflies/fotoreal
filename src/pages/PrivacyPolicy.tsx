@@ -1,9 +1,15 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { SEO } from "@/components/SEO";
 
 export default function PrivacyPolicy() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <SEO
+        title="Ochrana osobných údajov"
+        description="Zásady ochrany osobných údajov služby RealFoto. GDPR súlad a ochrana súkromia."
+        path="/ochrana-sukromia"
+      />
       <Header />
       <main className="flex-1 pt-20 sm:pt-24">
         <div className="section-container py-12 sm:py-20 max-w-3xl mx-auto">

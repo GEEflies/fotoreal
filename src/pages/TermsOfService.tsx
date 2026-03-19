@@ -1,9 +1,15 @@
 import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
+import { SEO } from "@/components/SEO";
 
 export default function TermsOfService() {
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <SEO
+        title="Obchodné podmienky"
+        description="Všeobecné obchodné podmienky služby RealFoto. Pravidlá používania, platby a refundácie."
+        path="/obchodne-podmienky"
+      />
       <Header />
       <main className="flex-1 pt-20 sm:pt-24">
         <div className="section-container py-12 sm:py-20 max-w-3xl mx-auto">

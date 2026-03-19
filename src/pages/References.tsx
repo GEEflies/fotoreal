@@ -5,12 +5,18 @@ import { ResultsSection } from "@/components/sections/ResultsSection";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { SEO } from "@/components/SEO";
 
 export default function References() {
   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <SEO
+        title="Referencie"
+        description="Pozrite sa, čo hovoria naši klienti a aké výsledky dosahujú s RealFoto AI editorom realitných fotiek."
+        path="/referencie"
+      />
       <Header />
       <main className="flex-1 pt-20 sm:pt-24">
         {/* Hero */}

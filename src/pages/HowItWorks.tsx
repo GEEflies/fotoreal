@@ -5,12 +5,18 @@ import { FeaturesGrid } from "@/components/sections/FeaturesGrid";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { SEO } from "@/components/SEO";
 
 export default function HowItWorks() {
   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <SEO
+        title="Ako to funguje"
+        description="Nahrajte fotky nehnuteľnosti a naše AI ich automaticky vylepší na profesionálnu úroveň za menej ako 30 sekúnd."
+        path="/ako-to-funguje"
+      />
       <Header />
       <main className="flex-1 pt-20 sm:pt-24">
         <div className="section-container py-12 sm:py-20 text-center max-w-3xl mx-auto">

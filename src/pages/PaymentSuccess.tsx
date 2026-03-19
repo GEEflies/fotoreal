@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { useNavigate, useSearchParams } from "react-router-dom";
 import { useUserAuth } from "@/hooks/use-user-auth";
 import { useClaimPurchases } from "@/hooks/use-claim-purchases";
+import { SEO } from "@/components/SEO";
 
 export default function PaymentSuccess() {
   const navigate = useNavigate();
@@ -35,6 +36,8 @@ export default function PaymentSuccess() {
   const loginUrl = `/login?redirect=/platba-uspesna${sessionId ? `&session_id=${sessionId}` : ""}${photos ? `&photos=${photos}` : ""}`;
 
   return (
+    <>
+    <SEO title="Platba úspešná" path="/platba-uspesna" noindex />
     <div
       className="min-h-screen flex items-center justify-center px-4"
       style={{
@@ -85,5 +88,6 @@ export default function PaymentSuccess() {
         )}
       </div>
     </div>
+    </>
   );
 }

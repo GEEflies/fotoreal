@@ -4,12 +4,18 @@ import { AboutSection } from "@/components/sections/AboutSection";
 import { Button } from "@/components/ui/button";
 import { ArrowRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import { SEO } from "@/components/SEO";
 
 export default function AboutUs() {
   const navigate = useNavigate();
 
   return (
     <div className="min-h-screen flex flex-col bg-background">
+      <SEO
+        title="O nás"
+        description="Sme slovenský tím s vášňou pre technológie a realitný trh. Pomáhame realitným maklérom s profesionálnymi fotkami pomocou AI."
+        path="/o-nas"
+      />
       <Header />
       <main className="flex-1 pt-20 sm:pt-24">
         <div className="section-container py-12 sm:py-20 text-center max-w-3xl mx-auto">
