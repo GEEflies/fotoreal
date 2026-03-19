@@ -5,6 +5,9 @@ on:
     branches:
       - lovable
 
+permissions:
+  contents: write
+
 jobs:
   merge:
     runs-on: ubuntu-latest
