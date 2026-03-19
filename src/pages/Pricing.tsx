@@ -11,6 +11,24 @@ export default function Pricing() {
         title="Cenník"
         description="Transparentné ceny bez skrytých poplatkov. Kredity nevypršia. Od 14 € za 20 fotiek. Čím viac fotiek, tým lepšia cena."
         path="/cennik"
+        breadcrumbs={[
+          { name: "Domov", path: "/" },
+          { name: "Cenník", path: "/cennik" },
+        ]}
+        jsonLd={{
+          "@context": "https://schema.org",
+          "@type": "Product",
+          name: "RealFoto — AI editor realitných fotiek",
+          description: "Profesionálne úpravy realitných fotografií pomocou AI",
+          brand: { "@type": "Brand", name: "RealFoto" },
+          offers: [
+            { "@type": "Offer", name: "20 fotiek", price: "14", priceCurrency: "EUR", availability: "https://schema.org/InStock" },
+            { "@type": "Offer", name: "40 fotiek", price: "26", priceCurrency: "EUR", availability: "https://schema.org/InStock" },
+            { "@type": "Offer", name: "80 fotiek", price: "48", priceCurrency: "EUR", availability: "https://schema.org/InStock" },
+            { "@type": "Offer", name: "160 fotiek", price: "87", priceCurrency: "EUR", availability: "https://schema.org/InStock" },
+            { "@type": "Offer", name: "320 fotiek", price: "165", priceCurrency: "EUR", availability: "https://schema.org/InStock" },
+          ],
+        }}
       />
       <Header />
       <main className="flex-1 pt-20 sm:pt-24">

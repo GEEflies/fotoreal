@@ -1,37 +1,27 @@
 /**
  * AI blog post generator for RealFoto.
- * Uses Anthropic Claude API to generate Slovak-language blog posts
+ * Uses Google Gemini 2.5 Flash to generate Slovak-language SEO blog posts
  * about real estate photography.
  *
  * Usage: node scripts/generate-blog-post.mjs [optional-topic-hint]
  *
- * Requires: ANTHROPIC_API_KEY env var
+ * Requires: GEMINI_API_KEY env var
  */
 
 import { writeFileSync, readdirSync, readFileSync } from "fs";
 import { resolve, join } from "path";
 
 const CONTENT_DIR = resolve("src/content/blog");
+const GEMINI_MODEL = "gemini-2.5-flash";
+const GEMINI_URL = `https://generativelanguage.googleapis.com/v1beta/models/${GEMINI_MODEL}:generateContent`;
 
-// Get existing post slugs to avoid duplicates
-function getExistingSlugs() {
-  try {
-    return readdirSync(CONTENT_DIR)
-      .filter((f) => f.endsWith(".json"))
-      .map((f) => f.replace(".json", ""));
-  } catch {
-    return [];
-  }
-}
-
-// Get existing post titles for context
-function getExistingTitles() {
+function getExistingPosts() {
   try {
     return readdirSync(CONTENT_DIR)
       .filter((f) => f.endsWith(".json"))
       .map((f) => {
         const data = JSON.parse(readFileSync(join(CONTENT_DIR, f), "utf-8"));
-        return data.title;
+        return { slug: data.slug, title: data.title, tags: data.tags || [] };
       });
   } catch {
     return [];
@@ -39,83 +29,97 @@ function getExistingTitles() {
 }
 
 async function generatePost(topicHint) {
-  const apiKey = process.env.ANTHROPIC_API_KEY;
+  const apiKey = process.env.GEMINI_API_KEY;
   if (!apiKey) {
-    throw new Error("ANTHROPIC_API_KEY env var is required");
+    throw new Error("GEMINI_API_KEY env var is required");
   }
 
-  const existingTitles = getExistingTitles();
-  const existingSlugs = getExistingSlugs();
-
+  const existingPosts = getExistingPosts();
+  const existingSlugs = existingPosts.map((p) => p.slug);
   const today = new Date().toISOString().split("T")[0];
 
-  const prompt = `You are an SEO content writer for RealFoto (realfoto.sk), a Slovak AI-powered real estate photo editing service.
+  const prompt = `Si SEO copywriter pre RealFoto (realfoto.sk) — slovenský AI editor realitných fotografií. Služba automaticky vylepšuje fotky nehnuteľností pomocou AI (HDR, výmena oblohy, korekcia perspektívy, rozmazanie tvárí/ŠPZ, virtuálny staging).
 
-Generate a blog post in SLOVAK language about real estate photography, property marketing, or related topics.
+Napíš blog článok v SLOVENČINE na tému realitnej fotografie, marketingu nehnuteľností alebo súvisiacich tém.
 
-${topicHint ? `Topic hint: ${topicHint}` : "Choose a topic that would be valuable for Slovak real estate agents and property sellers."}
+${topicHint ? `Téma: ${topicHint}` : "Vyber tému, ktorá by bola hodnotná pre slovenských realitných maklérov a predajcov nehnuteľností."}
 
-${existingTitles.length > 0 ? `Existing posts (do NOT duplicate these topics):\n${existingTitles.map((t) => `- ${t}`).join("\n")}` : ""}
+${existingPosts.length > 0 ? `Existujúce články (NEDUPLIKUJ tieto témy):\n${existingPosts.map((p) => `- ${p.title}`).join("\n")}` : ""}
 
-Requirements:
-- Write entirely in Slovak
-- 800-1200 words
-- Include practical, actionable advice
-- Naturally mention RealFoto where relevant (not forced)
-- SEO-optimized: include relevant keywords naturally
-- Use markdown formatting (## for h2, ### for h3, **bold**, etc.)
-- Include a compelling meta description (max 155 characters)
-- Generate 3-5 relevant tags
+POŽIADAVKY NA OBSAH:
+- 1500-2000 slov, podrobný a praktický
+- Používaj štruktúru: H1 nadpis, úvod (2-3 vety hook), 4-6 sekcií s H2 nadpismi, záver s výzvou na akciu
+- Každá sekcia 200-400 slov s konkrétnymi radami
+- Na konci pridaj sekciu "## Často kladené otázky" s 3-4 otázkami a odpoveďami
+- Piš z prvej osoby plurálu ako RealFoto tím ("V RealFoto sme zistili...", "Naši klienti často...", "Na základe našich skúseností...")
+- Pridaj konkrétne čísla a štatistiky kde je to relevantné
+- Prirodzene vlož 2-3 interné linky na stránky RealFoto v markdown formáte:
+  - [vyskúšajte RealFoto zadarmo](/login)
+  - [pozrite si naše funkcie](/funkcie)
+  - [cenník](/cennik)
+  - [ako to funguje](/ako-to-funguje)
 
-Respond ONLY with valid JSON (no markdown code fences) in this exact format:
+POŽIADAVKY NA SEO:
+- Hlavné kľúčové slovo v H1, prvom odseku a v 2-3 H2 nadpisoch
+- Meta popis max 155 znakov, obsahuje kľúčové slovo
+- Slug bez diakritiky, iba malé písmená, čísla a pomlčky
+- 3-5 relevantných tagov
+
+FORMÁT ODPOVEDE (iba platný JSON, žiadne markdown code fences):
 {
-  "slug": "url-friendly-slug-no-diacritics",
-  "title": "Compelling Slovak title",
-  "description": "Meta description in Slovak, max 155 chars",
+  "slug": "url-friendly-slug-bez-diakritiky",
+  "title": "Pútavý slovenský nadpis s kľúčovým slovom",
+  "description": "Meta popis v slovenčine, max 155 znakov",
   "tags": ["tag1", "tag2", "tag3"],
-  "content": "Full markdown content of the blog post"
-}
+  "readingTime": 7,
+  "content": "Celý markdown obsah článku"
+}`;
 
-Important: The slug must use only lowercase letters, numbers, and hyphens (no Slovak diacritics).`;
-
-  const response = await fetch("https://api.anthropic.com/v1/messages", {
+  const response = await fetch(`${GEMINI_URL}?key=${apiKey}`, {
     method: "POST",
-    headers: {
-      "Content-Type": "application/json",
-      "x-api-key": apiKey,
-      "anthropic-version": "2023-06-01",
-    },
+    headers: { "Content-Type": "application/json" },
     body: JSON.stringify({
-      model: "claude-sonnet-4-20250514",
-      max_tokens: 4096,
-      messages: [{ role: "user", content: prompt }],
+      contents: [{ parts: [{ text: prompt }] }],
+      generationConfig: {
+        responseMimeType: "application/json",
+        temperature: 0.7,
+        maxOutputTokens: 8192,
+      },
     }),
   });
 
   if (!response.ok) {
     const err = await response.text();
-    throw new Error(`Anthropic API error (${response.status}): ${err}`);
+    throw new Error(`Gemini API error (${response.status}): ${err}`);
   }
 
   const data = await response.json();
-  const text = data.content[0].text.trim();
+
+  // Check for blocked/empty responses
+  if (!data.candidates?.[0]?.content?.parts?.[0]?.text) {
+    const reason = data.candidates?.[0]?.finishReason || "unknown";
+    throw new Error(`Gemini returned no content (reason: ${reason})`);
+  }
+
+  const text = data.candidates[0].content.parts[0].text.trim();
 
   let post;
   try {
     post = JSON.parse(text);
   } catch {
-    // Try to extract JSON from response if wrapped in other text
     const jsonMatch = text.match(/\{[\s\S]*\}/);
     if (jsonMatch) {
       post = JSON.parse(jsonMatch[0]);
     } else {
-      throw new Error("Failed to parse AI response as JSON");
+      throw new Error("Failed to parse Gemini response as JSON");
     }
   }
 
   // Validate required fields
   if (!post.slug || !post.title || !post.description || !post.content) {
-    throw new Error("Missing required fields in generated post");
+    throw new Error(
+      `Missing required fields in generated post. Got keys: ${Object.keys(post).join(", ")}`
+    );
   }
 
   // Ensure slug doesn't already exist
@@ -123,9 +127,10 @@ Important: The slug must use only lowercase letters, numbers, and hyphens (no Sl
     post.slug = `${post.slug}-${Date.now()}`;
   }
 
-  // Add date and image placeholder
+  // Add/override metadata
   post.date = today;
   post.image = `/blog/images/${post.slug}.webp`;
+  post.readingTime = post.readingTime || Math.ceil(post.content.split(/\s+/).length / 200);
 
   return post;
 }
@@ -147,6 +152,8 @@ async function main() {
   console.log(`  Title: ${post.title}`);
   console.log(`  Slug: ${post.slug}`);
   console.log(`  Tags: ${post.tags.join(", ")}`);
+  console.log(`  Reading time: ${post.readingTime} min`);
+  console.log(`  Word count: ~${post.content.split(/\s+/).length}`);
 }
 
 main().catch((err) => {

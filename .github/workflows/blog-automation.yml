@@ -1,9 +1,9 @@
 name: Blog automation
 
 on:
-  # Run weekly on Monday at 9:00 UTC (10:00 CET)
+  # Run 3x/week: Monday, Wednesday, Friday at 6:00 UTC (7:00 CET)
   schedule:
-    - cron: "0 9 * * 1"
+    - cron: "0 6 * * 1,3,5"
   # Allow manual trigger
   workflow_dispatch:
     inputs:
@@ -16,7 +16,7 @@ permissions:
   contents: write
 
 env:
-  ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+  GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
 
 jobs:
   generate-post:
@@ -45,6 +45,9 @@ jobs:
             echo "changed=false" >> $GITHUB_OUTPUT
           else
             echo "changed=true" >> $GITHUB_OUTPUT
+            # Extract the new post slug for IndexNow
+            SLUG=$(ls -t src/content/blog/*.json | head -1 | xargs -I{} node -e "console.log(JSON.parse(require('fs').readFileSync('{}','utf8')).slug)")
+            echo "slug=$SLUG" >> $GITHUB_OUTPUT
           fi
 
       - name: Commit and push
@@ -52,8 +55,22 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          SLUG=$(ls -t src/content/blog/*.json | head -1 | xargs basename .json)
           git add src/content/blog/ public/sitemap.xml
-          git commit -m "blog: add new post — $SLUG"
+          git commit -m "blog: add new post — ${{ steps.check.outputs.slug }}"
           git pull --rebase origin main
           git push origin main
+
+      - name: Ping IndexNow (Bing, Seznam, Yandex)
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          node scripts/ping-indexnow.mjs \
+            "https://realfoto.sk/blog/${{ steps.check.outputs.slug }}" \
+            "https://realfoto.sk/blog" \
+            "https://realfoto.sk/sitemap.xml"
+
+      - name: Ping Google sitemap
+        if: steps.check.outputs.changed == 'true'
+        run: |
+          curl -s "https://www.google.com/ping?sitemap=https://realfoto.sk/sitemap.xml"
+          echo ""
+          echo "✓ Google sitemap ping sent"

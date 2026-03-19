@@ -9,6 +9,10 @@ export default function TermsOfService() {
         title="Obchodné podmienky"
         description="Všeobecné obchodné podmienky služby RealFoto. Pravidlá používania, platby a refundácie."
         path="/obchodne-podmienky"
+        breadcrumbs={[
+          { name: "Domov", path: "/" },
+          { name: "Obchodné podmienky", path: "/obchodne-podmienky" },
+        ]}
       />
       <Header />
       <main className="flex-1 pt-20 sm:pt-24">

@@ -61,6 +61,10 @@ export default function Contact() {
         title="Kontakt"
         description="Kontaktujte nás emailom na info@realfoto.sk alebo telefonicky na +421 911 911 288. Sme tu pre vás."
         path="/kontakt"
+        breadcrumbs={[
+          { name: "Domov", path: "/" },
+          { name: "Kontakt", path: "/kontakt" },
+        ]}
       />
       <Header />
       <main className="flex-1 pt-20 sm:pt-24">

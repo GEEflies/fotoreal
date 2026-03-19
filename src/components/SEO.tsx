@@ -6,6 +6,11 @@ const DEFAULT_DESCRIPTION =
   "Profesionálne úpravy realitných fotografií pomocou AI. HDR, výmena oblohy, korekcia perspektívy. Ušetrite až 90% nákladov.";
 const DEFAULT_OG_IMAGE = `${SITE_URL}/og-image.jpg`;
 
+interface Breadcrumb {
+  name: string;
+  path: string;
+}
+
 interface SEOProps {
   title?: string;
   description?: string;
@@ -14,6 +19,7 @@ interface SEOProps {
   type?: string;
   noindex?: boolean;
   jsonLd?: Record<string, unknown> | Record<string, unknown>[];
+  breadcrumbs?: Breadcrumb[];
 }
 
 export function SEO({
@@ -24,6 +30,7 @@ export function SEO({
   type = "website",
   noindex = false,
   jsonLd,
+  breadcrumbs,
 }: SEOProps) {
   const fullTitle = title ? `${title} | RealFoto` : DEFAULT_TITLE;
   const canonicalUrl = `${SITE_URL}${path}`;
@@ -33,6 +40,20 @@ export function SEO({
       ? jsonLd
       : [jsonLd]
     : [];
+
+  // Auto-generate BreadcrumbList schema
+  if (breadcrumbs && breadcrumbs.length > 0) {
+    jsonLdArray.push({
+      "@context": "https://schema.org",
+      "@type": "BreadcrumbList",
+      itemListElement: breadcrumbs.map((crumb, i) => ({
+        "@type": "ListItem",
+        position: i + 1,
+        name: crumb.name,
+        item: `${SITE_URL}${crumb.path}`,
+      })),
+    });
+  }
 
   return (
     <Helmet>

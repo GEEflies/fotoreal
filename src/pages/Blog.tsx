@@ -14,6 +14,10 @@ export default function Blog() {
         title="Blog"
         description="Články o fotografovaní nehnuteľností, tipy na lepší predaj a novinky z RealFoto."
         path="/blog"
+        breadcrumbs={[
+          { name: "Domov", path: "/" },
+          { name: "Blog", path: "/blog" },
+        ]}
       />
       <Header />
       <main className="flex-1 pt-20 sm:pt-24">

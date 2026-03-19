@@ -22,18 +22,10 @@ const LandingB = () => (
       title="Profesionálne fotky z mobilu"
       description="Fotky z telefónu premeníme na profesionálnu kvalitu. Viac záujmu, vyššia predajná cena. Vyskúšajte AI editor realitných fotiek."
       path="/bez-fotografa"
-      jsonLd={{
-        "@context": "https://schema.org",
-        "@type": "FAQPage",
-        mainEntity: [
-          { "@type": "Question", name: "Stačí na to fotka z mobilu?", acceptedAnswer: { "@type": "Answer", text: "Áno! RealFoto je optimalizovaný práve pre fotky z mobilov. Podporujeme iPhone aj Android. Stačí dobre osvetlená miestnosť a naše AI spraví zvyšok." } },
-          { "@type": "Question", name: "Naozaj to vyzerá ako od profesionálneho fotografa?", acceptedAnswer: { "@type": "Answer", text: "Naše AI bolo trénované na tisíckach profesionálne upravených realitných fotiek. Výsledky sú konzistentne na úrovni skúsených fotografov — HDR, korekcia perspektívy, vyváženie farieb, všetko automaticky." } },
-          { "@type": "Question", name: "Koľko stojí jedna fotka?", acceptedAnswer: { "@type": "Answer", text: "0,70 € za fotku. Pri 20 fotkách na nehnuteľnosť je to len 14 €. Prvých 5 fotiek je úplne zadarmo." } },
-          { "@type": "Question", name: "Ako rýchlo dostanem výsledok?", acceptedAnswer: { "@type": "Answer", text: "Priemerne za 15–30 sekúnd. Nahráte fotku, AI ju spracuje a stiahnete hotový výsledok. Žiadne čakanie." } },
-          { "@type": "Question", name: "Naozaj to pomôže predať rýchlejšie?", acceptedAnswer: { "@type": "Answer", text: "Dáta ukazujú, že inzeráty s profesionálnymi fotkami dostávajú o 118% viac zobrazení. Viac zobrazení = viac záujemcov = rýchlejší predaj za lepšiu cenu." } },
-          { "@type": "Question", name: "Aké formáty podporujete?", acceptedAnswer: { "@type": "Answer", text: "JPG, PNG, WebP a RAW (CR2, NEF, ARW). Maximálna veľkosť 50 MB. Dávkové spracovanie až 50 fotiek naraz." } },
-        ],
-      }}
+      breadcrumbs={[
+        { name: "Domov", path: "/" },
+        { name: "Bez fotografa", path: "/bez-fotografa" },
+      ]}
     />
     <Header />
     <main>

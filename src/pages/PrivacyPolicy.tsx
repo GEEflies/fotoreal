@@ -9,6 +9,10 @@ export default function PrivacyPolicy() {
         title="Ochrana osobných údajov"
         description="Zásady ochrany osobných údajov služby RealFoto. GDPR súlad a ochrana súkromia."
         path="/ochrana-sukromia"
+        breadcrumbs={[
+          { name: "Domov", path: "/" },
+          { name: "Ochrana súkromia", path: "/ochrana-sukromia" },
+        ]}
       />
       <Header />
       <main className="flex-1 pt-20 sm:pt-24">

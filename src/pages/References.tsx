@@ -16,6 +16,10 @@ export default function References() {
         title="Referencie"
         description="Pozrite sa, čo hovoria naši klienti a aké výsledky dosahujú s RealFoto AI editorom realitných fotiek."
         path="/referencie"
+        breadcrumbs={[
+          { name: "Domov", path: "/" },
+          { name: "Referencie", path: "/referencie" },
+        ]}
       />
       <Header />
       <main className="flex-1 pt-20 sm:pt-24">

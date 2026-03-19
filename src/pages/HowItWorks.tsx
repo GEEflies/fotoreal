@@ -16,6 +16,10 @@ export default function HowItWorks() {
         title="Ako to funguje"
         description="Nahrajte fotky nehnuteľnosti a naše AI ich automaticky vylepší na profesionálnu úroveň za menej ako 30 sekúnd."
         path="/ako-to-funguje"
+        breadcrumbs={[
+          { name: "Domov", path: "/" },
+          { name: "Ako to funguje", path: "/ako-to-funguje" },
+        ]}
       />
       <Header />
       <main className="flex-1 pt-20 sm:pt-24">

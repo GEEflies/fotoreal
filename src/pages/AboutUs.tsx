@@ -15,6 +15,10 @@ export default function AboutUs() {
         title="O nás"
         description="Sme slovenský tím s vášňou pre technológie a realitný trh. Pomáhame realitným maklérom s profesionálnymi fotkami pomocou AI."
         path="/o-nas"
+        breadcrumbs={[
+          { name: "Domov", path: "/" },
+          { name: "O nás", path: "/o-nas" },
+        ]}
       />
       <Header />
       <main className="flex-1 pt-20 sm:pt-24">

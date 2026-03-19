@@ -36,8 +36,6 @@ function updateSitemap() {
       const entry = `  <url>
     <loc>${blogUrl}</loc>
     <lastmod>${post.date}</lastmod>
-    <changefreq>monthly</changefreq>
-    <priority>0.7</priority>
   </url>`;
 
       // Insert before closing </urlset>

@@ -49,6 +49,10 @@ export default function Features() {
         title="Funkcie"
         description="HDR spájanie, výmena oblohy, korekcia perspektívy, rozmazanie tvárí a ŠPZ, virtuálny staging. Všetko automaticky pomocou AI."
         path="/funkcie"
+        breadcrumbs={[
+          { name: "Domov", path: "/" },
+          { name: "Funkcie", path: "/funkcie" },
+        ]}
       />
       <Header />
       <main className="flex-1 pt-20 sm:pt-24">
