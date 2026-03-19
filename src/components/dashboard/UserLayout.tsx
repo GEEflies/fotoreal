@@ -93,7 +93,7 @@ function Sidebar({ currentPath, userEmail }: { currentPath: string; userEmail?: 
     <div className="flex flex-col h-full">
       <div className="p-4 border-b border-border">
         <div className="flex items-center gap-2">
-          <LogoRealfoto className="h-8 w-8" />
+          <LogoRealfoto className="h-10 w-auto" />
           <div>
             <h1 className="text-lg font-heading font-bold text-foreground leading-tight">RealFoto</h1>
             <p className="text-xs text-muted-foreground">Spracovanie fotiek</p>
@@ -212,7 +212,7 @@ export function UserLayout() {
     <div className="min-h-screen bg-muted">
       <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-card border-b border-border p-4 flex items-center justify-between">
         <div className="flex items-center gap-2">
-          <LogoRealfoto className="h-7 w-7" />
+          <LogoRealfoto className="h-8 w-auto" />
           <span className="text-lg font-heading font-bold">RealFoto</span>
         </div>
         <Sheet>
