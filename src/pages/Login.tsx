@@ -14,6 +14,19 @@ import LogoRealfoto from '@/components/LogoRealfoto';
 import { getStoredAvatar } from '@/components/AvatarSelector';
 import { translateError } from '@/lib/translate-error';
 
+declare global {
+  interface Window {
+    google: {
+      accounts: {
+        id: {
+          initialize: (config: { client_id: string; callback: (r: { credential: string }) => void }) => void;
+          prompt: () => void;
+        };
+      };
+    };
+  }
+}
+
 type AuthStep = 'login' | 'signup' | 'reset-password' | 'check-email';
 
 export default function Login() {
@@ -67,20 +80,42 @@ export default function Login() {
     setOtpCode('');
   };
 
-  // After Google OAuth, redirect back to /login with the original redirect param
-  // so the session-detection effect below can forward to /dashboard (or wherever).
-  const handleGoogleLogin = async () => {
+  // GSI credential callback — receives JWT from Google, signs in via Supabase
+  const handleGoogleCredential = async (response: { credential: string }) => {
     setIsGoogleLoading(true);
-    const callbackUrl = `${window.location.origin}/login?redirect=${encodeURIComponent(redirectTo)}`;
-    const { error } = await supabase.auth.signInWithOAuth({
+    const { error } = await supabase.auth.signInWithIdToken({
       provider: 'google',
-      options: {
-        redirectTo: callbackUrl,
-      },
+      token: response.credential,
     });
     setIsGoogleLoading(false);
     if (error) {
       toast({ title: 'Chyba prihlásenia', description: translateError(error.message), variant: 'destructive' });
+    }
+    // session detection effect above handles the redirect
+  };
+
+  // Load GSI script once and initialize One Tap
+  useEffect(() => {
+    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
+    if (!clientId) return;
+    const script = document.createElement('script');
+    script.src = 'https://accounts.google.com/gsi/client';
+    script.async = true;
+    script.onload = () => {
+      window.google.accounts.id.initialize({
+        client_id: clientId,
+        callback: handleGoogleCredential,
+      });
+      window.google.accounts.id.prompt();
+    };
+    document.body.appendChild(script);
+    return () => { document.body.removeChild(script); };
+  }, []);
+
+  // Button click triggers the GSI prompt (popup, not redirect)
+  const handleGoogleLogin = () => {
+    if (window.google?.accounts?.id) {
+      window.google.accounts.id.prompt();
     }
   };
 
