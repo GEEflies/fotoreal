@@ -1,0 +1,41 @@
+name: Sync lovable → main
+
+on:
+  push:
+    branches:
+      - lovable
+
+jobs:
+  merge:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Configure git
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+
+      - name: Check for new Lovable commits
+        id: check
+        run: |
+          git fetch origin
+          DIFF=$(git log origin/main..origin/lovable --oneline)
+          if [ -z "$DIFF" ]; then
+            echo "skip=true" >> $GITHUB_OUTPUT
+          else
+            echo "skip=false" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Merge lovable into main
+        if: steps.check.outputs.skip == 'false'
+        run: |
+          git merge origin/lovable --no-edit -m "Auto-merge: lovable → main"
+
+      - name: Push to main
+        if: steps.check.outputs.skip == 'false'
+        run: git push origin main
