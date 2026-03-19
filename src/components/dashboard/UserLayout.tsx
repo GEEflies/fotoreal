@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate, useLocation, Link, Outlet } from 'react-router-dom';
 import { useUserAuth } from '@/hooks/use-user-auth';
 import { useCredits } from '@/hooks/use-credits';
+import { useClaimPurchases } from '@/hooks/use-claim-purchases';
 import { supabase } from '@/integrations/supabase/client';
 import { Building2, Plus, LogOut, Home, Menu, Sparkles, ShoppingCart, ChevronDown, User, Smartphone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -199,12 +200,22 @@ export function UserLayout() {
   const { user, isLoading } = useUserAuth();
   const navigate = useNavigate();
   const location = useLocation();
+  const { claimPurchases } = useClaimPurchases();
 
   useEffect(() => {
     if (!isLoading && !user) {
       navigate('/login');
     }
   }, [user, isLoading, navigate]);
+
+  // Claim any purchases the user paid for as a guest (once per session)
+  useEffect(() => {
+    if (!user?.id || !user?.email) return;
+    const key = `realfoto_claimed_${user.id}`;
+    if (sessionStorage.getItem(key)) return;
+    sessionStorage.setItem(key, '1');
+    claimPurchases();
+  }, [user?.id, claimPurchases]);
 
   if (!isLoading && !user) return null;
 
