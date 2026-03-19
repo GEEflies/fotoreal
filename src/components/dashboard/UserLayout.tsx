@@ -3,6 +3,7 @@ import { useNavigate, useLocation, Link, Outlet } from 'react-router-dom';
 import { useUserAuth } from '@/hooks/use-user-auth';
 import { useCredits } from '@/hooks/use-credits';
 import { useClaimPurchases } from '@/hooks/use-claim-purchases';
+import { WelcomeOnboarding, useWelcomeState } from '@/components/dashboard/WelcomeOnboarding';
 import { supabase } from '@/integrations/supabase/client';
 import { Building2, Plus, LogOut, Home, Menu, Sparkles, ShoppingCart, ChevronDown, User, Smartphone } from 'lucide-react';
 import { Button } from '@/components/ui/button';
@@ -201,6 +202,7 @@ export function UserLayout() {
   const navigate = useNavigate();
   const location = useLocation();
   const { claimPurchases } = useClaimPurchases();
+  const { showOnboarding, completeOnboarding } = useWelcomeState();
 
   useEffect(() => {
     if (!isLoading && !user) {
@@ -220,6 +222,8 @@ export function UserLayout() {
   if (!isLoading && !user) return null;
 
   return (
+    <>
+    {showOnboarding && <WelcomeOnboarding onComplete={completeOnboarding} />}
     <div className="min-h-screen bg-muted">
       <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-card border-b border-border p-4 flex items-center justify-between">
         <div className="flex items-center gap-2">

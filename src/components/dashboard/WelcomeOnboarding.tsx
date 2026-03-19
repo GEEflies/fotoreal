@@ -384,15 +384,15 @@ export function useWelcomeState() {
   const [showConfetti, setShowConfetti] = useState(false);
 
   useEffect(() => {
-    const justLoggedIn = sessionStorage.getItem(LOGIN_KEY) === '1';
-    if (!justLoggedIn) return;
-
     supabase.auth.getUser().then(({ data: { user } }) => {
-      const onboardingDone = user?.user_metadata?.onboarding_done === true;
+      if (!user) return;
+      const onboardingDone = user.user_metadata?.onboarding_done === true;
+      const justLoggedIn = sessionStorage.getItem(LOGIN_KEY) === '1';
+
       if (!onboardingDone) {
-        // New user: show full onboarding
+        // New user: always show onboarding (regardless of session flag)
         setShowOnboarding(true);
-      } else {
+      } else if (justLoggedIn) {
         // Returning user who just logged in: quick confetti
         sessionStorage.removeItem(LOGIN_KEY);
         setShowConfetti(true);
