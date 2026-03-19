@@ -12,8 +12,8 @@ import {
   Rocket,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
+import { supabase } from '@/integrations/supabase/client';
 
-const ONBOARDING_KEY = 'realfoto_onboarding_complete';
 const LOGIN_KEY = 'realfoto_just_logged_in';
 
 interface WelcomeOnboardingProps {
@@ -159,7 +159,7 @@ export function WelcomeOnboarding({ onComplete }: WelcomeOnboardingProps) {
   };
 
   const handleFinish = (goToNew: boolean) => {
-    localStorage.setItem(ONBOARDING_KEY, '1');
+    supabase.auth.updateUser({ data: { onboarding_done: true } });
     sessionStorage.removeItem(LOGIN_KEY);
     fireQuickConfetti();
     setIsVisible(false);
@@ -170,7 +170,7 @@ export function WelcomeOnboarding({ onComplete }: WelcomeOnboardingProps) {
   };
 
   const handleSkip = () => {
-    localStorage.setItem(ONBOARDING_KEY, '1');
+    supabase.auth.updateUser({ data: { onboarding_done: true } });
     sessionStorage.removeItem(LOGIN_KEY);
     setIsVisible(false);
     setTimeout(() => onComplete(), 350);
@@ -385,17 +385,20 @@ export function useWelcomeState() {
 
   useEffect(() => {
     const justLoggedIn = sessionStorage.getItem(LOGIN_KEY) === '1';
-    const onboardingDone = localStorage.getItem(ONBOARDING_KEY) === '1';
+    if (!justLoggedIn) return;
 
-    if (justLoggedIn && !onboardingDone) {
-      // First-time user: show full onboarding
-      setShowOnboarding(true);
-    } else if (justLoggedIn && onboardingDone) {
-      // Returning user who just logged in: quick confetti
-      sessionStorage.removeItem(LOGIN_KEY);
-      setShowConfetti(true);
-      fireQuickConfetti();
-    }
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      const onboardingDone = user?.user_metadata?.onboarding_done === true;
+      if (!onboardingDone) {
+        // New user: show full onboarding
+        setShowOnboarding(true);
+      } else {
+        // Returning user who just logged in: quick confetti
+        sessionStorage.removeItem(LOGIN_KEY);
+        setShowConfetti(true);
+        fireQuickConfetti();
+      }
+    });
   }, []);
 
   const completeOnboarding = useCallback(() => {
