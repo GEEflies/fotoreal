@@ -82,7 +82,7 @@ export function PricingPackagesA() {
                   className="w-full p-3 sm:p-4 rounded-xl border border-border bg-background hover:border-primary/40 transition-colors text-left"
                 >
                   <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2">
+                    <div className="flex items-center gap-2 min-w-0">
                       <span className="font-heading text-2xl font-extrabold text-foreground">
                         {pkg.photos}
                       </span>
@@ -96,7 +96,7 @@ export function PricingPackagesA() {
                         ~{pkg.properties} {pkg.properties === 1 ? "nehnuteľnosť" : pkg.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"}
                       </span>
                     </div>
-                    <div className="text-right">
+                    <div className="text-right shrink-0">
                       <div className="flex items-center gap-1">
                         <span className="font-heading text-xl font-bold text-foreground">
                           {pkg.price} €
@@ -107,7 +107,7 @@ export function PricingPackagesA() {
                           }`}
                         />
                       </div>
-                      <span className="text-sm font-semibold text-primary">({pkg.ppp.toFixed(2)} € / ks)</span>
+                      <span className="text-sm font-semibold text-primary whitespace-nowrap">({pkg.ppp.toFixed(2)} € / ks)</span>
                     </div>
                   </div>
                 </button>
@@ -126,7 +126,7 @@ export function PricingPackagesA() {
                         } ${i < PACKAGES.length - 1 ? "border-b border-border/50" : ""}`}
                       >
                         <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-2 min-w-0">
                             <span className="font-heading text-lg font-bold text-foreground">
                               {p.photos}
                             </span>
@@ -140,9 +140,9 @@ export function PricingPackagesA() {
                               ~{p.properties} {p.properties === 1 ? "nehnuteľnosť" : p.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"}
                             </span>
                           </div>
-                          <div className="text-right">
+                          <div className="text-right shrink-0">
                             <span className="font-bold text-foreground">{p.price} €</span>
-                            <p className="text-sm font-semibold text-primary">({p.ppp.toFixed(2)} € / ks)</p>
+                            <p className="text-sm font-semibold text-primary whitespace-nowrap">({p.ppp.toFixed(2)} € / ks)</p>
                           </div>
                         </div>
                       </button>

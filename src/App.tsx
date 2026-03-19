@@ -1,8 +1,9 @@
+import { useEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { useIsPWA } from "@/hooks/use-pwa";
 import Index from "./pages/Index";
 import LandingA from "./pages/LandingA";
@@ -44,6 +45,16 @@ import {
 
 const queryClient = new QueryClient();
 
+function ScrollToHash() {
+  const { hash } = useLocation();
+  useEffect(() => {
+    if (!hash) return;
+    const el = document.getElementById(hash.replace("#", ""));
+    if (el) setTimeout(() => el.scrollIntoView({ behavior: "smooth" }), 80);
+  }, [hash]);
+  return null;
+}
+
 /** Redirects to /login when running as installed PWA */
 function PWAGuard({ children }: { children: React.ReactNode }) {
   const isPWA = useIsPWA();
@@ -57,6 +68,7 @@ const App = () => (
       <Toaster />
       <Sonner />
       <BrowserRouter>
+        <ScrollToHash />
         <Routes>
           {/* Static / marketing pages — blocked in PWA mode */}
           <Route path="/" element={<PWAGuard><Index /></PWAGuard>} />
