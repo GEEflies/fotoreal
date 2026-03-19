@@ -67,8 +67,8 @@ export function Footer() {
             <ul className="space-y-2.5">
               <li><Link to="/o-nas" className="text-sm text-background/60 hover:text-background transition-colors">O nás</Link></li>
               <li><Link to="/kontakt" className="text-sm text-background/60 hover:text-background transition-colors">Kontakt</Link></li>
-              <li><a href="#" className="text-sm text-background/60 hover:text-background transition-colors">Ochrana súkromia</a></li>
-              <li><a href="#" className="text-sm text-background/60 hover:text-background transition-colors">Obchodné podmienky</a></li>
+              <li><Link to="/ochrana-sukromia" className="text-sm text-background/60 hover:text-background transition-colors">Ochrana súkromia</Link></li>
+              <li><Link to="/obchodne-podmienky" className="text-sm text-background/60 hover:text-background transition-colors">Obchodné podmienky</Link></li>
             </ul>
           </div>
 

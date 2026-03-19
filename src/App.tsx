@@ -24,6 +24,8 @@ import DashboardNewProperty from "./pages/dashboard/DashboardNewProperty";
 import DashboardPropertyDetail from "./pages/dashboard/DashboardPropertyDetail";
 import DashboardCredits from "./pages/dashboard/DashboardCredits";
 import DashboardProfile from "./pages/dashboard/DashboardProfile";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
 import {
   AdminLogin,
   AdminSubmissions,
@@ -95,6 +97,8 @@ const App = () => (
           <Route path="/admin/outreach/campaigns" element={<PWAGuard><OutreachCampaigns /></PWAGuard>} />
           <Route path="/admin/outreach/replies" element={<PWAGuard><OutreachReplies /></PWAGuard>} />
           <Route path="/admin/outreach/stats" element={<PWAGuard><OutreachStats /></PWAGuard>} />
+          <Route path="/ochrana-sukromia" element={<PrivacyPolicy />} />
+          <Route path="/obchodne-podmienky" element={<TermsOfService />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
