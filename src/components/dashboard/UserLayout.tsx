@@ -81,7 +81,7 @@ function Sidebar({ currentPath, userEmail }: { currentPath: string; userEmail?: 
 
   const handleSignOut = async () => {
     await signOut();
-    navigate('/login');
+    navigate('/login?mode=login');
   };
 
   const statusDot: Record<string, string> = {
@@ -206,7 +206,7 @@ export function UserLayout() {
 
   useEffect(() => {
     if (!isLoading && !user) {
-      navigate('/login');
+      navigate('/login?mode=login');
     }
   }, [user, isLoading, navigate]);
 
