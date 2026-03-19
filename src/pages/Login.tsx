@@ -22,6 +22,7 @@ export default function Login() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [otpCode, setOtpCode] = useState('');
+  const [searchParams] = useSearchParams();
   const modeParam = searchParams.get('mode');
   const [step, setStep] = useState<AuthStep>(modeParam === 'login' ? 'login' : 'signup');
   const [showRegisterSuggestion, setShowRegisterSuggestion] = useState(false);
@@ -32,7 +33,6 @@ export default function Login() {
   const [isDemoLoading, setIsDemoLoading] = useState(false);
   const { signIn, signUp, resetPassword, demoLogin } = useUserAuth();
   const navigate = useNavigate();
-  const [searchParams] = useSearchParams();
   const { toast } = useToast();
 
   const redirectTo = searchParams.get('redirect') || '/dashboard';
