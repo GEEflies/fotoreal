@@ -1,13 +1,11 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
-import { UserLayout } from '@/components/dashboard/UserLayout';
 import { AIProgressLoader } from '@/components/dashboard/AIProgressLoader';
 import { PhotoCompareModal } from '@/components/dashboard/PhotoCompareModal';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
 import { Card, CardContent } from '@/components/ui/card';
-import { Skeleton } from '@/components/ui/skeleton';
 import { ArrowLeft, Download, DownloadCloud } from 'lucide-react';
 import { useToast } from '@/hooks/use-toast';
 
@@ -80,9 +78,12 @@ export default function DashboardPropertyDetail() {
         event: 'UPDATE', schema: 'public', table: 'property_photos',
         filter: `property_id=eq.${id}`,
       }, (payload) => {
-        setPhotos(prev => prev.map(p => 
+        setPhotos(prev => prev.map(p =>
           p.id === payload.new.id ? { ...p, ...payload.new as Photo } : p
         ));
+        if (payload.new.status === 'done') {
+          window.dispatchEvent(new Event('credits-changed'));
+        }
       })
       .subscribe();
 
@@ -101,6 +102,50 @@ export default function DashboardPropertyDetail() {
       supabase.removeChannel(propChannel);
     };
   }, [id]);
+
+  // Fallback polling every 5s while processing — bulletproof even if Realtime drops.
+  // Also detects stalled processing (chain breakage) and re-triggers the edge function.
+  useEffect(() => {
+    if (!id || property?.status !== 'processing') return;
+
+    const poll = async () => {
+      const [{ data: prop }, { data: photoData }] = await Promise.all([
+        supabase.from('properties').select('*').eq('id', id).single(),
+        supabase.from('property_photos').select('*').eq('property_id', id).order('created_at'),
+      ]);
+      if (prop) setProperty(prev => prev ? { ...prev, ...prop as unknown as Property } : null);
+      if (photoData) {
+        setPhotos(prev => {
+          // If any photo just changed to "done" via polling, refresh credits
+          for (const p of photoData as unknown as Photo[]) {
+            if (p.ai_status === 'done') {
+              const old = prev.find(op => op.id === p.id);
+              if (old && old.ai_status !== 'done') {
+                window.dispatchEvent(new Event('credits-changed'));
+                break;
+              }
+            }
+          }
+          return photoData as unknown as Photo[];
+        });
+      }
+
+      // Re-trigger if processing stalled (pending photos but none actively processing)
+      if (photoData) {
+        const hasPending = photoData.some((p: { ai_status: string }) => p.ai_status === 'pending');
+        const hasActive = photoData.some((p: { ai_status: string }) =>
+          p.ai_status === 'analyzing' || p.ai_status === 'enhancing' || p.ai_status === 'uploading'
+        );
+        if (hasPending && !hasActive) {
+          supabase.functions.invoke('process-photos', { body: { property_id: id } })
+            .then(({ error }) => { if (error) console.error('Re-trigger error:', error); });
+        }
+      }
+    };
+
+    const interval = setInterval(poll, 5000);
+    return () => clearInterval(interval);
+  }, [id, property?.status]);
 
   const loadData = async () => {
     if (!id) return;
@@ -124,37 +169,88 @@ export default function DashboardPropertyDetail() {
   const donePhotos = photos.filter(p => p.ai_status === 'done' && p.processed_url);
   const doneCount = donePhotos.length;
   const totalCount = photos.length;
-  const progressPercent = totalCount > 0 ? Math.round((doneCount / totalCount) * 100) : 0;
+
+  // Phase anchors (percentage) and expected durations (ms) for smooth interpolation
+  const PHASE_CONFIG: Record<string, { anchor: number; next: number; durationMs: number }> = {
+    pending:   { anchor: 0,   next: 15,  durationMs: 2000 },
+    analyzing: { anchor: 15,  next: 30,  durationMs: 15000 },
+    enhancing: { anchor: 30,  next: 85,  durationMs: 70000 },
+    uploading: { anchor: 85,  next: 100, durationMs: 5000 },
+    done:      { anchor: 100, next: 100, durationMs: 0 },
+    error:     { anchor: 100, next: 100, durationMs: 0 },
+  };
+
+  // Track when each photo entered its current status
+  const phaseTimestamps = useRef<Map<string, { status: string; enteredAt: number }>>(new Map());
+
+  // Update timestamps when photo statuses change
+  useEffect(() => {
+    for (const photo of photos) {
+      const entry = phaseTimestamps.current.get(photo.id);
+      if (!entry || entry.status !== photo.ai_status) {
+        phaseTimestamps.current.set(photo.id, { status: photo.ai_status, enteredAt: Date.now() });
+      }
+    }
+  }, [photos]);
+
+  // Tick every 200ms while processing for smooth progress animation
+  const [tick, setTick] = useState(0);
+  useEffect(() => {
+    if (property?.status !== 'processing') return;
+    const timer = setInterval(() => setTick(t => t + 1), 200);
+    return () => clearInterval(timer);
+  }, [property?.status]);
+
+  // Calculate interpolated progress per photo
+  const getInterpolatedProgress = (photo: Photo): number => {
+    const config = PHASE_CONFIG[photo.ai_status] || PHASE_CONFIG.pending;
+    if (config.durationMs === 0) return config.anchor;
+
+    const entry = phaseTimestamps.current.get(photo.id);
+    const elapsed = entry ? Date.now() - entry.enteredAt : 0;
+    const fraction = Math.min(elapsed / config.durationMs, 0.95); // cap at 95% to never overshoot
+    return config.anchor + fraction * (config.next - config.anchor);
+  };
+
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  const _tick = tick; // referenced to trigger recalculation
+  const progressPercent = totalCount > 0
+    ? Math.round(photos.reduce((sum, p) => sum + getInterpolatedProgress(p), 0) / totalCount)
+    : 0;
 
   if (isLoading) {
     return (
-      <UserLayout>
-        <div className="space-y-4">
-          <Skeleton className="h-8 w-64" />
-          <Skeleton className="h-4 w-96" />
+      <>
+        <div className="space-y-6">
+          <div>
+            <Link to="/dashboard" className="flex items-center gap-1 text-sm text-muted-foreground hover:text-foreground mb-2">
+              <ArrowLeft className="h-4 w-4" /> Späť na nehnuteľnosti
+            </Link>
+            <div className="h-8 w-48 bg-muted rounded animate-pulse" />
+          </div>
           <div className="grid grid-cols-2 lg:grid-cols-3 gap-4">
-            {[1, 2, 3, 4, 5, 6].map(i => <Skeleton key={i} className="aspect-square rounded-lg" />)}
+            {[1, 2, 3, 4, 5, 6].map(i => <div key={i} className="aspect-square rounded-lg bg-card border border-border animate-pulse" />)}
           </div>
         </div>
-      </UserLayout>
+      </>
     );
   }
 
   if (!property) {
     return (
-      <UserLayout>
+      <>
         <div className="text-center py-16">
           <p className="text-muted-foreground">Nehnuteľnosť sa nenašla.</p>
           <Link to="/dashboard"><Button variant="outline" className="mt-4">Späť</Button></Link>
         </div>
-      </UserLayout>
+      </>
     );
   }
 
   const statusInfo = statusLabels[property.status] || statusLabels.uploading;
 
   return (
-    <UserLayout>
+    <>
       <div className="space-y-6">
         {/* Header */}
         <div className="flex items-start justify-between flex-wrap gap-4">
@@ -259,6 +355,6 @@ export default function DashboardPropertyDetail() {
         open={compareIndex !== null}
         onOpenChange={(open) => { if (!open) setCompareIndex(null); }}
       />
-    </UserLayout>
+    </>
   );
 }

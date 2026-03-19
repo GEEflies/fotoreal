@@ -16,7 +16,7 @@ export function useClaimPurchases() {
         return 0;
       }
 
-      const { data, error } = await (supabase.rpc as any)('claim_purchases_by_email', {
+      const { data, error } = await supabase.rpc('claim_purchases_by_email', {
         _user_id: user.id,
         _email: user.email,
       });
@@ -35,9 +35,10 @@ export function useClaimPurchases() {
 
       if (count > 0) {
         toast({
-          title: 'Kredity pripísané!',
-          description: 'Kredity z vášho nákupu boli pripísané na váš účet.',
+          title: 'Kredity sú na účte!',
+          description: 'Môžete ich hneď použiť.',
         });
+        window.dispatchEvent(new Event('credits-changed'));
       }
 
       setIsLoading(false);

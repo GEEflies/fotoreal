@@ -1,5 +1,5 @@
-import { ReactNode, useEffect, useState } from 'react';
-import { useNavigate, useLocation, Link } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+import { useNavigate, useLocation, Link, Outlet } from 'react-router-dom';
 import { useUserAuth } from '@/hooks/use-user-auth';
 import { useCredits } from '@/hooks/use-credits';
 import { supabase } from '@/integrations/supabase/client';
@@ -8,10 +8,7 @@ import { Button } from '@/components/ui/button';
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet';
 import { Progress } from '@/components/ui/progress';
 import { cn } from '@/lib/utils';
-
-interface UserLayoutProps {
-  children: ReactNode;
-}
+import LogoRealfoto from '@/components/LogoRealfoto';
 
 interface SidebarProperty {
   id: string;
@@ -20,11 +17,10 @@ interface SidebarProperty {
 }
 
 function CreditWidget() {
-  const { credits } = useCredits();
-  if (!credits) return null;
+  const { credits, isLoading } = useCredits();
 
-  const available = credits.available;
-  const total = credits.free_credits + credits.purchased_credits;
+  const available = credits?.available ?? 0;
+  const total = credits ? credits.free_credits + credits.purchased_credits : 0;
   const pct = total > 0 ? Math.round((available / total) * 100) : 0;
   const isLow = available <= 2;
   const isEmpty = available <= 0;
@@ -32,13 +28,17 @@ function CreditWidget() {
   return (
     <div className="mx-4 my-3 rounded-xl border border-border bg-muted/50 p-3 space-y-2.5">
       <div className="flex items-center gap-2">
-        <Sparkles className={cn("h-4 w-4", isEmpty ? "text-destructive" : isLow ? "text-warning" : "text-primary")} />
-        <span className="font-semibold text-sm text-foreground">{available}</span>
+        <Sparkles className={cn("h-4 w-4", isLoading ? "text-primary" : isEmpty ? "text-destructive" : isLow ? "text-warning" : "text-primary")} />
+        {isLoading ? (
+          <span className="font-semibold text-sm text-muted-foreground animate-pulse">–</span>
+        ) : (
+          <span className="font-semibold text-sm text-foreground">{available}</span>
+        )}
         <span className="text-xs text-muted-foreground">fotiek</span>
       </div>
       <Progress
-        value={pct}
-        className={cn("h-1.5", isEmpty ? "[&>div]:bg-destructive" : isLow ? "[&>div]:bg-warning" : "")}
+        value={isLoading ? 0 : pct}
+        className={cn("h-1.5", isEmpty && !isLoading ? "[&>div]:bg-destructive" : isLow && !isLoading ? "[&>div]:bg-warning" : "")}
       />
       <Link to="/dashboard/credits" className="block">
         <Button size="sm" className="w-full bg-success hover:bg-success/90 text-success-foreground text-xs h-8">
@@ -92,8 +92,13 @@ function Sidebar({ currentPath, userEmail }: { currentPath: string; userEmail?: 
   return (
     <div className="flex flex-col h-full">
       <div className="p-4 border-b border-border">
-        <h1 className="text-lg font-heading font-bold text-foreground">RealFoto</h1>
-        <p className="text-xs text-muted-foreground">Spracovanie fotiek</p>
+        <div className="flex items-center gap-2">
+          <LogoRealfoto className="h-8 w-8" />
+          <div>
+            <h1 className="text-lg font-heading font-bold text-foreground leading-tight">RealFoto</h1>
+            <p className="text-xs text-muted-foreground">Spracovanie fotiek</p>
+          </div>
+        </div>
       </div>
 
       <CreditWidget />
@@ -190,7 +195,7 @@ function Sidebar({ currentPath, userEmail }: { currentPath: string; userEmail?: 
   );
 }
 
-export function UserLayout({ children }: UserLayoutProps) {
+export function UserLayout() {
   const { user, isLoading } = useUserAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -201,39 +206,31 @@ export function UserLayout({ children }: UserLayoutProps) {
     }
   }, [user, isLoading, navigate]);
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center bg-muted">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary mx-auto" />
-          <p className="mt-2 text-sm text-muted-foreground">Načítavam...</p>
-        </div>
-      </div>
-    );
-  }
-
-  if (!user) return null;
+  if (!isLoading && !user) return null;
 
   return (
     <div className="min-h-screen bg-muted">
       <header className="lg:hidden fixed top-0 left-0 right-0 z-50 bg-card border-b border-border p-4 flex items-center justify-between">
-        <h1 className="text-lg font-heading font-bold">RealFoto</h1>
+        <div className="flex items-center gap-2">
+          <LogoRealfoto className="h-7 w-7" />
+          <span className="text-lg font-heading font-bold">RealFoto</span>
+        </div>
         <Sheet>
           <SheetTrigger asChild>
             <Button variant="ghost" size="icon"><Menu className="h-5 w-5" /></Button>
           </SheetTrigger>
           <SheetContent side="left" className="p-0 w-[85vw] max-w-80">
-            <Sidebar currentPath={location.pathname} userEmail={user.email} />
+            <Sidebar currentPath={location.pathname} userEmail={user?.email} />
           </SheetContent>
         </Sheet>
       </header>
 
       <div className="flex">
         <aside className="hidden lg:block w-64 bg-card border-r border-border h-screen fixed top-0 left-0">
-          <Sidebar currentPath={location.pathname} userEmail={user.email} />
+          <Sidebar currentPath={location.pathname} userEmail={user?.email} />
         </aside>
         <main className="flex-1 p-4 lg:p-8 lg:ml-64 min-h-screen pt-20 lg:pt-8">
-          {children}
+          <Outlet />
         </main>
       </div>
     </div>

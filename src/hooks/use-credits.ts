@@ -22,14 +22,24 @@ export function useCredits() {
       .eq('user_id', user.id)
       .maybeSingle();
 
-    // Auto-create credits row for new users
+    // Auto-create credits row for new users (fallback if DB trigger hasn't fired yet)
     if (!data && !error) {
       const { data: newData } = await supabase
         .from('user_credits')
-        .insert({ user_id: user.id })
+        .upsert({ user_id: user.id }, { onConflict: 'user_id' })
         .select('*')
         .single();
       data = newData;
+
+      // Last-resort re-query if upsert returned nothing
+      if (!data) {
+        const { data: retried } = await supabase
+          .from('user_credits')
+          .select('*')
+          .eq('user_id', user.id)
+          .maybeSingle();
+        data = retried;
+      }
     }
 
     if (data) {
@@ -43,7 +53,33 @@ export function useCredits() {
     setIsLoading(false);
   }, []);
 
-  useEffect(() => { loadCredits(); }, [loadCredits]);
+  useEffect(() => {
+    loadCredits();
+
+    // Fallback: other components dispatch this event when a credit-consuming action completes
+    const onCreditsChanged = () => loadCredits();
+    window.addEventListener('credits-changed', onCreditsChanged);
+
+    // Auto-refresh when credits change in DB (photo processing, purchases, etc.)
+    let channel: ReturnType<typeof supabase.channel> | undefined;
+    let cancelled = false;
+    supabase.auth.getUser().then(({ data: { user } }) => {
+      if (!user || cancelled) return;
+      channel = supabase
+        .channel('credits-realtime')
+        .on('postgres_changes',
+          { event: '*', schema: 'public', table: 'user_credits', filter: `user_id=eq.${user.id}` },
+          () => { loadCredits(); }
+        )
+        .subscribe();
+    });
+
+    return () => {
+      cancelled = true;
+      window.removeEventListener('credits-changed', onCreditsChanged);
+      if (channel) supabase.removeChannel(channel);
+    };
+  }, [loadCredits]);
 
   const useCreditsForPhotos = useCallback(async (count: number): Promise<boolean> => {
     if (!credits || credits.available < count) return false;
@@ -63,7 +99,8 @@ export function useCredits() {
       total_used: prev.total_used + count,
       available: prev.available - count,
     } : null);
-    
+    window.dispatchEvent(new Event('credits-changed'));
+
     return true;
   }, [credits]);
 
