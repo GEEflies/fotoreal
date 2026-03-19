@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useLayoutEffect } from "react";
 import { Toaster } from "@/components/ui/toaster";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { TooltipProvider } from "@/components/ui/tooltip";
@@ -47,12 +47,12 @@ const queryClient = new QueryClient();
 
 function ScrollToHash() {
   const { pathname, hash } = useLocation();
-  useEffect(() => {
+  useLayoutEffect(() => {
     if (hash) {
       const el = document.getElementById(hash.replace("#", ""));
       if (el) setTimeout(() => el.scrollIntoView({ behavior: "smooth" }), 80);
     } else {
-      window.scrollTo({ top: 0, behavior: "instant" });
+      window.scrollTo(0, 0);
     }
   }, [pathname, hash]);
   return null;
