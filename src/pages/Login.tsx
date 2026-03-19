@@ -22,7 +22,9 @@ export default function Login() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [otpCode, setOtpCode] = useState('');
-  const [step, setStep] = useState<AuthStep>('signup');
+  const modeParam = searchParams.get('mode');
+  const [step, setStep] = useState<AuthStep>(modeParam === 'login' ? 'login' : 'signup');
+  const [showRegisterSuggestion, setShowRegisterSuggestion] = useState(false);
   const [checkEmailReason, setCheckEmailReason] = useState<'signup' | 'reset'>('signup');
   const [formError, setFormError] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -62,6 +64,7 @@ export default function Login() {
   const switchStep = (newStep: AuthStep) => {
     setStep(newStep);
     setFormError(null);
+    setShowRegisterSuggestion(false);
     setPassword('');
     setConfirmPassword('');
     setOtpCode('');
@@ -96,6 +99,9 @@ export default function Login() {
       const { error } = await signIn(email.trim(), password);
       if (error) {
         setFormError(translateError(error.message));
+        if (/invalid login credentials/i.test(error.message)) {
+          setShowRegisterSuggestion(true);
+        }
       } else {
         const { data: { user } } = await supabase.auth.getUser();
         if (user) {
@@ -131,7 +137,15 @@ export default function Login() {
     try {
       const { error } = await signUp(email.trim(), password);
       if (error) {
-        setFormError(translateError(error.message));
+        if (/user already registered/i.test(error.message)) {
+          switchStep('login');
+          toast({
+            title: 'Účet už existuje',
+            description: 'Tento email je už zaregistrovaný. Prihláste sa.',
+          });
+        } else {
+          setFormError(translateError(error.message));
+        }
       } else {
         setCheckEmailReason('signup');
         setStep('check-email');
@@ -331,7 +345,21 @@ export default function Login() {
                 <form onSubmit={handleLogin} className="space-y-4">
                   {formError && (
                     <Alert variant="destructive">
-                      <AlertDescription>{formError}</AlertDescription>
+                      <AlertDescription>
+                        {formError}
+                        {showRegisterSuggestion && (
+                          <p className="mt-1">
+                            Nemáte ešte účet?{' '}
+                            <button
+                              type="button"
+                              onClick={() => switchStep('signup')}
+                              className="font-medium underline hover:no-underline"
+                            >
+                              Zaregistrujte sa
+                            </button>
+                          </p>
+                        )}
+                      </AlertDescription>
                     </Alert>
                   )}
 
