@@ -46,12 +46,15 @@ import {
 const queryClient = new QueryClient();
 
 function ScrollToHash() {
-  const { hash } = useLocation();
+  const { pathname, hash } = useLocation();
   useEffect(() => {
-    if (!hash) return;
-    const el = document.getElementById(hash.replace("#", ""));
-    if (el) setTimeout(() => el.scrollIntoView({ behavior: "smooth" }), 80);
-  }, [hash]);
+    if (hash) {
+      const el = document.getElementById(hash.replace("#", ""));
+      if (el) setTimeout(() => el.scrollIntoView({ behavior: "smooth" }), 80);
+    } else {
+      window.scrollTo({ top: 0, behavior: "instant" });
+    }
+  }, [pathname, hash]);
   return null;
 }
 
