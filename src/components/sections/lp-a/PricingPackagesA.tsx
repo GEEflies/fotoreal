@@ -81,23 +81,21 @@ export function PricingPackagesA() {
                   onClick={() => setOpen(!open)}
                   className="w-full p-3 sm:p-4 rounded-xl border border-border bg-background hover:border-primary/40 transition-colors text-left"
                 >
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 min-w-0">
-                      <span className="font-heading text-2xl font-extrabold text-foreground">
-                        {pkg.photos}
-                      </span>
-                      <span className="text-muted-foreground text-sm">fotiek</span>
-                      {pkg.discount > 0 && (
-                        <span className="text-xs font-bold text-success bg-success/10 px-2 py-0.5 rounded-full">
-                          -{pkg.discount}%
+                  <div className="space-y-1.5">
+                    {/* Row 1: photo count + total price */}
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <span className="font-heading text-2xl font-extrabold text-foreground">
+                          {pkg.photos}
                         </span>
-                      )}
-                      <span className="text-muted-foreground text-sm ml-1">
-                        ~{pkg.properties} {pkg.properties === 1 ? "nehnuteľnosť" : pkg.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"}
-                      </span>
-                    </div>
-                    <div className="text-right shrink-0">
-                      <div className="flex items-center gap-1">
+                        <span className="text-muted-foreground text-sm">fotiek</span>
+                        {pkg.discount > 0 && (
+                          <span className="text-xs font-bold text-success bg-success/10 px-2 py-0.5 rounded-full">
+                            -{pkg.discount}%
+                          </span>
+                        )}
+                      </div>
+                      <div className="flex items-center gap-1 shrink-0">
                         <span className="font-heading text-xl font-bold text-foreground">
                           {pkg.price} €
                         </span>
@@ -107,7 +105,15 @@ export function PricingPackagesA() {
                           }`}
                         />
                       </div>
-                      <span className="text-sm font-semibold text-primary whitespace-nowrap">({pkg.ppp.toFixed(2)} € / ks)</span>
+                    </div>
+                    {/* Row 2: properties + per-unit price */}
+                    <div className="flex items-center justify-between">
+                      <span className="text-sm text-muted-foreground">
+                        ~{pkg.properties} {pkg.properties === 1 ? "nehnuteľnosť" : pkg.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"}
+                      </span>
+                      <span className="text-sm font-semibold text-primary shrink-0">
+                        {pkg.ppp.toFixed(2)} € / ks
+                      </span>
                     </div>
                   </div>
                 </button>
@@ -125,24 +131,30 @@ export function PricingPackagesA() {
                           i === selected ? "bg-primary/5" : ""
                         } ${i < PACKAGES.length - 1 ? "border-b border-border/50" : ""}`}
                       >
-                        <div className="flex items-center justify-between">
-                          <div className="flex items-center gap-2 min-w-0">
-                            <span className="font-heading text-lg font-bold text-foreground">
-                              {p.photos}
-                            </span>
-                            <span className="text-muted-foreground text-sm">fotiek</span>
-                            {p.discount > 0 && (
-                              <span className="text-xs font-bold text-success bg-success/10 px-2 py-0.5 rounded-full">
-                                -{p.discount}%
+                        <div className="space-y-1">
+                          {/* Row 1: photo count + total price */}
+                          <div className="flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <span className="font-heading text-lg font-bold text-foreground">
+                                {p.photos}
                               </span>
-                            )}
-                            <span className="text-muted-foreground text-sm ml-1">
+                              <span className="text-muted-foreground text-sm">fotiek</span>
+                              {p.discount > 0 && (
+                                <span className="text-xs font-bold text-success bg-success/10 px-2 py-0.5 rounded-full">
+                                  -{p.discount}%
+                                </span>
+                              )}
+                            </div>
+                            <span className="font-bold text-foreground shrink-0">{p.price} €</span>
+                          </div>
+                          {/* Row 2: properties + per-unit price */}
+                          <div className="flex items-center justify-between">
+                            <span className="text-sm text-muted-foreground">
                               ~{p.properties} {p.properties === 1 ? "nehnuteľnosť" : p.properties < 5 ? "nehnuteľnosti" : "nehnuteľností"}
                             </span>
-                          </div>
-                          <div className="text-right shrink-0">
-                            <span className="font-bold text-foreground">{p.price} €</span>
-                            <p className="text-sm font-semibold text-primary whitespace-nowrap">({p.ppp.toFixed(2)} € / ks)</p>
+                            <span className="text-sm font-semibold text-primary shrink-0">
+                              {p.ppp.toFixed(2)} € / ks
+                            </span>
                           </div>
                         </div>
                       </button>
