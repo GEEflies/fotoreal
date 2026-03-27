@@ -82,6 +82,12 @@ function startServer() {
 }
 
 async function prerender() {
+  // Skip prerender in CI environments that lack Chrome system libraries
+  if (process.env.VERCEL || process.env.CI) {
+    console.log("Prerender skipped (CI environment).");
+    return;
+  }
+
   const routes = [...STATIC_ROUTES, ...getBlogPostRoutes()];
   console.log(`Prerendering ${routes.length} routes...`);
 
